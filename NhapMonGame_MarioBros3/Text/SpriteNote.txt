@@ -1,0 +1,7 @@
+10001 mario idle right
+10002-10003 mario walk right
+
+10011 mario idle left
+10012-10013 mario walk left
+
+
