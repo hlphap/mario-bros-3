@@ -1,0 +1,55 @@
+﻿  Animations.cpp
+  Brick.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\Animations.h(3,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  CloudBrick.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  ColorBox.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Flower.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Game.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  GameObject.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\Game.h(7,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Goomba.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.cpp(1,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Ground.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Item.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Koopas.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  main.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Mario.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\main.cpp(16,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  MarioGeneral.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\MarioGeneral.h(196,1): warning C4005: 'MARIO_UNTOUCHABLE_TIME': macro redefinition
+  Pipe.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\MarioGeneral.h(193): message : see previous definition of 'MARIO_UNTOUCHABLE_TIME'
+  PlayScence.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Portal.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\Game.h(7,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  QuestionBrick.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Scence.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Sprites.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\Scence.h(3,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Generating Code...
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\Sprites.h(3,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Compiling...
+  Textures.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\MarioGeneral.cpp(192): warning C4715: 'CMarioGeneral::GetAni_Mario': not all control paths return a value
+  TileMap.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\Textures.cpp(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+  Utils.cpp
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\Sprites.h(3,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\Utils.cpp(12,27): error C2664: 'void OutputDebugStringA(LPCSTR)': cannot convert argument 1 from 'wchar_t [4096]' to 'LPCSTR'
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\Utils.cpp(12,20): message : Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+  WeakBrick.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\debugapi.h(55,1): message : see declaration of 'OutputDebugStringA'
+  Generating Code...
+C:\Users\Admin\Desktop\NhapMonGame\NhapMonGame_MarioBros3\GameObject.h(4,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory

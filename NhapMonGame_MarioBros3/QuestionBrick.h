@@ -1,10 +1,10 @@
 #pragma once
 #include "GameObject.h"
 
-#define BRICK_BBOX_WIDTH  16
-#define BRICK_BBOX_HEIGHT 16
+#define QUESTION_BRICK_BBOX_WIDTH  16
+#define QUESTION_BRICK_BBOX_WIDTH 16
 
-class CBrick : public CGameObject
+class CQuestionBrick : public CGameObject
 {
 public:
 	virtual void Render();

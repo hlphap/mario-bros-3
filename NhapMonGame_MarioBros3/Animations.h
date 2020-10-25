@@ -29,10 +29,26 @@ class CAnimation
 	float speedRunRatio;
 	vector<LPANIMATION_FRAME> frames;
 public:
+	DWORD timeStartAni;
+	DWORD timeAni;
 	CAnimation(int defaultTime = 100) { this->defaultTime = defaultTime; lastFrameTime = -1; currentFrame = -1; }
 	void Add(int spriteId, DWORD time = 0);
-	void SetHightSpeed() { speedRunRatio = 0.5f; }
+	void SetHightSpeed(float ratio) { speedRunRatio = ratio; }
 	void Render(float x, float y, int alpha = 255);
+
+	void SetCurrentFrame()
+	{
+		currentFrame = -1;
+	}
+	void StartAni()
+	{
+		timeStartAni = GetTickCount64();
+	}
+	bool IsRenderOver()
+	{
+		return (GetTickCount64() - timeStartAni > timeAni);
+	}
+	
 };
 
 typedef CAnimation* LPANIMATION;

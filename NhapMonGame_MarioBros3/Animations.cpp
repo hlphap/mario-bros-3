@@ -17,6 +17,7 @@ void CAnimation::Add(int spriteId, DWORD time)
 	}
 
 	LPANIMATION_FRAME frame = new CAnimationFrame(sprite, t);
+	timeAni += t;
 	frames.push_back(frame);
 }
 
@@ -43,6 +44,7 @@ void CAnimation::Render(float x, float y, int alpha)
 	}
 
 	frames[currentFrame]->GetSprite()->Draw(x, y, alpha);
+
 }
 
 CAnimations* CAnimations::__instance = NULL;

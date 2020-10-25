@@ -19,7 +19,7 @@
 #include "Game.h"
 #include "GameObject.h"
 #include "Textures.h"
-
+ 
 #include "Mario.h"
 #include "Brick.h"
 #include "Goomba.h"
@@ -30,12 +30,13 @@
 #define MAIN_WINDOW_TITLE L"SAMPLE 05 - SCENCE MANAGER"
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(181, 235, 242)
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 
-#define MAX_FRAME_RATE 60
+#define MAX_FRAME_RATE 120
 
 CGame* game;
+
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {

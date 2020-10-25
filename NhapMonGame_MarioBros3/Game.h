@@ -8,8 +8,9 @@
 
 
 #define DIRECTINPUT_VERSION 0x0800
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 #include <dinput.h>
-
 #include "Scence.h"
 
 using namespace std;
@@ -18,6 +19,7 @@ using namespace std;
 
 class CGame
 {
+public:
 	static CGame* __instance;
 	HWND hWnd;									// Window handle
 
@@ -83,7 +85,8 @@ public:
 	LPD3DXSPRITE GetSpriteHandler() { return this->spriteHandler; }
 
 	void SetCamPos(float x, float y) { cam_x = x; cam_y = y; }
-
+	float GetCamPosX() { return cam_x; }
+	float GetCamPosY() { return cam_y; }
 	static CGame* GetInstance();
 
 	~CGame();

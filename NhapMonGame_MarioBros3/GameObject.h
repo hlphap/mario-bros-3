@@ -48,6 +48,9 @@ public:
 	float x;
 	float y;
 
+	int amountX;
+	int amountY;
+
 	float dx;	// dx = vx*dt
 	float dy;	// dy = vy*dt
 
