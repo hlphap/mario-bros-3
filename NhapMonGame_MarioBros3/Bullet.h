@@ -12,10 +12,13 @@
 #define BULLET_STATE_FLY_LEFT		100
 #define BULLET_STATE_FLY_RIGHT		101	
 #define BULLET_STATE_EXPLOSIVE	999
+
+#define BULLET_TIME_EXITS	3000
 class CBullet : public CGameObject
 {
 public:
 	
+	DWORD timer;
 	CBullet();
 	void Render();
 	void GetBoundingBox(float& l, float& t, float& r, float& b);

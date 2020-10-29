@@ -216,9 +216,6 @@ void CPlayScene::_ParseSection_TileMap(string line)
 	wstring file_texture = ToWSTR(tokens[1]);
 	wstring file_path = ToWSTR(tokens[2]);
 
-
-
-
 	int row_on_textures = atoi(tokens[3].c_str());
 	int col_on_textures = atoi(tokens[4].c_str());
 	int row_on_tile_map = atoi(tokens[5].c_str());
@@ -302,9 +299,12 @@ void CPlayScene::Update(DWORD dt)
 	
 	if (player->isAttacking &&player->level == MARIO_LEVEL_BIG_FIRE 
 		&& player->animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_RIGHT)->IsRenderOver() 
-		&& player->animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_LEFT)->IsRenderOver())
+		&& player->animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_LEFT)->IsRenderOver()
+		&& player->animation_set->at(MARIO_ANI_BIG_FIRE_FLYING_ATTACKING_RIGHT)->IsRenderOver()
+		&& player->animation_set->at(MARIO_ANI_BIG_FIRE_FLYING_ATTACKING_LEFT)->IsRenderOver())
 	{
 		CBullet* bullet = new CBullet();
+		bullet->timer = GetTickCount();
 		/*DebugOut(L"ImHere");*/
 		if (player->nx == 1)
 		{
@@ -320,7 +320,8 @@ void CPlayScene::Update(DWORD dt)
 			bullets.push_back(bullet);
 		}
 	}
-
+	if (bullets.size() == BULLET_AMOUNT)
+		player->isAttacking = false;
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 1; i < objects.size(); i++)
 	{
@@ -331,9 +332,9 @@ void CPlayScene::Update(DWORD dt)
 		
 		bullets[i]->Update(dt, &coObjects);
 	}
-
-		DeleteBullet();
-
+	//DebugOut(L"\nSize Truoc Xoa Bullet: %d", bullets.size());
+	DeleteBullet();
+	//DebugOut(L"\nSize Bullet: %d", bullets.size());
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
@@ -344,27 +345,26 @@ void CPlayScene::Update(DWORD dt)
 
 	// Update camera to follow mario
 	float cx, cy;
-	player->GetPosition(cx, cy);
 
-	CGame* game = CGame::GetInstance();
-	cx -= game->GetScreenWidth() / 2;
-	cy -= game->GetScreenHeight() / 2;
-
-
+	CGame::GetInstance()->cam_y = 150;
 	if (player->x > (SCREEN_WIDTH / 2) && player->x + (SCREEN_WIDTH / 2) < map->GetWidthTileMap())
 	{
 		cx = player->x - (SCREEN_WIDTH / 2);
 		CGame::GetInstance()->cam_x = cx;
-
 	}
-	if (player->x + SCREEN_WIDTH * 1/2 >= map->GetWidthTileMap())
+	/*if (player->y < SCREEN_HEIGHT / 2)
+	{
+		cy = player->y - (SCREEN_HEIGHT / 2);
+		CGame::GetInstance()->cam_y = cy;
+	}*/
+
+
+
+	/*if (player->x + SCREEN_WIDTH * 1/2 >= map->GetWidthTileMap())
 	{
 		cx = map->GetWidthTileMap() - SCREEN_WIDTH;
 		CGame::GetInstance()->cam_x = cx;
-	}
-	/*if (cy >= 400 - SCREEN_HEIGHT / 2) cy = 400 - SCREEN_HEIGHT / 2;
-	CGame::GetInstance()->cam_y = cy;*/
-
+	}*/
 	//CGame::GetInstance()->SetCamPos(cx, cy);
 }
 
@@ -396,20 +396,13 @@ void CPlayScene::DeleteBullet()
 {
 	for (int i = 0; i < bullets.size(); i++)
 	{
-		if (abs(bullets[i]->x) >= player->x + (SCREEN_WIDTH / 2))
+		if (bullets[i]->state == BULLET_STATE_EXPLOSIVE)
 		{
 			bullets.erase(bullets.begin() + i);
 		}
-		else if (abs(bullets[i]->x) >= (SCREEN_HEIGHT))
-		{
+		else
+		if (GetTickCount() - bullets[i]->timer > BULLET_TIME_EXITS)
 			bullets.erase(bullets.begin() + i);
-		}
-		else if (bullets[i]->state == BULLET_STATE_EXPLOSIVE)
-		{
-			bullets.erase(bullets.begin() + i);
-		}
-			
-		
 	}
 
 }
@@ -427,22 +420,29 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	case DIK_A:
 		if (!mario->isAttacking)
-		mario->Attack();
+		{
+			mario->Attack();
+		}
+	
 		break;
 	case DIK_R:
 		mario->Reset();
 		break;
 	case DIK_1:
 		mario->SetLevel(MARIO_LEVEL_SMALL);
+		mario->SetPosition(mario->x, 0);
 		break;
 	case DIK_2:
 		mario->SetLevel(MARIO_LEVEL_BIG);
+		mario->SetPosition(mario->x, 0);
 		break;
 	case DIK_3:
 		mario->SetLevel(MARIO_LEVEL_BIG_TAIL);
+		mario->SetPosition(mario->x, 0);
 		break;
 	case DIK_4:
 		mario->SetLevel(MARIO_LEVEL_BIG_FIRE);
+		mario->SetPosition(mario->x, 0);
 		break;
 	}
 }
@@ -452,10 +452,10 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_A:
-		mario->SetSpeedUp(false);
+		mario->isSpeedUp = false;
 		break;
 	case DIK_S:
-		if (mario->isFalling)
+		if (mario->isFalling && !mario->isBlockKeepJump)
 		{
 			if (mario->level == MARIO_LEVEL_BIG_TAIL && mario->isOnAir)
 			{
@@ -482,7 +482,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	
 	if (game->IsKeyDown(DIK_A))
 	{
-			mario->SetSpeedUp(true);
+			mario->isSpeedUp = true;
 	}
 	//Mario Go Right
 	if (game->IsKeyDown(DIK_RIGHT))

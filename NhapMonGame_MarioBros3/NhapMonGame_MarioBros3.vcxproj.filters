@@ -16,8 +16,26 @@
     <Filter Include="GameObject">
       <UniqueIdentifier>{67996bad-c81b-4628-b02c-96074629b361}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Brick">
+    <Filter Include="GameObject\Enemies">
+      <UniqueIdentifier>{d84f568b-6fd9-4ac2-97b3-980019ff68ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Player">
+      <UniqueIdentifier>{9c552a0d-b1d9-4f95-8735-a03348ca2711}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Map Object">
       <UniqueIdentifier>{97fb671a-304d-4241-a42e-31986c94018c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Weapon">
+      <UniqueIdentifier>{0e05bd4f-b213-4b07-9a7d-daf1c0a930ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{aa6bec9e-15a7-474d-9093-4fe846585174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scence">
+      <UniqueIdentifier>{09f25870-24ad-41e7-b318-9e8ef366b02c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Map">
+      <UniqueIdentifier>{86735e3a-bb1b-4dab-a60f-6e30ce3393d4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -27,74 +45,74 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Textures.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprites.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Animations.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Mario.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Goomba.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Portal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayScence.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scence.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Koopas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MarioGeneral.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TileMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Brick.cpp">
-      <Filter>GameObject\Brick</Filter>
+      <Filter>GameObject\Map Object</Filter>
     </ClCompile>
     <ClCompile Include="CloudBrick.cpp">
-      <Filter>GameObject\Brick</Filter>
+      <Filter>GameObject\Map Object</Filter>
     </ClCompile>
     <ClCompile Include="WeakBrick.cpp">
-      <Filter>GameObject\Brick</Filter>
-    </ClCompile>
-    <ClCompile Include="ColorBox.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Ground.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>GameObject\Map Object</Filter>
     </ClCompile>
     <ClCompile Include="QuestionBrick.cpp">
-      <Filter>GameObject\Brick</Filter>
-    </ClCompile>
-    <ClCompile Include="Pipe.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>GameObject\Map Object</Filter>
     </ClCompile>
     <ClCompile Include="Flower.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>GameObject\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Goomba.cpp">
+      <Filter>GameObject\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Koopas.cpp">
+      <Filter>GameObject\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Mario.cpp">
+      <Filter>GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioGeneral.cpp">
+      <Filter>GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorBox.cpp">
+      <Filter>GameObject\Map Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Ground.cpp">
+      <Filter>GameObject\Map Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipe.cpp">
+      <Filter>GameObject\Map Object</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>GameObject\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Animations.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprites.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Textures.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayScence.cpp">
+      <Filter>Scence</Filter>
+    </ClCompile>
+    <ClCompile Include="Scence.cpp">
+      <Filter>Scence</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="TileMap.cpp">
+      <Filter>Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -104,74 +122,74 @@
     <ClInclude Include="KeyEventHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Textures.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprites.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Animations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Mario.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Goomba.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Portal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PlayScence.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scence.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Koopas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MarioGeneral.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TileMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Item.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Brick.h">
-      <Filter>GameObject\Brick</Filter>
+      <Filter>GameObject\Map Object</Filter>
     </ClInclude>
     <ClInclude Include="WeakBrick.h">
-      <Filter>GameObject\Brick</Filter>
+      <Filter>GameObject\Map Object</Filter>
     </ClInclude>
     <ClInclude Include="CloudBrick.h">
-      <Filter>GameObject\Brick</Filter>
-    </ClInclude>
-    <ClInclude Include="ColorBox.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Ground.h">
-      <Filter>GameObject</Filter>
+      <Filter>GameObject\Map Object</Filter>
     </ClInclude>
     <ClInclude Include="QuestionBrick.h">
-      <Filter>GameObject\Brick</Filter>
-    </ClInclude>
-    <ClInclude Include="Pipe.h">
-      <Filter>GameObject</Filter>
+      <Filter>GameObject\Map Object</Filter>
     </ClInclude>
     <ClInclude Include="Flower.h">
-      <Filter>GameObject</Filter>
+      <Filter>GameObject\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Goomba.h">
+      <Filter>GameObject\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Koopas.h">
+      <Filter>GameObject\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Mario.h">
+      <Filter>GameObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioGeneral.h">
+      <Filter>GameObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorBox.h">
+      <Filter>GameObject\Map Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Ground.h">
+      <Filter>GameObject\Map Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipe.h">
+      <Filter>GameObject\Map Object</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>Header Files</Filter>
+      <Filter>GameObject\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Animations.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Textures.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprites.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Scence.h">
+      <Filter>Scence</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayScence.h">
+      <Filter>Scence</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMap.h">
+      <Filter>Map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

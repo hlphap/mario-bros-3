@@ -1,5 +1,9 @@
 #include "Bullet.h"
 #include "Pipe.h"
+#include "Brick.h"
+#include "QuestionBrick.h"
+#include "CloudBrick.h"
+#include "ColorBox.h"
 
 CBullet::CBullet()
 {
@@ -82,7 +86,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
 		y += min_ty * dy + ny * 0.4f;
 
-		if (nx != 0) vx = 0;
+		//if (nx != 0) vx = 0;
 		
 		//
 		// Collision logic with other objects
@@ -92,7 +96,15 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
 			// Brick defaul
-			if (dynamic_cast<CGameObject*>(e->obj))
+			if (dynamic_cast<CColorBox*>(e->obj))
+			{
+				if (e->ny != 0)
+				{
+					vy = -vy;
+				}
+				x += dx;
+			}
+			if (dynamic_cast<CGround*>(e->obj))
 			{
 				if (e->nx != 0)
 				{
@@ -103,6 +115,56 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					vy = -vy;
 				}
 			}
+
+
+			if (dynamic_cast<CPipe*>(e->obj))
+			{
+				if (e->nx != 0)
+				{
+					SetState(BULLET_STATE_EXPLOSIVE);
+				}
+				if (e->ny != 0)
+				{
+					vy = -vy;
+				}
+			}
+			if (dynamic_cast<CBrick*>(e->obj))
+			{
+				if (e->nx != 0)
+				{
+					SetState(BULLET_STATE_EXPLOSIVE);
+				}
+				if (e->ny != 0)
+				{
+					vy = -vy;
+				}
+			}
+			if (dynamic_cast<CQuestionBrick*>(e->obj))
+			{
+				if (e->nx != 0)
+				{
+					SetState(BULLET_STATE_EXPLOSIVE);
+				}
+				if (e->ny != 0)
+				{
+					vy = -vy;
+				}
+			}
+			if (dynamic_cast<CCloudBrick*>(e->obj))
+			{
+				if (e->nx != 0)
+				{
+					SetState(BULLET_STATE_EXPLOSIVE);
+				}
+				if (e->ny != 0)
+				{
+					vy = -vy;
+				}
+			}
+
+
+			
+			
 		}
 	}
 

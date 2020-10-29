@@ -34,7 +34,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vy += MARIO_GRAVITY * dt;
 
 
-	//DebugOut(L"\n Van to vy: %f \n", vy);
+	
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -53,20 +53,38 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		untouchable = 0;
 	}
 
+	//Update isSpeedUping 
 	if (abs(vx) > MARIO_WALKING_MAX_SPEED&& abs(vx) < MARIO_RUNNING_MAX_SPEED) isSpeedUping = true;
 	else
 		isSpeedUping = false;
 
-	if (abs(vx) == MARIO_RUNNING_MAX_SPEED) isSpeedMax = true;
+	//Update IsSpeedMax and Update timeStartFly
+	if (abs(vx) == MARIO_RUNNING_MAX_SPEED)
+	{
+		isSpeedMax = true;
+		timeStartFly = GetTickCount();
+	}
 	else
+	{
 		isSpeedMax = false;
+		DebugOut(L"\nTimeStartFly: %d", timeStartFly);
+		DebugOut(L"\n now: %d", GetTickCount());
+		DebugOut(L"\n Time out: %d", GetTickCount() - timeStartFly);
+		if (GetTickCount() - timeStartFly <= 500)
+		{
+			isKeepJump_HightFlying = true;
+		}
+	}
+	DebugOut(L"\n Van to vx: %f ", vx);
+		
 
+	//Update IsFalling
 	if (vy > 0)
 	{
 		isFalling = true;
-	}
-	DebugOut(L"\nVY : %f", vy);
+	} 
 
+	//Update IsAttack BigTail
 	if (level == MARIO_LEVEL_BIG_TAIL)
 	{
 		if (nx == 1)
@@ -81,37 +99,48 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (isAttacking && animation_set->at(MARIO_ANI_BIG_TAIL_ATTACKING_LEFT)->IsRenderOver())
 				isAttacking = false;
 		}
-	}
-	else if (level == MARIO_LEVEL_BIG_FIRE)	{
-		if (nx == 1)
+	} 
+
+	//Update IsAttack BigFire
+	if (level == MARIO_LEVEL_BIG_FIRE)	{
+		if (isOnAir)
 		{
-			if (isAttacking && animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_RIGHT)->IsRenderOver())
+			if (nx == 1)
 			{
-				isAttacking = false;
+				if (isAttacking && animation_set->at(MARIO_ANI_BIG_FIRE_FLYING_ATTACKING_RIGHT)->IsRenderOver())
+				{
+					isAttacking = false;
+				}
+			}
+			else if (nx == -1)
+			{
+				if (isAttacking && animation_set->at(MARIO_ANI_BIG_FIRE_FLYING_ATTACKING_LEFT)->IsRenderOver())
+					isAttacking = false;
 			}
 		}
-		else if (nx == -1)
+		else
 		{
-			if (isAttacking && animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_LEFT)->IsRenderOver())
-				isAttacking = false;
+			if (nx == 1)
+			{
+				if (isAttacking && animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_RIGHT)->IsRenderOver())
+				{
+					isAttacking = false;
+				}
+			}
+			else if (nx == -1)
+			{
+				if (isAttacking && animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_LEFT)->IsRenderOver())
+					isAttacking = false;
+			}
 		}
+		
 	}
 
-
-	//DebugOut(L"\nvx: %d", animation_set->at(MARIO_ANI_BIG_TAIL_ATTACKING_LEFT)->IsRenderOver());
-
-	//Fix
-
-
-	//DebugOut(L"\nMario Speed Up: vx: %f", vx);
-
-	//DebugOut(L"isFalling %d", isFalling);
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
 		x += dx;
 		y += dy;
-		//isOnAir = true;
 	}
 	else
 	{
@@ -155,6 +184,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					isKeepJump_SlowFalling = false;
 					isBlockFall = false;
 					isKeepJump_HightFlying = false;
+					isBlockKeepJump = true;
+					//isFly = false;
 				}
 				else
 					if (e->ny > 0)
@@ -179,6 +210,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					isKeepJump_SlowFalling = false;
 					isBlockFall = false;
 					isKeepJump_HightFlying = false;
+					//isFly = false;
 				}
 				else if (e->ny > 0)
 				{
@@ -201,6 +233,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					isKeepJump_SlowFalling = false;
 					isBlockFall = false;
 					isKeepJump_HightFlying = false;
+					//isFly = false;
 				}
 				else
 					if (e->ny > 0)
@@ -225,6 +258,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					isKeepJump_SlowFalling = false;
 					isBlockFall = false;
 					isKeepJump_HightFlying = false;
+					//isFly = false;
 				}
 				else
 					if (e->ny > 0)
@@ -249,6 +283,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					isKeepJump_SlowFalling = false;
 					isBlockFall = false;
 					isKeepJump_HightFlying = false;
+					isBlockKeepJump = true;
+					//isFly = false;
 				}
 				else
 				if (e->nx != 0)
@@ -268,6 +304,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					isKeepJump_SlowFalling = false;
 					isBlockFall = false;
 					isKeepJump_HightFlying = false;
+					//isFly = false;
 				}
 				else if (e->ny > 0)
 				{
@@ -289,6 +326,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					isKeepJump_SlowFalling = false;
 					isBlockFall = false;
 					isKeepJump_HightFlying = false;
+					//isFly = false;
 				}
 				if (e->nx != 0)
 				{
@@ -386,9 +424,7 @@ int CMario::RenderFromAniGroup()
 
 	if (vx == 0)
 	{
-
 		//Sit
-
 		if (isSitting)
 		{
 			if (nx < 0) aniIndex = MARIO_ANI_SITTING_LEFT;
@@ -564,16 +600,16 @@ int CMario::RenderFromAniGroup()
 	//	DebugOut(L"AniIndex: %d", aniIndex);
 	ani = mario_general->GetAni_Mario(aniIndex);
 
-	//Set toc do hien frame
+	////Set toc do hien frame
 
-	if (isSpeedUping && aniIndex != MARIO_ANI_ATTACKING_LEFT && aniIndex != MARIO_ANI_ATTACKING_RIGHT)
-	{
-		animation_set->at(ani)->SetHightSpeed(MARIO_RATIO_SPEED_WHEN_SPEEDUP);
-	}
-	if (isSpeedMax && aniIndex != MARIO_ANI_RUNNING_FLY_SLOW_LEFT && aniIndex != MARIO_ANI_RUNNING_FLY_SLOW_RIGHT)
-	{
-		animation_set->at(ani)->SetHightSpeed(MARIO_RATIO_SPEED_WHEN_SPEEDMAX);
-	}
+	//if (isSpeedUping && aniIndex != MARIO_ANI_ATTACKING_LEFT && aniIndex != MARIO_ANI_ATTACKING_RIGHT)
+	//{
+	//	animation_set->at(ani)->SetHightSpeed(MARIO_RATIO_SPEED_WHEN_SPEEDUP);
+	//}
+	//if (isSpeedMax && aniIndex != MARIO_ANI_RUNNING_FLY_SLOW_LEFT && aniIndex != MARIO_ANI_RUNNING_FLY_SLOW_RIGHT)
+	//{
+	//	animation_set->at(ani)->SetHightSpeed(MARIO_RATIO_SPEED_WHEN_SPEEDMAX);
+	//}
 	return ani;
 }
 
@@ -623,7 +659,6 @@ void CMario::SetState(int state)
 				if (vx >= MARIO_WALKING_MAX_SPEED)
 					vx = MARIO_WALKING_MAX_SPEED;
 			}
-			//DebugOut(L"\nMario Speed Up: vx: %f", vx);
 			break;
 		}
 		else if (nx == -1)
@@ -659,10 +694,11 @@ void CMario::SetState(int state)
 			ACCELERATION = MARIO_WALKING_ACCELERATION;
 		else
 			ACCELERATION = MARIO_RUNNING_ACCELERATION;
-		if (isOnAir)
+		/*if (isOnAir)
 		{
-			DecreaseSpeed(MARIO_WALKING_MAX_SPEED);
-		}
+			DecreaseSpeed(MARIO_WALKING_ACCELERATION);
+		}*/
+		//DebugOut(L"\nMario Speed Up: vx: %f", vx);
 		if (nx == 1)
 		{
 			vx += ACCELERATION * dt;
@@ -670,7 +706,6 @@ void CMario::SetState(int state)
 			{
 				vx = MARIO_RUNNING_MAX_SPEED;
 			}
-
 			break;
 		}
 		else if (nx == -1)
@@ -680,7 +715,7 @@ void CMario::SetState(int state)
 			{
 				vx = -MARIO_RUNNING_MAX_SPEED;
 			}
-			DebugOut(L"\nvx nx = -1: %f", ACCELERATION);
+		//	DebugOut(L"\nvx nx = -1: %f", ACCELERATION);
 			break;
 		}
 	}
@@ -699,7 +734,9 @@ void CMario::SetState(int state)
 	case MARIO_STATE_FALLING:	// Roi nhanh
 	{
 		if (!isBlockFall && isOnAir)
-			vy += MARIO_GRAVITY * dt * 10;
+		{
+			vy += MARIO_GRAVITY * dt * MARIO_BOUNCE;
+		}
 		break;
 	}
 
@@ -712,12 +749,12 @@ void CMario::SetState(int state)
 			SetState(MARIO_STATE_BIG_TAIL_KEEP_JUMP_FLY_HIGHT);
 			break;
 		}
-		vy = -MARIO_GRAVITY * dt;					// Roi cham
+		vy = -MARIO_GRAVITY * dt;				// Roi cham
 		break;
 	}
 	case MARIO_STATE_BIG_TAIL_KEEP_JUMP_FLY_HIGHT:
 	{
-		vy = -MARIO_GRAVITY * dt * 10;
+		vy = -MARIO_GRAVITY * dt * MARIO_BOUNCE;
 		if (nx == 1 && animation_set->at(MARIO_ANI_BIG_TAIL_FLYING_SLOW_RIGHT)->IsRenderOver())
 		{
 			animation_set->at(MARIO_ANI_BIG_TAIL_FLYING_SLOW_RIGHT)->SetCurrentFrame();
@@ -729,7 +766,6 @@ void CMario::SetState(int state)
 			animation_set->at(MARIO_ANI_BIG_TAIL_FLYING_SLOW_LEFT)->StartAni();
 		}
 		//isFalling_HightFlying = true;
-
 		break;
 	}
 
@@ -753,16 +789,34 @@ void CMario::SetState(int state)
 	//=============================SPECIAL STATE MARIO_FIRE=============================
 	case MARIO_STATE_BIG_FIRE_ATTACK:
 	{
-		if (nx == 1 && animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_RIGHT)->IsRenderOver())
+		if (isOnAir)
 		{
-			animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_RIGHT)->SetCurrentFrame();
-			animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_RIGHT)->StartAni();
+			if (nx == 1 && animation_set->at(MARIO_ANI_BIG_FIRE_FLYING_ATTACKING_RIGHT)->IsRenderOver())
+			{
+				animation_set->at(MARIO_ANI_BIG_FIRE_FLYING_ATTACKING_RIGHT)->SetCurrentFrame();
+				animation_set->at(MARIO_ANI_BIG_FIRE_FLYING_ATTACKING_RIGHT)->StartAni();
+			}
+			else if (nx == -1 && animation_set->at(MARIO_ANI_BIG_FIRE_FLYING_ATTACKING_LEFT)->IsRenderOver())
+			{
+				animation_set->at(MARIO_ANI_BIG_FIRE_FLYING_ATTACKING_LEFT)->SetCurrentFrame();
+				animation_set->at(MARIO_ANI_BIG_FIRE_FLYING_ATTACKING_LEFT)->StartAni();
+			}
+
 		}
-		else if (nx == -1 && animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_LEFT)->IsRenderOver())
+		else
 		{
-			animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_LEFT)->SetCurrentFrame();
-			animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_LEFT)->StartAni();
+			if (nx == 1 && animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_RIGHT)->IsRenderOver())
+			{
+				animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_RIGHT)->SetCurrentFrame();
+				animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_RIGHT)->StartAni();
+			}
+			else if (nx == -1 && animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_LEFT)->IsRenderOver())
+			{
+				animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_LEFT)->SetCurrentFrame();
+				animation_set->at(MARIO_ANI_BIG_FIRE_ATTACKING_LEFT)->StartAni();
+			}
 		}
+	
 		break;
 	}
 	//=============================END SPECIAL STATE MARIO_FIRE=============================
@@ -805,6 +859,7 @@ void CMario::Go()
 {
 	//DebugOut(L"Trang thai tang toc: %b", isSpeedUp);
 	//Run
+	
 	if (isSpeedUp)
 	{
 		if (vx * nx >= 0)
@@ -813,8 +868,7 @@ void CMario::Go()
 			SetState(MARIO_STATE_DECREASE_WHEN_RUNNING);
 	}
 	else
-		// Walking
-		if ((!isSitting))
+		if (!isSitting)
 		{
 			SetState(MARIO_STATE_WALKING);
 		}
@@ -850,7 +904,7 @@ void CMario::Fall()
 	//isFalling = true;
 	SetState(MARIO_STATE_FALLING);
 	isBlockFall = true;
-
+	isBlockKeepJump = false;
 
 }
 
@@ -867,28 +921,12 @@ void CMario::Attack()
 	else if (level == MARIO_LEVEL_BIG_FIRE)
 	{
 		SetState(MARIO_STATE_BIG_FIRE_ATTACK);
-		/*bullet = new CBullet();
-		if (nx == 1)
-		{
-			bullet->SetPosition(x + MARIO_BIG_BBOX_WIDTH, y + 7 / MARIO_BIG_BBOX_HEIGHT);
-			bullet->SetState(BULLET_STATE_FLY_RIGHT);
-		}
-		else
-		{
-			bullet->SetPosition(x + MARIO_BIG_BBOX_WIDTH, y + 7 / MARIO_BIG_BBOX_HEIGHT);
-			bullet->SetState(BULLET_STATE_FLY_LEFT);
-		}
-		
-		if (bullets.size() < 3) {
-			bullets.push_back(bullet);
-		}*/
 	}
-
 }
 
 void CMario::KeepJump()
 {
-	if (isSpeedMax)
+	if (isKeepJump_HightFlying)
 	{
 		isKeepJump_HightFlying = true;
 		SetState(MARIO_STATE_BIG_TAIL_KEEP_JUMP_FLY_HIGHT);

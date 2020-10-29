@@ -3,18 +3,20 @@
 #include <istream>
 
 #define MARIO_WALKING_DECELERATION						0.0002f
-#define MARIO_WALKING_ACCELERATION						0.0006f
-#define MARIO_WALKING_MAX_SPEED							0.15f
+#define MARIO_WALKING_ACCELERATION						0.00025f
+#define MARIO_WALKING_MAX_SPEED							0.1f
 
 #define MARIO_RUNNING_DECELERATION						0.000525f
-#define MARIO_RUNNING_ACCELERATION						0.00006f
+#define MARIO_RUNNING_ACCELERATION						0.00008f
 #define MARIO_RUNNING_MAX_SPEED							0.25f
 
-#define MARIO_SPEED_CAN_STOP							0.12
 
+
+#define MARIO_SPEED_CAN_STOP							0.08
+#define MARIO_BOUNCE									10
 
 #define FRICTION										0.0016875f
-#define MARIO_JUMP_SPEED_Y								0.35f
+#define MARIO_JUMP_SPEED_Y								0.285f
 #define MARIO_JUMP_MAX_SPEED_Y							0.00015f
 #define MARIO_JUMP_DEFLECT_SPEED						0.2f
 #define MARIO_GRAVITY									0.0006f
@@ -210,6 +212,7 @@
 
 //D
 #define MARIO_D_HEED_TO_HAND_ATTACK						7
+
 using namespace std;
 class CMarioGeneral
 {

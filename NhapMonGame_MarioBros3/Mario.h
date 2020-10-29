@@ -10,6 +10,7 @@ public:
 
 	int untouchable;
 	DWORD untouchable_start;
+	DWORD timeStartFly;
 
 	float start_x;			// initial position of Mario at scene
 	float start_y;
@@ -28,9 +29,12 @@ public:
 	bool isStop = false;
 	bool isFalling = false;
 	bool isKeepJump_SlowFalling = false;
-	bool isKeepJump_HightFlying = true;
+	bool isKeepJump_HightFlying = false;
 	bool isAttacking = false;
 	bool isBlockFall = false;
+	bool isBlockKeepJump = true;
+
+
 public:
 	CMario(float x = 0.0f, float y = 0.0f);
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
@@ -40,14 +44,12 @@ public:
 	void DecreaseSpeed(float speedDown);
 	void SetState(int state);
 	void SetLevel(int l) { level = l; }
-	void SetIsFalling(bool f) { isFalling = f; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 
 	int GetLevel() { return level; };
 	float Getvx() { return vx; }
 	bool GetSpeeUp() { return isSpeedUp; }
 	bool GetJump() { return isOnAir; }
-	void SetSpeedUp(bool statespeed) { isSpeedUp = statespeed; }
 	void Reset();
 
 	//Control mario

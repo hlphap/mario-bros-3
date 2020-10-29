@@ -46,21 +46,6 @@ void TileMap::Load()
 		for (int j = 0; j < num_col_on_tilemap; j++)
 			fs >> tilemap[i][j];
 	}
-	//string line;
-	//while (!fs.eof())
-	//{
-	//	getline(fs, line);
-	//	// Lưu sprite tile vào vector tilemap
-	//	vector<LPSPRITE> spriteline;
-	//	stringstream ss(line);
-	//	int n;
-	//	while (ss >> n)
-	//	{
-	//		int idTile = id + n;
-	//		spriteline.push_back(sprites->Get(idTile));
-	//	}
-	//	tilemap.push_back(spriteline);
-	//}
 	fs.close();
 	DebugOut(L"[INFO] Done loading map resources %s\n", filePath_data);
 }
