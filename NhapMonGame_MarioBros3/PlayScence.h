@@ -15,7 +15,8 @@
 #include "Flower.h"
 #include "QuestionBrick.h"
 #include "TileMap.h"
-
+#include "BoundaryBrick.h"
+#include "Tail.h"
 
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_TEXTURES 2
@@ -38,7 +39,7 @@
 #define OBJECT_TYPE_CLOUD_BRICK		10
 #define OBJECT_TYPE_ITEM			11
 #define OBJECT_TYPE_BULLET			12
-
+#define OBJECT_TYPE_BOUNDARYBRICK	9999
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -49,8 +50,10 @@ class CPlayScene : public CScene
 protected:
 	CMario* player;					// A play scene has to have player, right? 
 	TileMap* map;
+	
 	vector<LPGAMEOBJECT> objects;
 	vector<CBullet*> bullets;
+	CTail *tail = new CTail();
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);

@@ -28,10 +28,10 @@
 
 # BIG MARIO FIRE
 # idle right
-12001	216	683	230	710	0
+12001	213	683	230	710	0
 # walk right
-12002	255	683	271	710	0
-12003	295	684	311	710	0
+12002	252	683	271	710	0
+12003	292	684	311	710	0
 # idle left
 12005	176	683	190	710	0
 # walk left
@@ -40,17 +40,17 @@
 # sitting left
 12011	16	680	30	716	0
 # sitting right
-12012	376	680	390	716	0
-# stop right
-12016	175	723	191	751	0
+12012	373	680	390	716	0
+# stop right 
+12016	172	723	191	751	0
 # stop left
 12017	215	723	231	751	0
-# fly right
-12021	335	684	351	710	0
+# fly right 
+12021	332	684	351	710	0
 # fly left
 12022	55	684	71	710	0
-# attack right
-12041	366	803	380	830	0
+# attack right 
+12041	363	803	380	830	0
 # attack left
 12043	26	803	40	830	0
 # running right
@@ -69,6 +69,10 @@
 120310	253	803	272	830	0
 # flying attack left
 120320	134	803	153	830	0
+# KICK KOOPAS RIGHT
+12008	133	723	154	760	0
+# KICK KOOPAS LEFT
+12009	252	723	273	760	0
 # =========-----End BIG MARIO FIRE -------========
 
 
@@ -136,15 +140,19 @@
 # flying running TAIL middle left
 #110322	11	603	35	630	0
 110322	4	603	35	630	0
+# Kick KOOPAS RIGHT
+11008	239	483	269	511	0
+# Kick KOOPAS LEFT
+11009	136	483	159	511	0
 # =========-----End BIG MARIO HAVE TAIL-------========
 
 
-# BIG MARIO 
+# BIG MARIO // fix tru
 # idle right
-10001	216	243	230	270	0
-# walk
-10002	255	243	271	270	0		
-10003	295	244	311	270	0
+10001	213	243	230	270	0
+# walk right
+10002	252	243	271	270	0		
+10003	292	244	311	270	0
 # idle left
 10011	176	243	190	270	0
 #walk
@@ -153,13 +161,13 @@
 # sitting left
 10050	16	240	30	266	0
 # sitting right
-10051	376	240	390	266	0
+10051	373	240	390	266	0
 # stop right
-10060	175	283	191	311	0
+10060	172	283	191	311	0
 # stop left
 10061	215	283	231	311	0
 # fly right
-10070	335	244	351	270	0
+10070	332	244	351	270	0
 # fly left
 10071	55	244	71	270	0
 # running right
@@ -174,6 +182,10 @@
 100701	333	364	352	390	0
 # flying when running left
 100711	54	364	73	390	0
+# KICK KOOPAS RIGHT
+10008	252	283	273	311	0
+# KICK KOOPAS LEFT
+10009	133	283	154	311	0
 # =========-----End BIG MARIO-------========
 
 
@@ -259,16 +271,23 @@
 #walk right
 50011	215	99	231	125	60
 50012	255	98	271	125	60
-# turtle shell
-50030	50	104	66	120	60
-#SHELL
-50031	50	104	66	120	60
+# KOOPAS shell
+50030	50	94	66	131	60
 # turtle shell MOVE
-50032	15	104	31	120	60
-50033	15	129	31	145	60
-50034	15	154	31	170	60
-#DIE
-50035	152	202	168	218	30
+50032	15	96	31	120	60
+50033	15	121	31	145	60
+50034	15	146	31	170	60
+# KOOPAS SHELL HEALTH
+50035	84	93	102	119	60
+
+# KOOPAS overturned SHELL
+50050	330	94	346	131	60
+# KOOPAS overturned SHELL MOVING
+50051	365	96	381	120	60
+50052	365	121	381	145	60
+50053	365	146	381	170	60
+# KOOPAS overturned SHELL HEALTH
+50055	294	93	312	131	60
 
 #KOOPAS FLYING HAVE WING
 # WALKING RIGHT
@@ -278,11 +297,11 @@
 50013	85	149	101	175	60
 50014	45	148	61	175	60
 # FLYING RIGHT
-50040	215	148	231	175	60
+50040	335	148	351	175	60
 50041	255	148	271	176	60
 # FLYING LEFT
 50042	165	148	181	175	60
-50043	125	148	141	175	60
+50043	45	148	61	175	60
 
 
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
@@ -293,7 +312,10 @@
 51	11	100
 52	12	100
 
-# ==== MARIO =========
+# ==================================================== ANI MARIO ==============================================
+
+
+#----------------------------------IDLE--------------------
 #idle BIG right
 400	10001	100
 #idle BIG left
@@ -307,7 +329,7 @@
 #idle big have tail left
 405	11005	100
 
-
+#----------------------------------WALKING--------------------
 #walk right big
 500	10001	100	10002	100	10003	100
 #walk left big
@@ -321,8 +343,11 @@
 #walk left big have tail
 505	11005	100	11006	100	11007	100
 
+#----------------------------------DIE-------------------
 #die
 599	10099	100
+
+#----------------------------------BIG SPECIAL--------------------
 #sitting big left	(BIG)
 415	10050	100
 #sitting big right	(BIG)
@@ -335,21 +360,23 @@
 4300	10003	100
 # falling left	(BIG)
 4301	10013	100
-
 #stop right 	(BIG) 
 450	10060	100
 #stop left	(BIG)	 
 451	10061	100
 # running right		(BIG)
-4321	100001	10	100002	10	100003	10
+4321	100001	100	100002	100	100003	100
 # running left		(BIG)
-4322	100012	10	100013	10	100014	10
+4322	100012	100	100013	100	100014	100
 # flying when running right	(BIG)
 4331	100701	100
 # flying when running left	(BIG)
 4332	100711	100
-
-
+# KICK KOOPAS RIGHT		(BIG)
+4325	10008	200
+# KICK KOOPAS LEFT		(BIG)
+4326	10009	200
+#--------------------------------------------------------------BIGTAIL SPECIAL----------------------
 #sitting big left	(BIG_TAIL)
 417	11012	100
 #sitting big right	(BIG_TAIL)
@@ -371,9 +398,9 @@
 # attacking left	(BIG_TAIL)
 4312	11043	75	11042	75	11041	75	11044	75	11043	75
 # running right		(BIG_TAIL)
-4323	110002	10	110003	10	110004	10
-# running left		(BIG_TAIL)
-4324	110006	10	110007	10	110008	10
+4323	110002	100	110003	100	110004	100
+# running left		(BIG_TAIL)								DAN TAY CHAY NHANH
+4324	110006	100	110007	100	110008	100
 # flying when running right	(BIG_TAIL)
 4333	110211	100
 # flying when running left	(BIG_TAIL)
@@ -390,9 +417,13 @@
 43024	110312	100	110311	100
 # Keep jumping Higher when max running LEFT
 43025	110322	100	110321	100
+# KICK KOOPAS RIGHT		(BIG_TAIL)
+43026	11008	200
+# KICK KOOPAS LEFT		(BIG_TAIL)
+43027	11009	200
 
 
-################### BIG FIRE  ########################
+#-----------------------------------------------------------------------BIGFIRE FULL----------------------
 
 #idle big FIRE right
 406	12001	100
@@ -425,9 +456,9 @@
 # attacking left	(BIG_FIRE)
 109	12043	75
 # running right		(BIG_FIRE)
-110	120002	10	120003	10	120004	10
+110	120002	100	120003	100	120004	100
 # running left		(BIG_FIRE)
-111	120006	10	120007	10	120008	10
+111	120006	100	120007	100	120008	100
 # flying when running right	(BIG_FIRE)
 112	120211	100
 # flying when running left	(BIG_FIRE)
@@ -436,7 +467,10 @@
 114	120211	100	120310	100
 # flying attack left		(BIG_FIRE)
 115	120221	100	120320	100
-
+# KICK KOOPAS RIGHT		(BIG_FIRE)
+116	12008	200
+# KICK KOOPAS LEFT		(BIG_FIRE)
+117	12009	200
 #stop right 	(SMALL)
 460	10080	100
 #stop left	(SMALL)
@@ -446,9 +480,9 @@
 #fly big left 	(SMALL)
 441	10086	100
 # running right	(SMALL)
-510	10040	10	10041	10
+510	10040	100	10041	100
 # running left	(SMALL)
-511	10042	10	10043	10
+511	10042	100	10043	100
 # flying when running right		(SMALL)
 4400	100850	100
 # flying when running left		(SMALL)	
@@ -469,13 +503,18 @@
 #walk right
 802	50011	100	50012	100'
 #SHELL
-803	50031	100
-# shell appearance
-804	50030	100
+803	50030	100
+# SHELL HEALTH
+804	50030	400	50035	400
 # SHELL MOVE
 805	50032	100	50033	100	50034	100
-# DIE
-806	50035	100
+# overturned SHELL
+806	50050	100
+# KOOPAS overturned SHELL Move
+812	50051	100	50052	100	50053	100
+# KOOPAS overturned SHELL HEALTH
+813	50050	100	50055	100
+
 # ============ KOOPAS HAVE WING ============
 #walk RIGHT
 807	50003	100	50004	100
@@ -485,6 +524,7 @@
 810	50040	100	50041	100
 #FLYING LEFT
 811	50042	100	50043	100
+
 
 # ==== BRICK =========
 601	20001	100
@@ -515,7 +555,7 @@
 
 [ANIMATION_SETS]
 # MARIO
-1	400	401	402	403	500	501	502	503	599 	415	416	430	431	450	451	460	461	440	441	404	405	504	505	417	418	432	433	452	453	4300	4301	4302	4303	4311	4312	510	511	4321	4322	4323	4324	4331	4332	4333	4334	4400	4410	43020	43021	43022	43023	506	507	100	101	102	103	104	105	106	107	108	109	110	111	112	113	114	115	406	407	43024	43025
+1	400	401	402	403	500	501	502	503	599 	415	416	430	431	450	451	460	461	440	441	404	405	504	505	417	418	432	433	452	453	4300	4301	4302	4303	4311	4312	510	511	4321	4322	4323	4324	4331	4332	4333	4334	4400	4410	43020	43021	43022	43023	506	507	100	101	102	103	104	105	106	107	108	109	110	111	112	113	114	115	406	407	43024	43025	116	117	43026	43027	4325	4326
 # BRICK 
 2	601	602	603
 # QUESTION BRICK 
@@ -523,13 +563,14 @@
 # GOOMBA
 3	701	702
 #KOOPAS
-4	801	802	803	804	805	806	807	808	810	811	812
-#Item
+#	0	1	2	3	4	5	6	7	8	9	10	11
+4	801	802	803	804	805	806	807	808	810	811	812	813
+#ITEM
 5	50	51	52
 # FLOWER
 6	6	7	8	9	10	11	12	13
 # BULLET
-7	15	16
+7	15	16	17
 # effect
 #8	17
 
@@ -539,23 +580,26 @@
 
 [OBJECTS]
 # type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas,4 = Flower, 5 = Ground, 6 = ColorBox, 7 = Pipe, 8 = QuestionBrick, 9 = WeakBreak, 10 = CloundBrick, 11 = Item, 12 = Bullet
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas,4 = Flower, 5 = Ground, 6 = ColorBox, 7 = Pipe, 8 = QuestionBrick, 9 = WeakBreak, 10 = CloundBrick, 11 = Item, 12 = Bullet, 9999 = BoundaryBrick
 
 # MARIO
 0	10	0	1
 
 # KOOPAS
-#3	20	390	4
+3	512	300	4
 
 # Bullet
 #12	40	368	7
 
 
 #GOOMBA
-#2	240	400	3
+2	240	401	3
 
 # BRICK
 # --- platform (hint: I created the list using Excel!) ----
+#Boundary brick
+9999	512 	364	1	1	1
+9999	608	364	1	1	1
 #Brick
 1	1504	336	2	1	1
 1	1520	336	2	1	1

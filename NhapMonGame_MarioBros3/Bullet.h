@@ -14,11 +14,15 @@
 #define BULLET_STATE_EXPLOSIVE	999
 
 #define BULLET_TIME_EXITS	3000
+#define BULLET_TIME_EXPLOSIVE 800
+#define TIME_DEFAUL		0
 class CBullet : public CGameObject
 {
 public:
 	
 	DWORD timer;
+	DWORD timeStartColl = TIME_DEFAUL;
+	bool isExploding = false;
 	CBullet();
 	void Render();
 	void GetBoundingBox(float& l, float& t, float& r, float& b);

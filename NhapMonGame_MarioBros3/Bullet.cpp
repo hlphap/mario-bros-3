@@ -4,6 +4,9 @@
 #include "QuestionBrick.h"
 #include "CloudBrick.h"
 #include "ColorBox.h"
+#include "Goomba.h"
+#include "Koopas.h"
+#include "Utils.h"
 
 CBullet::CBullet()
 {
@@ -14,7 +17,21 @@ CBullet::CBullet()
 
 void CBullet::Render()
 {
-	animation_set->at(0)->Render(x, y);
+	int ani = 0;
+	if (isExploding)
+		ani = 2;
+	else
+		if (nx == 1)
+		{
+			ani = 1;
+		}
+		else
+			if (nx == -1)
+			{
+				DebugOut(L"ImHeare");
+				ani = 0;
+			}
+	animation_set->at(ani)->Render(x, y);
 	RenderBoundingBox();
 }
 
@@ -32,7 +49,7 @@ void CBullet::SetState(int state)
 	{
 	case BULLET_STATE_FLY_LEFT:
 	{
-		vx = -BULLET_FLY_SPEED_X;
+		vx = -BULLET_FLY_SPEED_X ;
 		vy = BULLET_FLY_SPEED_Y;
 		break;
 	}
@@ -45,6 +62,8 @@ void CBullet::SetState(int state)
 	}
 	case BULLET_STATE_EXPLOSIVE:	
 	{
+		isExploding = true;
+		if (timeStartColl == TIME_DEFAUL) timeStartColl = GetTickCount();
 		vx = 0;
 		vy = 0;
 		break;
@@ -55,11 +74,13 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
-
-	vy += BULLET_GRAVITY;
+	if (!isExploding)
+		vy += BULLET_GRAVITY;
 	if (vy > BULLET_FLY_SPEED_Y) vy = BULLET_FLY_SPEED_Y;
 	else
 	if (vy < -BULLET_FLY_SPEED_Y) vy = -BULLET_FLY_SPEED_Y;
+
+
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -104,6 +125,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 				x += dx;
 			}
+			else
 			if (dynamic_cast<CGround*>(e->obj))
 			{
 				if (e->nx != 0)
@@ -115,8 +137,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					vy = -vy;
 				}
 			}
-
-
+			else
 			if (dynamic_cast<CPipe*>(e->obj))
 			{
 				if (e->nx != 0)
@@ -128,6 +149,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					vy = -vy;
 				}
 			}
+			else
 			if (dynamic_cast<CBrick*>(e->obj))
 			{
 				if (e->nx != 0)
@@ -139,6 +161,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					vy = -vy;
 				}
 			}
+			else
 			if (dynamic_cast<CQuestionBrick*>(e->obj))
 			{
 				if (e->nx != 0)
@@ -150,6 +173,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					vy = -vy;
 				}
 			}
+			else
 			if (dynamic_cast<CCloudBrick*>(e->obj))
 			{
 				if (e->nx != 0)
@@ -161,6 +185,48 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					vy = -vy;
 				}
 			}
+			else
+			if (dynamic_cast<CGoomba*>(e->obj))
+			{
+				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+				if (e->nx != 0)
+				{
+					if (goomba->GetState() != GOOMBA_STATE_DIE)
+					{
+						goomba->SetState(GOOMBA_STATE_DIE);
+						SetState(BULLET_STATE_EXPLOSIVE);
+					}
+				}
+				if (e->ny != 0)
+				{
+					if (goomba->GetState() != GOOMBA_STATE_DIE)
+					{
+						goomba->SetState(GOOMBA_STATE_DIE);
+						SetState(BULLET_STATE_EXPLOSIVE);
+					}
+				}
+			}
+			else
+				if (dynamic_cast<CKoopas*>(e->obj))
+				{
+					CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+					if (e->nx != 0)
+					{
+						if (koopas->GetState() != KOOPAS_STATE_DIE)
+						{
+							koopas->SetState(KOOPAS_STATE_DIE);
+							SetState(BULLET_STATE_EXPLOSIVE);
+						}
+					}
+					if (e->ny != 0)
+					{
+						if (koopas->GetState() != KOOPAS_STATE_DIE)
+						{
+							koopas->SetState(KOOPAS_STATE_DIE);
+							SetState(BULLET_STATE_EXPLOSIVE);
+						}
+					}
+				}
 
 
 			

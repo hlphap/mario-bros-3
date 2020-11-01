@@ -41,6 +41,11 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_RUNNING_FLYING_LEFT);	//14
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_RUNNING_FLYING_RIGHT);	//15
 
+		//Mario đá rùa -> CHƯA CÓ ANIUMATION
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_WALKING_LEFT);		//16
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_WALKING_RIGHT);		//17
+
+
 	}
 	
 	if (listAni_mario_big.empty())
@@ -76,6 +81,10 @@ void CMarioGeneral::LoadListAni()
 		//Mario bay khi đạt tốc độ cao (chạy)
 		listAni_mario_big.push_back(MARIO_ANI_BIG_RUNNING_FLYING_LEFT);	//14
 		listAni_mario_big.push_back(MARIO_ANI_BIG_RUNNING_FLYING_RIGHT);	//15
+
+		//Mario đá rùa 
+		listAni_mario_big.push_back(MARIO_ANI_BIG_KICKING_LEFT);			//16
+		listAni_mario_big.push_back(MARIO_ANI_BIG_KICKING_RIGHT);			//17
 
 
 	}
@@ -114,28 +123,10 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_RUNNING_FLYING_LEFT);	//14
 		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_RUNNING_FLYING_RIGHT);	//15
 
-		//Mario danh // attack
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_ATTACKING_LEFT);	//16
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_ATTACKING_RIGHT);	//17
+		//Mario đá rùa 
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_KICKING_LEFT);		//16
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_KICKING_RIGHT);		//17
 
-
-		//Mario danh khi bay (Khong co thay doi animation) -> mario danh Onground
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_ATTACKING_LEFT);	//18
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_ATTACKING_RIGHT);	//19
-
-		//Mario roi cham //slow falling
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FALLING_SLOW_LEFT);	// 20
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FALLING_SLOW_RIGHT); // 21
-
-
-		
-		//Mario roi khi dat toc do cao (chay)
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_RUNNING_FALLING_LEFT);	//22
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_RUNNING_FALLING_RIGHT);	//23
-
-		//Mario bay khi dat toc do cao (giu S)
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FLYING_SLOW_LEFT);	//24
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FLYING_SLOW_RIGHT);	//25
 
 	}
 
@@ -173,13 +164,10 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_RUNNING_FLYING_LEFT);	//14
 		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_RUNNING_FLYING_RIGHT);	//15
 
-		//Mario danh // attack Khi dang dung yen
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_ATTACKING_LEFT);	//16
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_ATTACKING_RIGHT);	//17
+		//Mario đá rùa 
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_KICKING_LEFT);		//16
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_KICKING_RIGHT);		//17
 
-		//Mario danh khi Bay
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FLYING_ATTACKING_LEFT);	//18
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FLYING_ATTACKING_RIGHT);	//19
 
 	}
 }
@@ -193,7 +181,6 @@ int CMarioGeneral::GetAni_Mario(int index)
 		return listAni_mario_small[index];
 		break;
 	case MARIO_LEVEL_BIG:
-		//if (IndexBBox == MARIO_ANI_)
 		return listAni_mario_big[index];
 		break;
 	case MARIO_LEVEL_BIG_TAIL:
@@ -206,7 +193,7 @@ int CMarioGeneral::GetAni_Mario(int index)
 	
 }
 
-void CMarioGeneral::GetBoundingBoxFromGroupAni(float& left, float& top, float& right, float& bottom)
+void CMarioGeneral::GetBoundingBoxFromGroupAni(float& left, float& top, float& right, float& bottom, int nx)
 {
 	switch (level)
 	{
@@ -216,16 +203,19 @@ void CMarioGeneral::GetBoundingBoxFromGroupAni(float& left, float& top, float& r
 		bottom = top + MARIO_SMALL_BBOX_HEIGHT;
 		break;
 	case MARIO_LEVEL_BIG:
-		left = left;
+		if (nx > 0) 
+			left = left + 3;
 		right = left + MARIO_BIG_BBOX_WIDTH;
 		bottom = top + MARIO_BIG_BBOX_HEIGHT;
 		break;
 	case MARIO_LEVEL_BIG_TAIL:
-		left = left + 9;
+		left += 8;
 		right = left + MARIO_BIG_TAIL_BBOX_WIDTH;
 		bottom = top + MARIO_BIG_TAIL_BBOX_HEIGHT;
 		break;
 	case MARIO_LEVEL_BIG_FIRE:
+		if (nx > 0)
+			left = left + 3;
 		right = left + MARIO_BIG_BBOX_WIDTH;
 		bottom = top + MARIO_BIG_BBOX_HEIGHT;
 		break;

@@ -3,24 +3,47 @@
 #include "MarioGeneral.h"
 #include "Bullet.h"
 
+#define MARIO_WALKING_DECELERATION						0.0002f
+#define MARIO_WALKING_ACCELERATION						0.00025f
+#define MARIO_WALKING_MAX_SPEED							0.1f
+
+#define MARIO_RUNNING_DECELERATION						0.000325f
+#define MARIO_RUNNING_ACCELERATION						0.00003f
+#define MARIO_RUNNING_MAX_SPEED							0.15f
+
+#define MARIO_SPEED_CAN_STOP							0.08
+#define MARIO_BOUNCE									10
+
+#define FRICTION										0.0016875f
+#define MARIO_JUMP_SPEED_Y								0.225f
+#define MARIO_JUMP_MAX_SPEED_Y							0.00015f
+#define MARIO_JUMP_DEFLECT_SPEED						0.2f
+#define MARIO_GRAVITY									0.0004f
+#define MARIO_DIE_DEFLECT_SPEED							0.5f
+#define TIME_DEFAUL										0
+#define MARIO_CAN_FLY_TIME								4500
+
 class CMario : public CGameObject
 {
 public:
+	CMarioGeneral* mario_general;
 	int level;
 
 	int untouchable;
-	DWORD untouchable_start;
-	DWORD timeStartFly;
-
-	float start_x;			// initial position of Mario at scene
+	float start_x;	
 	float start_y;
-
-	float last_vx;
+	//Timer
+	DWORD untouchable_start;
+	DWORD timeAllowFly;
+	DWORD timeStartFly = TIME_DEFAUL;
+	DWORD timeStartAttack = TIME_DEFAUL;
+	DWORD timeStartKick = TIME_DEFAUL;
 	
-	CMarioGeneral* mario_general;
-	CBullet* bullet;
-	vector<CBullet*> bullets;
 
+
+	
+	//Flag
+	bool isWalking = false;
 	bool isOnAir = false;
 	bool isSitting = false;
 	bool isSpeedUping = false;
@@ -30,9 +53,12 @@ public:
 	bool isFalling = false;
 	bool isKeepJump_SlowFalling = false;
 	bool isKeepJump_HightFlying = false;
+	bool isStartAttack = false;
 	bool isAttacking = false;
 	bool isBlockFall = false;
-	bool isBlockKeepJump = true;
+	bool isKeepJump = false;
+	bool isKicking = false;
+	byte numJump = 0;
 
 
 public:
@@ -63,5 +89,6 @@ public:
 	void Fall();
 	void Attack();
 	void KeepJump();
+	void Kick();
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 };

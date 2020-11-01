@@ -6,14 +6,14 @@ CGoomba::CGoomba()
 
 void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
+
 	left = x;
 	top = y;
-	right = x + GOOMBA_BBOX_WIDTH;
-
+	right = left + GOOMBA_BBOX_WIDTH;
+	bottom = top + GOOMBA_BBOX_HEIGHT;
 	if (state == GOOMBA_STATE_DIE)
-		bottom = y + GOOMBA_BBOX_HEIGHT_DIE;
-	else
-		bottom = y + GOOMBA_BBOX_HEIGHT;
+		top = top + GOOMBA_BBOX_HEIGHT;
+	
 }
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -23,7 +23,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//
 	// TO-DO: make sure Goomba can interact with the world and to each of them too!
 	// 
-
 	x += dx;
 	y += dy;
 
@@ -44,7 +43,6 @@ void CGoomba::Render()
 	}
 
 	animation_set->at(ani)->Render(x, y);
-
 	//RenderBoundingBox();
 }
 

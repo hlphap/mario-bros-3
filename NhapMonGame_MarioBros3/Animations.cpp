@@ -6,7 +6,7 @@ CAnimationSets* CAnimationSets::__instance = NULL;
 void CAnimation::Add(int spriteId, DWORD time)
 {
 	int t = time;
-	speedRunRatio = 1;
+	runRatio = 1;
 	if (time == 0) t = this->defaultTime;
 
 	LPSPRITE sprite = CSprites::GetInstance()->Get(spriteId);
@@ -33,8 +33,8 @@ void CAnimation::Render(float x, float y, int alpha)
 	else
 	{
 		DWORD t = frames[currentFrame]->GetTime();
-		t = t * speedRunRatio;
-		speedRunRatio = 1;
+		t = t * runRatio;
+		runRatio = 1;
 		if (now - lastFrameTime > t)
 		{
 			currentFrame++;

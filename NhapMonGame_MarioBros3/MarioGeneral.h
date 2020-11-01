@@ -2,25 +2,7 @@
 #include <vector>
 #include <istream>
 
-#define MARIO_WALKING_DECELERATION						0.0002f
-#define MARIO_WALKING_ACCELERATION						0.00025f
-#define MARIO_WALKING_MAX_SPEED							0.1f
 
-#define MARIO_RUNNING_DECELERATION						0.000525f
-#define MARIO_RUNNING_ACCELERATION						0.00008f
-#define MARIO_RUNNING_MAX_SPEED							0.25f
-
-
-
-#define MARIO_SPEED_CAN_STOP							0.08
-#define MARIO_BOUNCE									10
-
-#define FRICTION										0.0016875f
-#define MARIO_JUMP_SPEED_Y								0.285f
-#define MARIO_JUMP_MAX_SPEED_Y							0.00015f
-#define MARIO_JUMP_DEFLECT_SPEED						0.2f
-#define MARIO_GRAVITY									0.0006f
-#define MARIO_DIE_DEFLECT_SPEED							0.5f
 #define MARIO_STATE_IDLE								0
 #define MARIO_STATE_WALKING_RIGHT						100
 #define MARIO_STATE_WALKING_LEFT						200
@@ -39,7 +21,7 @@
 #define MARIO_STATE_DECREASE_WHEN_RUNNING				702
 #define MARIO_STATE_BIG_TAIL_ATTACK						800
 #define MARIO_STATE_BIG_FIRE_ATTACK						900
-
+#define MARIO_STATE_KICK								1000
 
 //================================MARIO ANIMATION GENERAL ZONE=================================
 //end defaul
@@ -59,24 +41,9 @@
 #define MARIO_ANI_FALLING_RIGHT							13
 #define MARIO_ANI_RUNNING_FLY_LEFT						14
 #define MARIO_ANI_RUNNING_FLY_RIGHT						15
+#define MARIO_ANI_KICKING_LEFT							16
+#define MARIO_ANI_KICKING_RIGHT							17
 
-//Mario Attack
-#define MARIO_ANI_ATTACKING_LEFT						16
-#define MARIO_ANI_ATTACKING_RIGHT						17
-
-#define MARIO_ANI_ATTACK_FLY_LEFT						18
-#define MARIO_ANI_ATTACK_FLY_RIGHT						19
-
-
-//Mario Duoi
-#define MARIO_ANI_FALLING_SLOW_LEFT						20
-#define MARIO_ANI_FALLING_SLOW_RIGHT					21
-
-#define MARIO_ANI_RUNNING_FALLING_LEFT					22
-#define MARIO_ANI_RUNNING_FALLING_RIGHT					23
-
-#define MARIO_ANI_RUNNING_FLY_SLOW_LEFT					24
-#define MARIO_ANI_RUNNING_FLY_SLOW_RIGHT				25
 
 ////================================END MARIO ANIMATION GENERAL ZONE=================================
 
@@ -167,6 +134,15 @@
 #define MARIO_ANI_SMALL_RUNNING_FLYING_LEFT				46
 //================================END FLYING WHEN RUNNING  ZONE=================================
 
+//================================KICKING GENERAL ZONE=================================
+#define MARIO_ANI_BIG_KICKING_RIGHT						77
+#define MARIO_ANI_BIG_KICKING_LEFT						78
+#define MARIO_ANI_BIG_TAIL_KICKING_RIGHT				75
+#define MARIO_ANI_BIG_TAIL_KICKING_LEFT					76
+#define MARIO_ANI_BIG_FIRE_KICKING_RIGHT				74
+#define MARIO_ANI_BIG_FIRE_KICKING_LEFT					73
+//================================KICKING GENERAL ZONE=================================
+
 //================================FALLING  SLOWNLY WHEN SPACE ENTER GENERAL ZONE=================================
 #define MARIO_ANI_BIG_TAIL_FALLING_SLOW_RIGHT			47
 #define MARIO_ANI_BIG_TAIL_FALLING_SLOW_LEFT			48
@@ -196,7 +172,7 @@
 #define MARIO_BIG_BBOX_WIDTH							15
 #define MARIO_BIG_BBOX_HEIGHT							28
 #define MARIO_BIG_TAIL_BBOX_WIDTH						15
-#define MARIO_BIG_TAIL_BBOX_HEIGHT						29
+#define MARIO_BIG_TAIL_BBOX_HEIGHT						28
 #define MARIO_BIG_BBOX_SITTING_HEIGHT					14
 #define MARIO_BIG_TAIL_BBOX_SITTING_HEIGHT				20
 #define MARIO_SMALL_BBOX_WIDTH							13
@@ -205,13 +181,23 @@
 
 //================================ANOTHER GENERAL ZONE=================================
 #define MARIO_UNTOUCHABLE_TIME							5000
-#define MARIO_RATIO_SPEED_WHEN_SPEEDUP					0.4f
-#define MARIO_RATIO_SPEED_WHEN_SPEEDMAX					0.2f
+#define MARIO_RATIO_WHEN_SPEEPUPING					0.75f
+#define MARIO_RATIO_WHEN_SPEED_MAX					0.01f
+#define MARIO_RATIO_WHEN_KEEP_JUMPPING				0.5f
 #define MARIO_UNTOUCHABLE_TIME							1000
 #define KOOPAS_MAX_HEALTH								2
+#define MARIO_TIME_ALLOWED_FLY							500
+#define MARIO_TIME_FLYING_MAX							4500
+#define MARIO_TIME_KICK									200
+#define MARIO_TIME_BIG_TAIL_ATTACK						375
+#define MARIO_TIME_BIG_FIRE_ATTACK_ON_GROUND			75
+#define MARIO_TIME_BIG_FIRE_ATTACK_ON_AIR				200
+
+
 
 //D
 #define MARIO_D_HEED_TO_HAND_ATTACK						7
+#define MARIO_D_HEED_TO_TAIL_ATTACK						16
 
 using namespace std;
 class CMarioGeneral
@@ -227,7 +213,7 @@ public:
 	vector<int> listAni_mario_fire;
 	void LoadListAni();
 	int GetAni_Mario(int index);
-	void GetBoundingBoxFromGroupAni(float& left, float& top, float& right, float& bottom);
+	void GetBoundingBoxFromGroupAni(float& left, float& top, float& right, float& bottom, int nx);
 	void SetLevel(int lv);
 	static CMarioGeneral* GetInstance();
 };
