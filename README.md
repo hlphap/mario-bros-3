@@ -1,2 +1,1 @@
-# LearnTGame
-Learn To Code Game
+# Nhập môn Game
