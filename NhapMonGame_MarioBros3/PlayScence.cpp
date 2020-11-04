@@ -188,11 +188,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(); break;
 	
-	case OBJECT_TYPE_BOUNDARYBRICK:
-		obj = new CBoundaryBrick();
+	//case OBJECT_TYPE_BOUNDARYBRICK:
+	/*	obj = new CBoundaryBrick();
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
-		break;
+		break;*/
+		//break;
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
@@ -304,7 +305,6 @@ void CPlayScene::Update(DWORD dt)
 	// TO-DO: This is a "dirty" way, need a more organized way 
 	
 	//Update playscence chay truong nen isAttack chua kip ve false thi ben nay da ban dan r
-	//DebugOut(L"Now o playscence: %d \n", GetTickCount());
 	if (player->isAttacking 
 		&&  player->level == MARIO_LEVEL_BIG_FIRE
 		&& ((!player->isOnAir && GetTickCount() - player->timeStartAttack >= MARIO_TIME_BIG_FIRE_ATTACK_ON_GROUND)
@@ -489,18 +489,19 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	{
 	case DIK_A:
 		mario->isSpeedUp = false;
+		mario->isHoldShell = false;
+		mario->isHoldingShell = false;
 		break;
 	case DIK_S:
-		DebugOut(L"\nKeepJump: %d", mario->isKeepJump);
+		//DebugOut(L"\nKeepJump: %d", mario->isKeepJump);
 		if (mario->isFalling && mario->isKeepJump)
 		{
-			
 			if (mario->level == MARIO_LEVEL_BIG_TAIL && mario->isOnAir)
 			{
 				mario->KeepJump();
 				break;
 			}
-		}		
+		}
 		mario->Fall();
 		break;
 	}
@@ -520,8 +521,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	
 	if (game->IsKeyDown(DIK_A))
 	{
-		if (!mario->isOnAir)
-			mario->isSpeedUp = true;
+		mario->SpeedUp();
 	}
 	//Mario Go Right
 	if (game->IsKeyDown(DIK_RIGHT))

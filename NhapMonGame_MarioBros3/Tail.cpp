@@ -11,7 +11,7 @@ CTail::CTail()
 
 void CTail::Render()
 {
-	DebugOut(L"Imhera");
+	//DebugOut(L"Imhera");
 	RenderBoundingBox();
 }
 
@@ -82,9 +82,6 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		//if (nx != 0) vx = 0;
 
-		//
-		// Collision logic with other objects
-		//
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];

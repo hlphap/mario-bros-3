@@ -34,15 +34,14 @@ void CKoopas:: Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	coEvents.clear();
 
 	CalcPotentialCollisions(coObjects, coEvents);
+	
 
-	//if (vx > 0) nx = 1;
-	//else if (vx < 0) nx = -1;
-	//
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
 		x += dx;
 		y += dy;
+		
 	}
 	else
 	{
@@ -59,7 +58,10 @@ void CKoopas:: Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (nx != 0)
 		{
 			this->nx = -this->nx;
-		
+		}
+		if (ny != 0)
+		{
+			vy = 0;
 		}
 		// Collision logic with other objects
 		//

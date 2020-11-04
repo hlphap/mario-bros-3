@@ -3,7 +3,7 @@
 void CWeakBrick::Render()
 {
 	//animation_set->at(0)->Render(x, y);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CWeakBrick::GetBoundingBox(float& l, float& t, float& r, float& b)

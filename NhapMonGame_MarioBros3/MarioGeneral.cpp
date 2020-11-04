@@ -10,40 +10,42 @@ void CMarioGeneral::LoadListAni()
 	if (listAni_mario_small.empty())
 	{
 		// Đứng yên
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_IDLE_LEFT);		//0
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_IDLE_RIGHT);		//1
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_IDLE_RIGHT);		//0
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_IDLE_LEFT);		//1
 
 		//Đi
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_WALKING_LEFT);	//2	
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_WALKING_RIGHT);	//3
-
-		//Chạy
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_RUNNING_LEFT);	//4
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_RUNNING_RIGHT);	//5
-
-		//Ngồi (mario nhỏ không ngồi)
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_IDLE_LEFT);	//6
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_IDLE_RIGHT);	//7
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_WALKING_RIGHT);	//2	
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_WALKING_LEFT);	//3
 
 		//Dừng
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_WALKING_STOP_LEFT);	//8
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_WALKING_STOP_RIGHT);	//9
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_STOP_RIGHT);	//4
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_STOP_LEFT);	//5
 
 		//Bay
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLYING_LEFT);	//10
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLYING_RIGHT);	//11
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLYING_RIGHT);	//6
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLYING_LEFT);	//7
 
-		//Rơi (mario nhỏ không rơi) -> animation Bay
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLYING_LEFT);	//12
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLYING_RIGHT);	//13
+		//Chạy
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_RUNNING_RIGHT);	//8
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_RUNNING_LEFT);	//9
 
-		//Mario bay khi đạt tốc độ cao (chạy)
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_RUNNING_FLYING_LEFT);	//14
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_RUNNING_FLYING_RIGHT);	//15
+		//Bay khi đạt tốc độ cao
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLY_WHEN_RUNNING_RIGHT);	//10
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLY_WHEN_RUNNING_LEFT);	//11
 
 		//Mario đá rùa -> CHƯA CÓ ANIUMATION
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_WALKING_LEFT);		//16
-		listAni_mario_small.push_back(MARIO_ANI_SMALL_WALKING_RIGHT);		//17
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_KICK_RIGHT);	//12
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_KICK_LEFT);	//13
+
+
+		//Ngồi mario nhỏ không ngồi
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_IDLE_RIGHT);	//14
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_IDLE_LEFT);	//15
+
+		//Rơi (mario nhỏ không rơi)
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLYING_RIGHT);	//16
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLYING_LEFT);	//17
+
 
 
 	}
@@ -51,40 +53,40 @@ void CMarioGeneral::LoadListAni()
 	if (listAni_mario_big.empty())
 	{
 		// Đứng yên
-		listAni_mario_big.push_back(MARIO_ANI_BIG_IDLE_LEFT);		//0
-		listAni_mario_big.push_back(MARIO_ANI_BIG_IDLE_RIGHT);		//1
+		listAni_mario_big.push_back(MARIO_ANI_BIG_IDLE_RIGHT);		//0
+		listAni_mario_big.push_back(MARIO_ANI_BIG_IDLE_LEFT);		//1
 
 		//Đi
-		listAni_mario_big.push_back(MARIO_ANI_BIG_WALKING_LEFT);	//2	
-		listAni_mario_big.push_back(MARIO_ANI_BIG_WALKING_RIGHT);	//3
-
-		//Chạy
-		listAni_mario_big.push_back(MARIO_ANI_BIG_RUNNING_LEFT);	//4
-		listAni_mario_big.push_back(MARIO_ANI_BIG_RUNNING_RIGHT);	//5
-
-		//Ngồi
-		listAni_mario_big.push_back(MARIO_ANI_BIG_SITTING_LEFT);	//6
-		listAni_mario_big.push_back(MARIO_ANI_BIG_SITTING_RIGHT);	//7
+		listAni_mario_big.push_back(MARIO_ANI_BIG_WALKING_RIGHT);	//2	
+		listAni_mario_big.push_back(MARIO_ANI_BIG_WALKING_LEFT);	//3
 
 		//Dừng
-		listAni_mario_big.push_back(MARIO_ANI_BIG_WALKING_STOP_LEFT);	//8
-		listAni_mario_big.push_back(MARIO_ANI_BIG_WALKING_STOP_RIGHT);	//9
+		listAni_mario_big.push_back(MARIO_ANI_BIG_STOP_RIGHT);	//4
+		listAni_mario_big.push_back(MARIO_ANI_BIG_STOP_LEFT);	//5
 
 		//Bay
-		listAni_mario_big.push_back(MARIO_ANI_BIG_FLYING_LEFT);	//10
-		listAni_mario_big.push_back(MARIO_ANI_BIG_FLYING_RIGHT);	//11
+		listAni_mario_big.push_back(MARIO_ANI_BIG_FLYING_RIGHT);	//6
+		listAni_mario_big.push_back(MARIO_ANI_BIG_FLYING_LEFT);	//7
 
-		//Rơi 
-		listAni_mario_big.push_back(MARIO_ANI_BIG_FALLING_LEFT);	//12
-		listAni_mario_big.push_back(MARIO_ANI_BIG_FALLING_RIGHT);	//13
+		//Chạy
+		listAni_mario_big.push_back(MARIO_ANI_BIG_RUNNING_RIGHT);	//8
+		listAni_mario_big.push_back(MARIO_ANI_BIG_RUNNING_LEFT);	//9
 
-		//Mario bay khi đạt tốc độ cao (chạy)
-		listAni_mario_big.push_back(MARIO_ANI_BIG_RUNNING_FLYING_LEFT);	//14
-		listAni_mario_big.push_back(MARIO_ANI_BIG_RUNNING_FLYING_RIGHT);	//15
+		//Bay khi đạt tốc độ cao
+		listAni_mario_big.push_back(MARIO_ANI_BIG_FLY_WHEN_RUNNING_RIGHT);	//10
+		listAni_mario_big.push_back(MARIO_ANI_BIG_FLY_WHEN_RUNNING_LEFT);	//11
 
-		//Mario đá rùa 
-		listAni_mario_big.push_back(MARIO_ANI_BIG_KICKING_LEFT);			//16
-		listAni_mario_big.push_back(MARIO_ANI_BIG_KICKING_RIGHT);			//17
+		//Mario đá rùa -> CHƯA CÓ ANIUMATION
+		listAni_mario_big.push_back(MARIO_ANI_BIG_KICK_RIGHT);	//12
+		listAni_mario_big.push_back(MARIO_ANI_BIG_KICK_LEFT);	//13
+
+		//Ngồi
+		listAni_mario_big.push_back(MARIO_ANI_BIG_SITTING_RIGHT);	//14
+		listAni_mario_big.push_back(MARIO_ANI_BIG_SITTING_LEFT);	//15
+
+		//Rơi
+		listAni_mario_big.push_back(MARIO_ANI_BIG_FALLING_RIGHT);	//16
+		listAni_mario_big.push_back(MARIO_ANI_BIG_FALLING_LEFT);	//17
 
 
 	}
@@ -92,40 +94,40 @@ void CMarioGeneral::LoadListAni()
 	if (listAni_mario_tail.empty())
 	{
 		// Đứng yên
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_IDLE_LEFT);		//0
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_IDLE_RIGHT);		//1
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_IDLE_RIGHT);		//0
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_IDLE_LEFT);		//1
 
 		//Đi
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_WALKING_LEFT);	//2	
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_WALKING_RIGHT);	//3
-
-		//Chạy
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_RUNNING_LEFT);	//4
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_RUNNING_RIGHT);	//5
-
-		//Ngồi
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_SITTING_LEFT);	//6
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_SITTING_RIGHT);	//7
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_WALKING_RIGHT);	//2	
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_WALKING_LEFT);	//3
 
 		//Dừng
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_WALKING_STOP_LEFT);	//8
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_WALKING_STOP_RIGHT);	//9
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_STOP_RIGHT);	//4
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_STOP_LEFT);	//5
 
 		//Bay
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FLYING_LEFT);	//10
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FLYING_RIGHT);	//11
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FLYING_RIGHT);	//6
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FLYING_LEFT);	//7
 
-		//Rơi 
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FALLING_LEFT);	//12
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FALLING_RIGHT);	//13
+		//Chạy
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_RUNNING_RIGHT);	//8
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_RUNNING_LEFT);	//9
 
-		//Mario bay khi đạt tốc độ cao (chạy)
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_RUNNING_FLYING_LEFT);	//14
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_RUNNING_FLYING_RIGHT);	//15
+		//Bay khi đạt tốc độ cao
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FLY_WHEN_RUNNING_RIGHT);	//10
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FLY_WHEN_RUNNING_LEFT);	//11
 
-		//Mario đá rùa 
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_KICKING_LEFT);		//16
-		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_KICKING_RIGHT);		//17
+		//Mario đá rùa
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_KICK_RIGHT);	//12
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_KICK_LEFT);	//13
+
+		//Ngồi
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_SITTING_RIGHT);	//14
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_SITTING_LEFT);	//15
+
+		//Rơi
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FALLING_RIGHT);	//16
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FALLING_LEFT);	//17
 
 
 	}
@@ -133,46 +135,44 @@ void CMarioGeneral::LoadListAni()
 	if (listAni_mario_fire.empty())
 	{
 		// Đứng yên
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_IDLE_LEFT);		//0
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_IDLE_RIGHT);		//1
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_IDLE_RIGHT);		//0
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_IDLE_LEFT);		//1
 
 		//Đi
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_WALKING_LEFT);	//2	
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_WALKING_RIGHT);	//3
-
-		//Chạy
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_RUNNING_LEFT);	//4
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_RUNNING_RIGHT);	//5
-
-		//Ngồi
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_SITTING_LEFT);	//6
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_SITTING_RIGHT);	//7
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_WALKING_RIGHT);	//2	
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_WALKING_LEFT);	//3
 
 		//Dừng
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_WALKING_STOP_LEFT);	//8
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_WALKING_STOP_RIGHT);	//9
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_STOP_RIGHT);	//4
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_STOP_LEFT);	//5
 
 		//Bay
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FLYING_LEFT);	//10
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FLYING_RIGHT);	//11
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FLYING_RIGHT);	//6
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FLYING_LEFT);	//7
 
-		//Rơi 
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FALLING_LEFT);	//12
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FALLING_RIGHT);	//13
+		//Chạy
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_RUNNING_RIGHT);	//8
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_RUNNING_LEFT);	//9
 
-		//Mario bay khi đạt tốc độ cao (chạy)
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_RUNNING_FLYING_LEFT);	//14
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_RUNNING_FLYING_RIGHT);	//15
+		//Bay khi đạt tốc độ cao
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FLY_WHEN_RUNNING_RIGHT);	//10
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FLY_WHEN_RUNNING_LEFT);	//11
 
-		//Mario đá rùa 
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_KICKING_LEFT);		//16
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_KICKING_RIGHT);		//17
+		//Mario đá rùa
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_KICK_RIGHT);	//12
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_KICK_LEFT);	//13
 
+		//Ngồi
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_SITTING_RIGHT);	//14
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_SITTING_LEFT);	//15
 
+		//Rơi
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FALLING_RIGHT);	//16
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FALLING_LEFT);	//17
 	}
 }
 
-int CMarioGeneral::GetAni_Mario(int index)
+int CMarioGeneral::GetAni_Mario(int level,int index)
 {
 	IndexBBox = index;
 	switch (level)
@@ -193,7 +193,7 @@ int CMarioGeneral::GetAni_Mario(int index)
 	
 }
 
-void CMarioGeneral::GetBoundingBoxFromGroupAni(float& left, float& top, float& right, float& bottom, int nx)
+void CMarioGeneral::GetBoundingBoxFromGroupAni(float& left, float& top, float& right, float& bottom,int level, int nx)
 {
 	switch (level)
 	{
@@ -224,10 +224,6 @@ void CMarioGeneral::GetBoundingBoxFromGroupAni(float& left, float& top, float& r
 		top = top + 8;
 }
 
-void CMarioGeneral::SetLevel(int lv)
-{
-	level = lv;
-}
 
 CMarioGeneral* CMarioGeneral::__instance = NULL;
 

@@ -28,7 +28,7 @@ void CBullet::Render()
 		else
 			if (nx == -1)
 			{
-				DebugOut(L"ImHeare");
+			//	DebugOut(L"ImHeare");
 				ani = 0;
 			}
 	animation_set->at(ani)->Render(x, y);
