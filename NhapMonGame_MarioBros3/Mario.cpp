@@ -57,7 +57,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (vy > 0)
 	{
 		isFalling = true;
-		//isOnAir = true;
 	}
 
 	//Update isSpeedUping 
@@ -81,6 +80,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (GetTickCount() - timeAllowFly <= MARIO_TIME_ALLOWED_FLY)
 	{
 		isKeepJump_HightFlying = true;
+
 	}
 
 	//Update thoi gian bay
@@ -140,7 +140,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
-		//isOnAir = true;
 		x += dx;
 		y += dy;
 	}
@@ -165,6 +164,17 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		//if (nx != 0) vx = 0;
 	
 		//
+
+		if (ny < 0)
+		{
+			vy = 0;
+			isOnAir = false;
+			isKeepJump_SlowFalling = false;
+			isBlockFall = false;
+			isKeepJump_HightFlying = false;
+			isKeepJump = false;
+			numJump = 0;
+		}
 		// Collision logic with other objects
 		//
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -174,17 +184,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			// Brick defaul
 			if (dynamic_cast<CBrick*>(e->obj))
 			{
-				if (e->ny < 0)
-				{
-					vy = 0;
-					isOnAir = false;
-					isKeepJump_SlowFalling = false;
-					isBlockFall = false;
-					isKeepJump_HightFlying = false;
-					isKeepJump = false;
-					numJump = 0;
-				}
-				else
 				if (e->ny > 0)
 				{
 					vy = 0;
@@ -198,19 +197,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			//Brick Cloud
 			else if (dynamic_cast<CCloudBrick*>(e->obj))
-			{
-
-				if (e->ny < 0)
-				{
-					vy = 0;
-					isOnAir = false;
-					isKeepJump_SlowFalling = false;
-					isBlockFall = false;
-					isKeepJump_HightFlying = false;
-					isKeepJump = false;
-					numJump = 0;
-				}
-				else if (e->ny > 0)
+			{	
+				if (e->ny > 0)
 				{
 					y += dy;
 				}
@@ -224,17 +212,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			//Brick Weak
 			else if (dynamic_cast<CWeakBrick*>(e->obj))
 			{
-				if (e->ny < 0)
-				{
-					vy = 0;
-					isOnAir = false;
-					isKeepJump_SlowFalling = false;
-					isBlockFall = false;
-					isKeepJump_HightFlying = false;
-					isKeepJump = false;
-					numJump = 0;
-				}
-				else
 				if (e->ny > 0)
 				{
 					vy = 0;
@@ -250,17 +227,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			//Question Brick
 			else if (dynamic_cast<CQuestionBrick*>(e->obj))
 			{
-				if (e->ny < 0)
-				{
-					vy = 0;
-					isOnAir = false;
-					isKeepJump_SlowFalling = false;
-					isBlockFall = false;
-					isKeepJump_HightFlying = false;
-					isKeepJump = false;
-					numJump = 0;
-				}
-				else
 				if (e->ny > 0)
 				{
 					vy = 0;
@@ -276,17 +242,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			//Ground
 			else if (dynamic_cast<CGround*>(e->obj))
 			{
-				if (e->ny < 0)
-				{
-					vy = 0;
-					isOnAir = false;
-					isKeepJump_SlowFalling = false;
-					isBlockFall = false;
-					isKeepJump_HightFlying = false;
-					isKeepJump = false;
-					numJump = 0;
-				}
-				else
 				if (e->nx != 0)
 				{
 					vx = 0;
@@ -296,17 +251,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			//ColorBox
 			else if (dynamic_cast<CColorBox*>(e->obj))
 			{
-				if (e->ny < 0)
-				{
-					vy = 0;
-					isOnAir = false;
-					isKeepJump_SlowFalling = false;
-					isBlockFall = false;
-					isKeepJump_HightFlying = false;
-					isKeepJump = false;
-					numJump = 0;
-				}
-				else 
 				if (e->ny > 0)
 				{
 					y += dy;
@@ -320,16 +264,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			//Pipe
 			else if (dynamic_cast<CPipe*>(e->obj))
 			{
-				if (e->ny < 0)
-				{
-					vy = 0;
-					isOnAir = false;
-					isKeepJump_SlowFalling = false;
-					isBlockFall = false;
-					isKeepJump_HightFlying = false;
-					isKeepJump = false;
-					numJump = 0;
-				}
 				if (e->nx != 0)
 				{
 					vx = 0;
@@ -354,13 +288,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
 				{
-					vy = 0;
-					isOnAir = false;
-					isKeepJump_SlowFalling = false;
-					isBlockFall = false;
-					isKeepJump_HightFlying = false;
-					isKeepJump = false;
-					numJump = 0;
 					if (koopas->GetState() != KOOPAS_STATE_SLEEP)
 					{
 						koopas->SetState(KOOPAS_STATE_SLEEP);
@@ -397,6 +324,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							if (!isHoldShell)
 							{
 								isHoldingShell = false;
+								koopas->isHeld = false;
 								Kick();
 								if (nx < 0) koopas->nx = 1;
 								else
@@ -407,13 +335,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							//Giu rua
 							else
 							{
-								DebugOut(L"\ngiu rua");
 								isHoldingShell = true;
-								bringKoopas = koopas;
+								koopas->isHeld = true;
 							}
-
-							
 						}
+						
 					}
 				}
 			} // if Goomba
@@ -425,13 +351,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
 				{
-					vy = 0;
-					isOnAir = false;
-					isKeepJump_SlowFalling = false;
-					isBlockFall = false;
-					isKeepJump_HightFlying = false;
-					isKeepJump = false;
-					numJump = 0;
 					if (goomba->GetState() != GOOMBA_STATE_DIE)
 					{
 						goomba->SetState(GOOMBA_STATE_DIE);
@@ -465,7 +384,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 
-	if (isHoldingShell) bringKoopas->SetPosition(x, y);
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
@@ -478,7 +396,7 @@ void CMario::Render()
 		ani = RenderFromAniGroup();
 	int alpha = 255;
 	if (untouchable) alpha = 128;
-	animation_set->at(ani)->Render(x,y,alpha);
+	animation_set->at(104)->Render(x,y,alpha);
 	RenderBoundingBox();
 }
 
@@ -497,9 +415,17 @@ int CMario::RenderFromAniGroup()
 			else
 				aniIndex = MARIO_ANI_SITTING_RIGHT;
 		}
+		//Cầm rùa
+		else if (isHoldingShell)
+		{
+			if (nx < 0) aniIndex = MARIO_ANI_HOLD_IDLE_LEFT;
+			else
+				aniIndex = MARIO_ANI_HOLD_IDLE_RIGHT;
+		}
 		//Đá rùa
 		else if (isKicking)
 		{
+
 			if (nx < 0)
 				aniIndex = MARIO_ANI_KICK_LEFT;
 			else
@@ -545,13 +471,18 @@ int CMario::RenderFromAniGroup()
 		{
 			aniIndex = MARIO_ANI_SITTING_RIGHT;
 		}
+		//Cầm rùa
+		else if (isHoldingShell)
+		{
+			aniIndex = MARIO_ANI_HOLD_WALKING_RIGHT;
+		}
 		//Đá rùa
 		else if (isKicking)
 		{
 			aniIndex = MARIO_ANI_KICK_RIGHT;
 		}
 		//Bay khi đạt vận tốc tối đa
-		else if ((isSpeedMax) && (isOnAir))
+		else if ((isKeepJump_HightFlying) && (isOnAir))
 		{
 			aniIndex = MARIO_ANI_FLY_WHEN_RUNNING_RIGHT;
 		}
@@ -589,6 +520,11 @@ int CMario::RenderFromAniGroup()
 		if (isSitting)
 		{
 			aniIndex = MARIO_ANI_SITTING_LEFT;
+		}
+		//Cầm rùa
+		else if (isHoldingShell)
+		{
+			aniIndex = MARIO_ANI_HOLD_WALKING_LEFT;
 		}
 		//Đá rùa
 		else if (isKicking)
@@ -763,6 +699,7 @@ int CMario::RenderFromAniGroup()
 	{
 		animation_set->at(ani)->SetHightSpeed(MARIO_RATIO_WHEN_KEEP_JUMPPING);
 	}
+	//animation_set->at(ani)->SetHightSpeed(5);
 	return ani;
 }
 

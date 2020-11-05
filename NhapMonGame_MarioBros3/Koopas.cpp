@@ -1,9 +1,10 @@
-#include "Koopas.h"
+﻿#include "Koopas.h"
 #include "ColorBox.h"
 #include "Utils.h"
 
-CKoopas::CKoopas()
+CKoopas::CKoopas(CMario *m)
 {
+	mario = m;
 	SetState(KOOPAS_STATE_MOVING);
 }
 
@@ -21,12 +22,33 @@ void CKoopas::GetBoundingBox(float& left, float& top, float& right, float& botto
 	}
 }
 
-void CKoopas:: Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	//Bi cam thi khong co gia toc trong truong
+	//Bị cầm -> hết cầm
+	if (isHeld)
+	{
+		if (!mario->isHoldingShell)
+		{
+			isHeld = false;
+			isKicked = true;
+			this->nx = mario->nx;
+			mario->Kick();
+			SetState(KOOPAS_STATE_MOVING);
+		}
+			if (mario->nx < 0)
+			{
+				SetPosition(mario->x - KOOPAS_BBOX_WIDTH + 5, mario->y);
+			}
+			else
+			{
+				SetPosition(mario->x + MARIO_BIG_BBOX_WIDTH, mario->y);
+			}
+			return;
+		
+	}
 	CGameObject::Update(dt);
-
-	// Simple fall down
-	vy += KOOPAS_GRAVITY;
+	vy += ENEMY_GRAVITY;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -34,14 +56,12 @@ void CKoopas:: Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	coEvents.clear();
 
 	CalcPotentialCollisions(coObjects, coEvents);
-	
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
 		x += dx;
 		y += dy;
-		
 	}
 	else
 	{
@@ -52,16 +72,20 @@ void CKoopas:: Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		y += min_ty * dy + ny * 0.1f;
+		if (!isHeld)
+		{
+			x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+			y += min_ty * dy + ny * 0.1f;
 
-		if (nx != 0)
-		{
-			this->nx = -this->nx;
-		}
-		if (ny != 0)
-		{
-			vy = 0;
+
+			if (nx != 0)
+			{
+				this->nx = -this->nx;
+			}
+			if (ny != 0)
+			{
+				vy = 0;
+			}
 		}
 		// Collision logic with other objects
 		//
@@ -72,20 +96,20 @@ void CKoopas:: Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			// Brick defaul
 			if (dynamic_cast<CBoundaryBrick*>(e->obj))
 			{
-					if (e->nx != 0)
+				if (e->nx != 0)
+				{
+
+					if (isSleeping)
 					{
-						
-						if (isSleeping)
-						{
-							this->nx = -this->nx;
-							x += dx;
-						}	
+						this->nx = -this->nx;
+						x += dx;
 					}
+				}
 			}
 			else
-			if (dynamic_cast<CColorBox*>(e->obj))
+				if (dynamic_cast<CColorBox*>(e->obj))
 				{
-					
+
 					if (e->nx != 0)
 					{
 						this->nx = -this->nx;
@@ -95,17 +119,19 @@ void CKoopas:: Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					{
 						vy = 0;
 					}
-				} 
-			
+				}
+
 		}
 		if (isMove) SetState(KOOPAS_STATE_MOVING);
-	}
-	
-	// clean up collision events
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
-	
-	
+		// clean up collision events
+		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
+		
+
+		
+}
+
+			
 
 void CKoopas::Render()
 {
@@ -143,6 +169,8 @@ void CKoopas::Render()
 	animation_set->at(ani)->Render(x, y);
 	RenderBoundingBox();
 }
+
+
 
 void CKoopas::SetState(int state)
 {

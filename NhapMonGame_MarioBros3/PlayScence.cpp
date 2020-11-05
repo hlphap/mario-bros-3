@@ -186,7 +186,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
 		break;
-	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(); break;
+	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(player); break;
 	
 	//case OBJECT_TYPE_BOUNDARYBRICK:
 	/*	obj = new CBoundaryBrick();
@@ -405,8 +405,7 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::Render()
 {
 	map->Draw();
-	
-	for (int i = 0; i < objects.size(); i++)
+	for (int i = objects.size()-1; i >=0; i--)
 		objects[i]->Render();
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->Render();
@@ -449,6 +448,9 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
+	case DIK_Q:
+		mario->isHoldingShell = true;
+		break;
 	case DIK_S:
 		if (!mario->isOnAir)
 		{
@@ -487,6 +489,9 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
+	case DIK_Q:
+		mario->isHoldingShell = false;
+		break;
 	case DIK_A:
 		mario->isSpeedUp = false;
 		mario->isHoldShell = false;
@@ -517,12 +522,13 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	//Mario Die
 	if (mario->GetState() == MARIO_STATE_DIE) return;
 
+
 	//Control
-	
 	if (game->IsKeyDown(DIK_A))
 	{
 		mario->SpeedUp();
 	}
+	
 	//Mario Go Right
 	if (game->IsKeyDown(DIK_RIGHT))
 	{

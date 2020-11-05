@@ -46,6 +46,16 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLYING_RIGHT);	//16
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLYING_LEFT);	//17
 
+		//Giữ rùa IDLE
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_HOLD_IDLE_RIGHT);	//18
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_HOLD_IDLE_LEFT); //19
+
+		//Giữ rùa Walking
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_HOLD_WALKING_RIGHT); //20
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_HOLD_WALKING_LEFT); //21
+
+
+
 
 
 	}
@@ -88,6 +98,13 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_big.push_back(MARIO_ANI_BIG_FALLING_RIGHT);	//16
 		listAni_mario_big.push_back(MARIO_ANI_BIG_FALLING_LEFT);	//17
 
+		//Giữ rùa IDLE
+		listAni_mario_big.push_back(MARIO_ANI_BIG_HOLD_IDLE_RIGHT);	//18
+		listAni_mario_big.push_back(MARIO_ANI_BIG_HOLD_IDLE_LEFT); //19
+
+		//Giữ rùa Walking
+		listAni_mario_big.push_back(MARIO_ANI_BIG_HOLD_WALKING_RIGHT); //20
+		listAni_mario_big.push_back(MARIO_ANI_BIG_HOLD_WALKING_LEFT); //21
 
 	}
 	
@@ -129,6 +146,18 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FALLING_RIGHT);	//16
 		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_FALLING_LEFT);	//17
 
+		//Giữ rùa IDLE
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_HOLD_IDLE_RIGHT);	//18
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_HOLD_IDLE_LEFT); //19
+
+		//Giữ rùa Walking
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_HOLD_WALKING_RIGHT); //20
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_HOLD_WALKING_LEFT); //21
+
+
+
+	
+
 
 	}
 
@@ -169,6 +198,14 @@ void CMarioGeneral::LoadListAni()
 		//Rơi
 		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FALLING_RIGHT);	//16
 		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_FALLING_LEFT);	//17
+
+		//Giữ rùa IDLE
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_HOLD_IDLE_RIGHT);	//18
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_HOLD_IDLE_LEFT); //19
+
+		//Giữ rùa Walking
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_HOLD_WALKING_RIGHT); //20
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_HOLD_WALKING_LEFT); //21
 	}
 }
 
