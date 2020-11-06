@@ -2,7 +2,7 @@
 
 void CBoundaryBrick::Render()
 {
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CBoundaryBrick::GetBoundingBox(float& l, float& t, float& r, float& b)

@@ -34,7 +34,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Simple fall down
 	vy += MARIO_GRAVITY * dt;
 //	DebugOut(L"\nvx: %f", vx);
-
+//	DebugOut(L"x,y:%f,%f", x, y);
 	
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -77,26 +77,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		isSpeedMax = false;
 	}
-	if (GetTickCount() - timeAllowFly <= MARIO_TIME_ALLOWED_FLY)
-	{
-		isKeepJump_HightFlying = true;
 
-	}
 
-	//Update thoi gian bay
-	if (isKeepJump_HightFlying)
-	{
-		if (!isKeepJump)
-			timeStartFly = GetTickCount();
-		else
-			if (GetTickCount() - timeStartFly >= MARIO_TIME_FLYING_MAX)
-			{
-				isKeepJump_HightFlying = false;
-				timeStartFly = TIME_DEFAUL;
-			}
-	}
-
-	
 	//Update isKicking
 	if (GetTickCount() - timeStartKick >= MARIO_TIME_KICK)
 	{
@@ -104,14 +86,33 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		isKicking = false;
 	}
 
-	//Update IsAttack BigTail
+	if (GetTickCount() - timeAllowFly <= MARIO_TIME_ALLOWED_FLY)
+	{
+		isKeepJump_HightFlying = true;
+	}
+
 	if (level == MARIO_LEVEL_BIG_TAIL)
 	{
+		
+		//Update IsAttack BigTail
 		if (GetTickCount() - timeStartAttack >= MARIO_TIME_BIG_TAIL_ATTACK)
 		{
 			timeStartAttack = TIME_DEFAUL;
 			isAttacking = false;
 		}
+		//Update thoi gian bay
+		if (isKeepJump_HightFlying)
+		{
+			if (!isKeepJump)
+				timeStartFly = GetTickCount();
+			else
+				if (GetTickCount() - timeStartFly >= MARIO_TIME_FLYING_MAX)
+				{
+					isKeepJump_HightFlying = false;
+					timeStartFly = TIME_DEFAUL;
+				}
+		}
+
 	} 
 	//Update IsAttack BigFire
 	else if (level == MARIO_LEVEL_BIG_FIRE)	
@@ -167,6 +168,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		if (ny < 0)
 		{
+			backup_vy = vy;
 			vy = 0;
 			isOnAir = false;
 			isKeepJump_SlowFalling = false;
@@ -273,6 +275,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				if (e->ny != 0)
 				{
+					vy = backup_vy;
 					y += dy;
 				}
 				if (e->nx != 0)
@@ -288,19 +291,29 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
 				{
+					
 					if (koopas->GetState() != KOOPAS_STATE_SLEEP)
 					{
+						DebugOut(L"Sleep");
 						koopas->SetState(KOOPAS_STATE_SLEEP);
 						Jump();
 						Fall();
 					}
 					else
 					{
-						Kick();
-						if (nx < 0) koopas->nx = 1;
-						else
-							koopas->nx = -1;
 						koopas->isKicked = true;
+						if (x < koopas->x)
+						{
+							Right();
+							koopas->nx = 1;
+						}
+						else
+						{
+							Left();
+							koopas->nx = -1;
+						}
+						vy = backup_vy;
+						y += dy;
 						koopas->SetState(KOOPAS_STATE_MOVING);
 					}
 				}
@@ -316,7 +329,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 								StartUntouchable();
 							}
 							else
+							{
+								Jump();
+								Fall();
 								SetState(MARIO_STATE_DIE);
+							}
+								
 						}
 						else
 						{
@@ -336,10 +354,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							else
 							{
 								isHoldingShell = true;
+								//Cập nhật khoảng cách cầm rùa
 								koopas->isHeld = true;
 							}
 						}
-						
 					}
 				}
 			} // if Goomba
@@ -353,7 +371,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					if (goomba->GetState() != GOOMBA_STATE_DIE)
 					{
+						goomba->isKillByWeapon = false;
 						goomba->SetState(GOOMBA_STATE_DIE);
+						
 						Jump();
 						Fall();
 					}
@@ -370,7 +390,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 								StartUntouchable();
 							}
 							else
+							{
+								Jump();
+								Fall();
+								vx = 0;
 								SetState(MARIO_STATE_DIE);
+							}
+								
 						}
 					}
 				}
@@ -396,8 +422,8 @@ void CMario::Render()
 		ani = RenderFromAniGroup();
 	int alpha = 255;
 	if (untouchable) alpha = 128;
-	animation_set->at(104)->Render(x,y,alpha);
-	RenderBoundingBox();
+	animation_set->at(ani)->Render(x,y,alpha);
+//	RenderBoundingBox();
 }
 
 
@@ -418,14 +444,23 @@ int CMario::RenderFromAniGroup()
 		//Cầm rùa
 		else if (isHoldingShell)
 		{
-			if (nx < 0) aniIndex = MARIO_ANI_HOLD_IDLE_LEFT;
+			if (isOnAir)
+			{
+				if (nx < 0)
+					aniIndex = MARIO_ANI_HOLD_FLYING_LEFT;
+				else
+					aniIndex = MARIO_ANI_HOLD_FLYING_RIGHT;
+			}
 			else
-				aniIndex = MARIO_ANI_HOLD_IDLE_RIGHT;
+			{
+				if (nx < 0) aniIndex = MARIO_ANI_HOLD_IDLE_LEFT;
+				else
+					aniIndex = MARIO_ANI_HOLD_IDLE_RIGHT;
+			}
 		}
 		//Đá rùa
 		else if (isKicking)
 		{
-
 			if (nx < 0)
 				aniIndex = MARIO_ANI_KICK_LEFT;
 			else
@@ -474,7 +509,14 @@ int CMario::RenderFromAniGroup()
 		//Cầm rùa
 		else if (isHoldingShell)
 		{
-			aniIndex = MARIO_ANI_HOLD_WALKING_RIGHT;
+			if (isOnAir)
+			{
+				aniIndex = MARIO_ANI_HOLD_FLYING_RIGHT;
+			}
+			else
+			{
+				aniIndex = MARIO_ANI_HOLD_WALKING_RIGHT;
+			}
 		}
 		//Đá rùa
 		else if (isKicking)
@@ -524,7 +566,14 @@ int CMario::RenderFromAniGroup()
 		//Cầm rùa
 		else if (isHoldingShell)
 		{
-			aniIndex = MARIO_ANI_HOLD_WALKING_LEFT;
+			if (isOnAir)
+			{
+				aniIndex = MARIO_ANI_HOLD_FLYING_LEFT;
+			}
+			else
+			{
+				aniIndex = MARIO_ANI_HOLD_WALKING_LEFT;
+			}
 		}
 		//Đá rùa
 		else if (isKicking)
@@ -566,7 +615,7 @@ int CMario::RenderFromAniGroup()
 	ani = mario_general->GetAni_Mario(level,aniIndex);
 
 	// special MARIO_BIG_TAIL
-	if (level == MARIO_LEVEL_BIG_TAIL && !isSitting)
+	if (level == MARIO_LEVEL_BIG_TAIL && !isSitting && !isHoldingShell)
 	{
 		if (isKeepJump && isOnAir)
 		{

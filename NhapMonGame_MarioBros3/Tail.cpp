@@ -12,7 +12,7 @@ CTail::CTail()
 void CTail::Render()
 {
 	//DebugOut(L"Imhera");
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CTail::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -77,8 +77,13 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		y += min_ty * dy + ny * 0.4f;
+	
+			
+			x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+			y += min_ty * dy + ny * 0.4f;
+		
+			if (nx != 0)
+				x += dx;
 
 		//if (nx != 0) vx = 0;
 
@@ -94,7 +99,12 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					if (goomba->GetState() != GOOMBA_STATE_DIE)
 					{
 						if (canKill)
+						{
+							goomba->isKillByWeapon = true;
 							goomba->SetState(GOOMBA_STATE_DIE);
+							goomba->vy = -GOOMBA_JUMP_DEFLECT_SPEED;
+						}
+							
 					}
 				}
 			}
@@ -102,12 +112,20 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (dynamic_cast<CKoopas*>(e->obj))
 				{
 					CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
-					if (e->nx != 0)
+					if (e->nx != 0 || e->ny!=0)
 					{
-						if (koopas->GetState() != KOOPAS_STATE_DIE)
+						if (canKill)
 						{
-							if (canKill)
+							if (koopas->GetState() != KOOPAS_STATE_DIE)
+							{
+								koopas->vy = -GOOMBA_JUMP_DEFLECT_SPEED;
 								koopas->SetState(KOOPAS_STATE_SLEEP);
+								if (koopas->GetState() == KOOPAS_STATE_SLEEP)
+								{
+									koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
+								}
+								koopas->isKillByWeapon = true;
+							}
 						}
 					}
 				}
@@ -116,4 +134,11 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+}
+
+CTail* CTail::__instance = NULL;
+CTail* CTail::GetInstance()
+{
+	if (__instance == NULL) __instance = new CTail();
+	return __instance;
 }

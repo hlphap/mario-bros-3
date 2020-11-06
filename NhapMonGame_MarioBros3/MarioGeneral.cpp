@@ -54,6 +54,10 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_HOLD_WALKING_RIGHT); //20
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_HOLD_WALKING_LEFT); //21
 
+		//Giữ rùa Onair
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_HOLD_FLYING_RIGHT);	//22
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_HOLD_FLYING_LEFT);	//23
+
 
 
 
@@ -106,6 +110,11 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_big.push_back(MARIO_ANI_BIG_HOLD_WALKING_RIGHT); //20
 		listAni_mario_big.push_back(MARIO_ANI_BIG_HOLD_WALKING_LEFT); //21
 
+		//Giữ rùa Onair
+		listAni_mario_big.push_back(MARIO_ANI_BIG_HOLD_FLYING_RIGHT);	//22
+		listAni_mario_big.push_back(MARIO_ANI_BIG_HOLD_FLYING_LEFT);	//23
+
+
 	}
 	
 	if (listAni_mario_tail.empty())
@@ -153,6 +162,10 @@ void CMarioGeneral::LoadListAni()
 		//Giữ rùa Walking
 		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_HOLD_WALKING_RIGHT); //20
 		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_HOLD_WALKING_LEFT); //21
+
+		//Giữ rùa Onair
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_HOLD_FLYING_RIGHT);	//22
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_HOLD_FLYING_LEFT);	//23
 
 
 
@@ -206,6 +219,10 @@ void CMarioGeneral::LoadListAni()
 		//Giữ rùa Walking
 		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_HOLD_WALKING_RIGHT); //20
 		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_HOLD_WALKING_LEFT); //21
+
+		//Giữ rùa Onair
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_HOLD_FLYING_RIGHT);	//22
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_HOLD_FLYING_LEFT);	//23
 	}
 }
 

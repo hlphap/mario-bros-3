@@ -10,6 +10,7 @@
 #include "Tail.h"
 
 
+
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
@@ -77,14 +78,15 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 	LPANIMATION ani = new CAnimation();
 
 	int ani_id = atoi(tokens[0].c_str());
+//	DebugOut(L"\nAdd IDAni:", ani_id);
 	for (int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
 	{
 		int sprite_id = atoi(tokens[i].c_str());
 		int frame_time = atoi(tokens[i + 1].c_str());
 		ani->Add(sprite_id, frame_time);
 	}
-
 	CAnimations::GetInstance()->Add(ani_id, ani);
+	
 }
 
 void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
@@ -146,7 +148,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
-	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(); break;
+	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(player); break;
 	case OBJECT_TYPE_BRICK: //Oker
 		obj = new CBrick();
 		obj->amountX = atoi(tokens[4].c_str());
@@ -188,12 +190,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(player); break;
 	
-	//case OBJECT_TYPE_BOUNDARYBRICK:
-	/*	obj = new CBoundaryBrick();
+	case OBJECT_TYPE_BOUNDARYBRICK:
+		obj = new CBoundaryBrick();
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
-		break;*/
-		//break;
+		break;
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
@@ -336,18 +337,8 @@ void CPlayScene::Update(DWORD dt)
 		&& player->level == MARIO_LEVEL_BIG_TAIL)
 	{
 		if (tail->timer == TIME_DEFAUL) tail->timer = GetTickCount();
-		if (player->nx == 1)
-		{
-			tail->SetPosition(player->x + MARIO_BIG_BBOX_WIDTH, player->y + MARIO_D_HEED_TO_TAIL_ATTACK);
-			tail->nx = 1;
-			tail->SetState(TAIL_CAN_KILL);
-		}
-		else if (player->nx == -1)
-		{
-			tail->SetPosition(player->x, player->y + MARIO_D_HEED_TO_TAIL_ATTACK);
-			tail->nx = -1;
-			tail->SetState(TAIL_CAN_KILL);
-		}
+		tail->nx = player->nx;
+		tail->SetState(TAIL_CAN_KILL);
 	}
 	else if (player->level == MARIO_LEVEL_BIG_TAIL)/*if (GetTickCount() - tail->timer >= 375 && tail->timer != TIME_DEFAUL)*/
 	{
@@ -361,7 +352,7 @@ void CPlayScene::Update(DWORD dt)
 		}
 		else if (player->nx == -1)
 		{
-			tail->SetPosition(player->x + MARIO_BIG_BBOX_WIDTH, player->y+ MARIO_D_HEED_TO_TAIL_ATTACK);
+			tail->SetPosition(player->x + MARIO_BIG_TAIL_BBOX_WIDTH + 8, player->y+ MARIO_D_HEED_TO_TAIL_ATTACK);
 			tail->nx = -1;
 			tail->SetState(TAIL_CANNOT_KILL);
 		}
@@ -377,7 +368,7 @@ void CPlayScene::Update(DWORD dt)
 		
 		bullets[i]->Update(dt, &coObjects);
 	}
-	tail->Update(dt ,&coObjects);
+	if (tail!=NULL) tail->Update(dt ,&coObjects);
 	//DebugOut(L"\nSize Truoc Xoa Bullet: %d", bullets.size());
 	DeleteBullet();
 	//DebugOut(L"\nSize Bullet: %d", bullets.size());

@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "MarioGeneral.h"
 #include "Bullet.h"
+#include "Tail.h"
 
 #define MARIO_WALKING_DECELERATION						0.00015f
 #define MARIO_WALKING_ACCELERATION						0.00015f
@@ -33,6 +34,7 @@ public:
 	int untouchable;
 	float start_x;	
 	float start_y;
+	float backup_vy;
 	//Timer
 	DWORD untouchable_start;
 	DWORD timeAllowFly;

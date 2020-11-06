@@ -36,20 +36,38 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			mario->Kick();
 			SetState(KOOPAS_STATE_MOVING);
 		}
+		if (mario->level == MARIO_LEVEL_BIG || mario->level == MARIO_LEVEL_BIG_FIRE)
+		{
 			if (mario->nx < 0)
-			{
-				SetPosition(mario->x - KOOPAS_BBOX_WIDTH + 5, mario->y);
-			}
+				rangeX = -KOOPAS_BBOX_WIDTH + 5;
 			else
-			{
-				SetPosition(mario->x + MARIO_BIG_BBOX_WIDTH, mario->y);
-			}
-			return;
+				rangeX = MARIO_BIG_BBOX_WIDTH - 3;
+			rangeY = 2;
+		}
+		else if (mario->level == MARIO_LEVEL_BIG_TAIL)
+		{
+			if (mario->nx < 0)
+				rangeX = -KOOPAS_BBOX_WIDTH + 12;
+			else
+				rangeX = MARIO_BIG_TAIL_BBOX_WIDTH + 5;
+			rangeY = 1;
+		}
+		else if (mario->level == MARIO_LEVEL_SMALL)
+		{
+			if (mario->nx < 0)
+				rangeX = -KOOPAS_BBOX_WIDTH + 5;
+			else
+				rangeX = MARIO_SMALL_BBOX_WIDTH - 4;
+			rangeY = 12;
+		}
+		SetPosition(mario->x + rangeX, mario->y - rangeY);
+		return;
 		
 	}
-	CGameObject::Update(dt);
-	vy += ENEMY_GRAVITY;
+	
 
+	CGameObject::Update(dt);
+	vy += ENEMY_GRAVITY *dt;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -98,7 +116,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				if (e->nx != 0)
 				{
-
 					if (isSleeping)
 					{
 						this->nx = -this->nx;
@@ -139,7 +156,12 @@ void CKoopas::Render()
 	if (!isMove)
 	{
 		if (isSleeping)
-			ani = KOOPAS_ANI_SHELL_IDLE;
+		{
+			if (isKillByWeapon)
+				ani = KOOPAS_ANI_SHELL_OVERTURNED_IDLE;
+			else
+				ani = KOOPAS_ANI_SHELL_IDLE;
+		}
 	}
 	else if (nx == 1)
 	{
@@ -150,6 +172,9 @@ void CKoopas::Render()
 		else
 			if (isSleeping)
 			{
+				if (isKillByWeapon)
+					ani = KOOPAS_ANI_SHELL_OVERTURNED_MOVE;
+				else
 				ani = KOOPAS_ANI_SHELL_MOVE;
 			}
 	}
@@ -162,12 +187,15 @@ void CKoopas::Render()
 		else
 			if (isSleeping)
 			{
+				if (isKillByWeapon)
+					ani = KOOPAS_ANI_SHELL_OVERTURNED_MOVE;
+				else
 				ani = KOOPAS_ANI_SHELL_MOVE;
 			}
 	}
 
 	animation_set->at(ani)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 

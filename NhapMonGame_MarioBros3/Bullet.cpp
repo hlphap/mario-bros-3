@@ -214,7 +214,8 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					{
 						if (koopas->GetState() != KOOPAS_STATE_DIE)
 						{
-							koopas->SetState(KOOPAS_STATE_DIE);
+							koopas->isKillByWeapon = true;
+							koopas->SetState(KOOPAS_STATE_SLEEP);
 							SetState(BULLET_STATE_EXPLOSIVE);
 						}
 					}
@@ -222,6 +223,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					{
 						if (koopas->GetState() != KOOPAS_STATE_DIE)
 						{
+							koopas->isKillByWeapon = true;
 							koopas->SetState(KOOPAS_STATE_DIE);
 							SetState(BULLET_STATE_EXPLOSIVE);
 						}
