@@ -48,11 +48,15 @@ void TileMap::LoadMap()
 		fs.close();
 		return;
 	}
+	//DebugOut(L"row %d", row_tilemap);
+	//DebugOut(L"\ncol %d", col_tilemap);
 	for (int i = 0; i < row_tilemap; i++)
 	{
 		for (int j = 0; j < col_tilemap; j++)
 		{
 			fs >> tilemap[i][j];
+			DebugOut(L"\ni,j %d,%d", i, j);
+			DebugOut(L"\ttilemap[i][j] = %d", tilemap[i][j]);
 		}
 	}
 	fs.close();
@@ -74,7 +78,10 @@ void TileMap::Draw()
 				y = tile_height * (i - firstrow) + CGame::GetInstance()->GetCamPosY() - (int)(CGame::GetInstance()->GetCamPosY()) % 16 - 16 * MAP_RESIDUAL;
 			else
 				y=tile_height* (i - firstrow) + CGame::GetInstance()->GetCamPosY() - (int)(CGame::GetInstance()->GetCamPosY()) % 16;
+			/*DebugOut(L"\ni,j %d,%d", i, j);
+			DebugOut(L"\ttilemap[i][j] = %d", tilemap[i][j]);*/
 			sprites->Get(tilemap[i][j])->Draw(x, y);
+			
 		}
 	}
 }
