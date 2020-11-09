@@ -34,7 +34,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Simple fall down
 	vy += MARIO_GRAVITY * dt;
 	
-	DebugOut(L"\nvx: %f", x);
+//	DebugOut(L"\nvx: %f", y);
 	
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -294,7 +294,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					
 					if (koopas->GetState() != KOOPAS_STATE_SLEEP)
 					{
-						DebugOut(L"Sleep");
+						//DebugOut(L"Sleep");
 						koopas->SetState(KOOPAS_STATE_SLEEP);
 						Jump();
 						Fall();
@@ -668,7 +668,7 @@ int CMario::RenderFromAniGroup()
 			{
 				if (this->ani != MARIO_ANI_BIG_TAIL_ATTACK_RIGHT)
 				{
-					DebugOut(L"Setani\n");
+					//DebugOut(L"Setani\n");
 					ani = MARIO_ANI_BIG_TAIL_ATTACK_RIGHT;
 					animation_set->at(ani)->SetCurrentFrame();
 				}

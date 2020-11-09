@@ -12,9 +12,11 @@ class TileMap
 {
 public:
 	bool isBeginMap = true;
-	bool isHightMap = false;
+	bool isBellow = false;
 	int firstcol;
 	int lastcol;
+	int firstrow;
+	int lastrow;
 	int ID;
 	CSprites* sprites = new CSprites;
 	LPCWSTR file_path_texture, file_path_data;

@@ -65,11 +65,15 @@ void TileMap::Draw()
 		for (UINT j = firstcol; j <= lastcol; j++)
 		{
 			float x;
+			float y;
 			if (isBeginMap)
 				x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % 16;
 			else
 				x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % 16 - 16 * MAP_RESIDUAL;
-			float y = tile_height * i;
+			if (isBellow)
+				y = tile_height * (i - firstrow) + CGame::GetInstance()->GetCamPosY() - (int)(CGame::GetInstance()->GetCamPosY()) % 16 - 16 * MAP_RESIDUAL;
+			else
+				y=tile_height* (i - firstrow) + CGame::GetInstance()->GetCamPosY() - (int)(CGame::GetInstance()->GetCamPosY()) % 16;
 			sprites->Get(tilemap[i][j])->Draw(x, y);
 		}
 	}
@@ -77,6 +81,8 @@ void TileMap::Draw()
 
 void TileMap::Update()
 {
+
+	//Truc x, firstcol, lastcol
 	if (CGame::GetInstance()->GetCamPosX() > SCREEN_WIDTH)
 	{
 		isBeginMap = false;
@@ -88,7 +94,19 @@ void TileMap::Update()
 		firstcol = ((int)CGame::GetInstance()->GetCamPosX()) / 16;
 	}
     lastcol = firstcol + ((SCREEN_WIDTH) / 16) + MAP_RESIDUAL;
-	DebugOut(L"Last col, first col %d,%d", lastcol, firstcol);
+
+	//Truc y, firstrow, lastrow
+	if (CGame::GetInstance()->GetCamPosY() > (GetWeightMap() - SCREEN_HEIGHT))
+	{
+		isBellow = true;
+		firstrow = CGame::GetInstance()->GetCamPosY() / tile_height - MAP_RESIDUAL;
+	}
+	else
+	{
+		isBellow = false;
+		firstrow = CGame::GetInstance()->GetCamPosY() / tile_height;
+	}
+	//DebugOut(L"Last col, first col %d,%d", lastcol, firstcol);
 }
 
 int TileMap::GetWeightMap()
@@ -98,5 +116,5 @@ int TileMap::GetWeightMap()
 
 int TileMap::GetHeightMap()
 {
-	return (row_tilemap * tile_height);
+	return ( row_tilemap* tile_height);
 }
