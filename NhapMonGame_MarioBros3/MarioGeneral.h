@@ -3,6 +3,7 @@
 #include <istream>
 
 
+
 #define MARIO_STATE_IDLE								0
 #define MARIO_STATE_WALKING_RIGHT						100
 #define MARIO_STATE_WALKING_LEFT						200

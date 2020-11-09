@@ -1,80 +1,100 @@
-﻿#include "TileMap.h"
-TileMap::TileMap(int ID, LPCWSTR filePath_texture, LPCWSTR filePath_data, int num_row_on_texture, int num_col_on_textture, int num_row_on_tilemap, int num_col_on_tilemap, int tileset_width, int tileset_height)
+#include "TileMap.h"
+#include "Textures.h"
+#include "Utils.h"
+
+TileMap::TileMap(int ID, LPCWSTR file_path_texture, LPCWSTR file_path_data, int row_texture, int col_texture, int row_data, int col_data, int width_tile, int height_tile)
 {
-	//DebugOut(L"TileMap ID: %d", ID);
-	id = ID;
-	this->filePath_texture = filePath_texture;
-	this->filePath_data = filePath_data;
-	this->num_row_on_texture = num_row_on_texture;
-	this->num_col_on_textture = num_col_on_textture;
-	this->num_row_on_tilemap = num_row_on_tilemap;
-	this->num_col_on_tilemap = num_col_on_tilemap;
-	this->tileset_width = tileset_width;
-	this->tileset_height = tileset_height;
+	this->ID = ID;
+	this->file_path_texture = file_path_texture;
+	this->file_path_data = file_path_data;
+	this->row_text = row_texture;
+	this->col_text = col_texture;
+	this->row_tilemap = row_data;
+	this->col_tilemap = col_data;
+	this->tile_width = width_tile;
+	this->tile_height = height_tile;
+	LoadTileMap();
 	LoadMap();
-	Load();
-}
 
-void TileMap::LoadMap()
-{
-	CTextures* texture = CTextures::GetInstance();
-	texture->Add(id, filePath_texture, D3DCOLOR_XRGB(255, 0, 255));
-	LPDIRECT3DTEXTURE9 texTileMap = texture->Get(id);
-
-	int id_sprite = 1;
-	for (UINT i = 0; i < num_row_on_texture; i++)
-	{
-		for (UINT j = 0; j < num_col_on_textture; j++)
-		{
-		
-			int id_SPRITE = id + id_sprite;
-			//DebugOut(L"\nid sprite ID: %d", id_SPRITE);
-			sprites->Add(id_SPRITE, tileset_width * j, tileset_height * i, tileset_width * (j + 1), tileset_height * (i + 1), texTileMap);
-			id_sprite = id_sprite + 1;
-		}
-	}
 }
-void TileMap::Load()
-{
-	DebugOut(L"[INFO] Start loading map resources from : %s \n", filePath_data);
-	ifstream fs(filePath_data, ios::in);
-	if (fs.fail())
-	{
-		DebugOut(L"[ERROR] TileMap::Load_MapData failed: ID=%d", id);
-		fs.close();
-		return;
-	}
-	for (int i = 0; i < num_row_on_tilemap; i++)
-	{
-		for (int j = 0; j < num_col_on_tilemap; j++)
-			fs >> tilemap[i][j];
-	}
-	fs.close();
-	DebugOut(L"[INFO] Done loading map resources %s\n", filePath_data);
-}
-
-void TileMap::Draw()
-{
-	int firstcol = (int)CGame::GetInstance()->GetCamPosX() / tileset_width;
-	//DebugOut(L"FirstCol\n %d", (int)CGame::GetInstance()->GetCamPosX());
-	int lastcol = firstcol + (SCREEN_WIDTH / tileset_width);
-	for (UINT i = 0; i < num_row_on_tilemap; i++)
-	{
-		for (UINT j = firstcol; j <= lastcol; j++)
-		{
-			float x = tileset_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % tileset_width;
-			float y = tileset_height * i;
-			sprites->Get(tilemap[i][j] + id)->Draw(x, y);	
-		}
-	}
-}
-
 
 TileMap::~TileMap()
 {
 }
-int TileMap::GetWidthTileMap()
-{
-	return (num_col_on_tilemap - 32) * tileset_width;
 
+void TileMap::LoadTileMap()
+{
+	//Load texture
+	CTextures* texture = CTextures::GetInstance();
+	texture->Add(ID, file_path_texture, D3DCOLOR_XRGB(255, 0, 255));
+	LPDIRECT3DTEXTURE9 textileMap = texture->Get(ID);
+
+	int idSprite = 1;
+	for (UINT i = 0; i < row_text; i++)
+	{
+		for (UINT j = 0; j < col_text; j++)
+		{
+			sprites->Add(idSprite, tile_width * j, tile_width * i, tile_width * (j + 1), tile_height * (i + 1), textileMap);
+			idSprite = idSprite + 1;
+		}
+	}
+}
+
+void TileMap::LoadMap()
+{
+	ifstream fs(file_path_data, ios::in);
+	if (fs.fail())
+	{
+		fs.close();
+		return;
+	}
+	for (int i = 0; i < row_tilemap; i++)
+	{
+		for (int j = 0; j < col_tilemap; j++)
+		{
+			fs >> tilemap[i][j];
+		}
+	}
+	fs.close();
+}
+
+void TileMap::Draw()
+{
+	int firstcol;
+	if (CGame::GetInstance()->GetCamPosX() > SCREEN_WIDTH)
+	{
+		isBeginMap = false;
+		firstcol = ((int)CGame::GetInstance()->GetCamPosX()) / 16 - MAP_RESIDUAL;
+	}
+	else
+	{
+		isBeginMap = true;
+		firstcol = ((int)CGame::GetInstance()->GetCamPosX()) / 16;
+	}
+
+		
+	int lastcol = firstcol + ((SCREEN_WIDTH ) / 16) + MAP_RESIDUAL;
+	for (UINT i = 0; i < row_tilemap; i++)
+	{
+		for (UINT j = firstcol; j <= lastcol; j++)
+		{
+			float x;
+			if (isBeginMap)
+				x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % 16;
+			else
+				x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % 16 - 16 * 5;
+			float y = tile_height * i;
+			sprites->Get(tilemap[i][j])->Draw(x, y);
+		}
+	}
+}
+
+int TileMap::GetWeightMap()
+{
+	return (col_tilemap - 32) * tile_width;
+}
+
+int TileMap::GetHeightMap()
+{
+	return (row_tilemap * tile_height);
 }

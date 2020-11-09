@@ -111,6 +111,27 @@ void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 
 	CAnimationSets::GetInstance()->Add(ani_set_id, s);
 }
+void CPlayScene::_ParseSection_TILEMAP(string line)
+{
+	vector<string> tokens = split(line);
+	
+	if (tokens.size() < 9) return;
+	int id = atoi(tokens[0].c_str());
+	wstring file_path_texture = ToWSTR(tokens[1].c_str());
+	wstring file_path_data = ToWSTR(tokens[2].c_str());
+	
+	int numrow_texture = atoi(tokens[3].c_str());
+	int numcol_texture = atoi(tokens[4].c_str());
+	int numrow_data = atoi(tokens[5].c_str());
+	int numcol_data = atoi(tokens[6].c_str());
+	int tile_width = atoi(tokens[7].c_str());
+	int tile_height = atoi(tokens[8].c_str());
+
+	DebugOut(L"as %d", id);
+	map = new TileMap(id, file_path_texture.c_str(), file_path_data.c_str(), numrow_texture, numcol_texture, numrow_data, numcol_data, tile_width, tile_height);
+
+
+}
 
 /*
 	Parse a line in section [OBJECTS]
@@ -217,23 +238,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	objects.push_back(obj);
 }
 
-void CPlayScene::_ParseSection_TileMap(string line)
-{
-	vector<string> tokens = split(line);
-	if (tokens.size() < 9) return;
-	int ID = atoi(tokens[0].c_str());
-	wstring file_texture = ToWSTR(tokens[1]);
-	wstring file_path = ToWSTR(tokens[2]);
 
-	int row_on_textures = atoi(tokens[3].c_str());
-	int col_on_textures = atoi(tokens[4].c_str());
-	int row_on_tile_map = atoi(tokens[5].c_str());
-	int col_on_tile_map = atoi(tokens[6].c_str());
-	int tile_width = atoi(tokens[7].c_str());
-	int tile_height = atoi(tokens[8].c_str());
-	//int texID = atoi(tokens[0].c_str());
-	map = new TileMap(ID, file_texture.c_str(), file_path.c_str(), row_on_textures, col_on_textures, row_on_tile_map, col_on_tile_map, tile_width, tile_height);
-}
+
 
 void CPlayScene::Load()
 {
@@ -272,9 +278,12 @@ void CPlayScene::Load()
 			if (line == "[OBJECTS]") {
 				section = SCENE_SECTION_OBJECTS; continue;
 			}
-			if (line == "[TILEMAP]") {
-				section = SCENE_SECTION_TILEMAP; continue;
+			if (line == "[TILEMAP]")
+			{
+				section = SCENE_SECTION_TILEMAP;
+				continue;
 			}
+			
 			if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
 			//
@@ -287,7 +296,7 @@ void CPlayScene::Load()
 			case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
 			case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
 			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
-			case SCENE_SECTION_TILEMAP: _ParseSection_TileMap(line); break;
+			case SCENE_SECTION_TILEMAP: _ParseSection_TILEMAP(line); break;
 			}
 		}
 
@@ -385,12 +394,18 @@ void CPlayScene::Update(DWORD dt)
 	// Update camera to follow mario
 	float cx, cy;
 
-	CGame::GetInstance()->cam_y = 150;
-	if (player->x > (SCREEN_WIDTH / 2) && player->x + (SCREEN_WIDTH / 2) < map->GetWidthTileMap())
+	if (player->x > (SCREEN_WIDTH / 2) && player->x + (SCREEN_WIDTH / 2) < map->GetWeightMap())
 	{
 		cx = player->x - (SCREEN_WIDTH / 2);
 		CGame::GetInstance()->cam_x = cx;
 	}
+	//camY
+	/*if (player->y > (SCREEN_HEIGHT / 3) && player->y + (SCREEN_HEIGHT / 3) < map->GetHeightMap())
+	{
+		cy = player->y - (SCREEN_HEIGHT/3);
+		CGame::GetInstance()->cam_y = cy;
+	}*/
+	CGame::GetInstance()->cam_y = 150;
 }
 
 void CPlayScene::Render()

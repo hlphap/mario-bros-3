@@ -49,7 +49,7 @@ class CPlayScene : public CScene
 {
 public:
 	CMario* player;					// A play scene has to have player, right? 
-	TileMap* map;
+	TileMap *map;
 	
 	vector<LPGAMEOBJECT> objects;
 	vector<CBullet*> bullets;
@@ -62,8 +62,7 @@ public:
 	void _ParseSection_OBJECTS(string line);
 
 
-	void _ParseSection_TileMap(string line);
-
+	void _ParseSection_TILEMAP(string line);
 
 public:
 	CPlayScene(int id, LPCWSTR filePath);

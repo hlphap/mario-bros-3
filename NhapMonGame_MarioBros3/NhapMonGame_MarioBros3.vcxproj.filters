@@ -111,9 +111,6 @@
     <ClCompile Include="Item.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="TileMap.cpp">
-      <Filter>Map</Filter>
-    </ClCompile>
     <ClCompile Include="BoundaryBrick.cpp">
       <Filter>GameObject\Map Object</Filter>
     </ClCompile>
@@ -122,6 +119,9 @@
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TileMap.cpp">
+      <Filter>Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -197,9 +197,6 @@
     <ClInclude Include="Item.h">
       <Filter>GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="TileMap.h">
-      <Filter>Map</Filter>
-    </ClInclude>
     <ClInclude Include="BoundaryBrick.h">
       <Filter>GameObject\Map Object</Filter>
     </ClInclude>
@@ -208,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMap.h">
+      <Filter>Map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,26 +1,30 @@
-﻿#include"Sprites.h"
-#include"Textures.h"
-#include"Utils.h"
-#include <iostream>
+#pragma once
+#include "Game.h"
+#include "Sprites.h"
 #include <fstream>
-#include<string>
 #include <sstream>
-#include"Game.h"
+#include<string>
+
+#define MAP_RESIDUAL 5
+
 class TileMap
 {
-	CSprites* sprites = CSprites::GetInstance();
-	LPCWSTR filePath_data;
-	LPCWSTR filePath_texture;
-	int id;
-	int num_row_on_tilemap, num_col_on_tilemap;
-	int num_row_on_texture, num_col_on_textture;
-	int tileset_width, tileset_height;
+	bool isBeginMap = true;
+	bool isHightMap = false;
+	int ID;
+	CSprites* sprites = new CSprites;
+	LPCWSTR file_path_texture, file_path_data;
+	int col_text, row_text, col_tilemap, row_tilemap;
+	int tile_width, tile_height;
 	int tilemap[300][300];
 public:
-	TileMap(int ID, LPCWSTR filePath_texture, LPCWSTR filePath_data, int num_row_on_texture, int num_col_on_textture, int num_row_on_tilemap, int num_col_on_tilemap, int tileset_width, int tileset_height);
+	TileMap(int ID, LPCWSTR file_path_texture, LPCWSTR file_path_data, int row_texture, int col_texture, int row_data, int col_data, int width_tile, int height_tile);
 	~TileMap();
-	int GetWidthTileMap();
-	void Load();
+	void LoadTileMap();
 	void LoadMap();
 	void Draw();
+	int GetWeightMap();
+	int GetHeightMap();
+	
 };
+

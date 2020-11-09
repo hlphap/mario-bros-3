@@ -33,8 +33,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// Simple fall down
 	vy += MARIO_GRAVITY * dt;
-//	DebugOut(L"\nvx: %f", vx);
-//	DebugOut(L"x,y:%f,%f", x, y);
+	
+	DebugOut(L"\nvx: %f", x);
 	
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
