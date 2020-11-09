@@ -311,6 +311,7 @@ void CPlayScene::Load()
 
 void CPlayScene::Update(DWORD dt)
 {
+	
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 	
@@ -394,7 +395,7 @@ void CPlayScene::Update(DWORD dt)
 	// Update camera to follow mario
 	float cx, cy;
 
-	if (player->x > (SCREEN_WIDTH / 2) && player->x + (SCREEN_WIDTH / 2) < map->GetWeightMap())
+	if (player->x > (SCREEN_WIDTH / 2) && player->x < map->GetWeightMap() - map->tile_width * NUM_COL_ON_SCREEN)
 	{
 		cx = player->x - (SCREEN_WIDTH / 2);
 		CGame::GetInstance()->cam_x = cx;
@@ -406,6 +407,7 @@ void CPlayScene::Update(DWORD dt)
 		CGame::GetInstance()->cam_y = cy;
 	}*/
 	CGame::GetInstance()->cam_y = 150;
+	map->Update();
 }
 
 void CPlayScene::Render()

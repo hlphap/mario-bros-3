@@ -60,7 +60,23 @@ void TileMap::LoadMap()
 
 void TileMap::Draw()
 {
-	int firstcol;
+	for (UINT i = 0; i < row_tilemap; i++)
+	{
+		for (UINT j = firstcol; j <= lastcol; j++)
+		{
+			float x;
+			if (isBeginMap)
+				x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % 16;
+			else
+				x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % 16 - 16 * MAP_RESIDUAL;
+			float y = tile_height * i;
+			sprites->Get(tilemap[i][j])->Draw(x, y);
+		}
+	}
+}
+
+void TileMap::Update()
+{
 	if (CGame::GetInstance()->GetCamPosX() > SCREEN_WIDTH)
 	{
 		isBeginMap = false;
@@ -71,27 +87,13 @@ void TileMap::Draw()
 		isBeginMap = true;
 		firstcol = ((int)CGame::GetInstance()->GetCamPosX()) / 16;
 	}
-
-		
-	int lastcol = firstcol + ((SCREEN_WIDTH ) / 16) + MAP_RESIDUAL;
-	for (UINT i = 0; i < row_tilemap; i++)
-	{
-		for (UINT j = firstcol; j <= lastcol; j++)
-		{
-			float x;
-			if (isBeginMap)
-				x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % 16;
-			else
-				x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % 16 - 16 * 5;
-			float y = tile_height * i;
-			sprites->Get(tilemap[i][j])->Draw(x, y);
-		}
-	}
+    lastcol = firstcol + ((SCREEN_WIDTH) / 16) + MAP_RESIDUAL;
+	DebugOut(L"Last col, first col %d,%d", lastcol, firstcol);
 }
 
 int TileMap::GetWeightMap()
 {
-	return (col_tilemap - 32) * tile_width;
+	return (col_tilemap) * tile_width;
 }
 
 int TileMap::GetHeightMap()
