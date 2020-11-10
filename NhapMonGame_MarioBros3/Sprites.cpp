@@ -49,6 +49,5 @@ void CSprites::Clear()
 		LPSPRITE s = x.second;
 		delete s;
 	}
-
 	sprites.clear();
 }

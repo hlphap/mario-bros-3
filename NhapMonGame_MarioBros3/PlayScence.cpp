@@ -394,7 +394,7 @@ void CPlayScene::Update(DWORD dt)
 
 	// Update camera to follow mario
 	float cx, cy;
-	if (player->x > (SCREEN_WIDTH / 2) && player->x < map->GetWeightMap() - map->tile_width * NUM_COL_ON_SCREEN)
+	if (player->x > (SCREEN_WIDTH / 2) && player->x < map->GetWeightMap() - (SCREEN_WIDTH/2))
 	{
 		cx = player->x - (SCREEN_WIDTH / 2);
 		CGame::GetInstance()->cam_x = cx;
@@ -406,12 +406,6 @@ void CPlayScene::Update(DWORD dt)
 		cy = player->y - (SCREEN_HEIGHT / 3);
 		CGame::GetInstance()->cam_y = cy;
 	}
-	/*if (player->y < map->GetHeightMap()-(SCREEN_HEIGHT/2) && player->y < map->GetHeightMap()-SCREEN_HEIGHT/2)
-	{
-		DebugOut(L"ImHere");
-		cy = player->y - SCREEN_HEIGHT / 2;
-		CGame::GetInstance()->cam_y = cy;
-	}*/
 	map->Update();
 }
 
