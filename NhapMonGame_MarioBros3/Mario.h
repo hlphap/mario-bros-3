@@ -10,7 +10,7 @@
 
 #define MARIO_RUNNING_DECELERATION						0.000325f
 #define MARIO_RUNNING_ACCELERATION						0.00003f
-#define MARIO_RUNNING_MAX_SPEED							0.15f
+#define MARIO_RUNNING_MAX_SPEED							1.5f //0.15f
 
 #define MARIO_SPEED_CAN_STOP							0.04
 #define MARIO_BOUNCE									10
@@ -57,7 +57,6 @@ public:
 	bool isKeepJump_SlowFalling = false;
 	bool isKeepJump_HightFlying = false;
 	bool isAttacking = false;
-	bool isBlockFall = false;
 	bool isKeepJump = false;
 	bool isKicking = false;
 	bool isHoldShell = false;

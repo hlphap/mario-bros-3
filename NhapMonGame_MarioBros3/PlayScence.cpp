@@ -126,11 +126,18 @@ void CPlayScene::_ParseSection_TILEMAP(string line)
 	int numcol_data = atoi(tokens[6].c_str());
 	int tile_width = atoi(tokens[7].c_str());
 	int tile_height = atoi(tokens[8].c_str());
-
-	DebugOut(L"as %d", id);
-	map = new TileMap(id, file_path_texture.c_str(), file_path_data.c_str(), numrow_texture, numcol_texture, numrow_data, numcol_data, tile_width, tile_height);
-
-
+	map = TileMap::GetInstance();
+	map->ID = id;
+	map->file_path_data = file_path_data.c_str();
+	map->file_path_texture = file_path_texture.c_str();
+	map->col_text = numcol_texture;
+	map->row_text = numrow_texture;
+	map->col_tilemap = numcol_data;
+	map->row_tilemap = numrow_data;
+	map->tile_width = tile_width;
+	map->tile_height = tile_height;
+	map->LoadTileMap();
+	map->LoadMap();
 }
 
 /*
@@ -245,6 +252,7 @@ void CPlayScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
 
+	
 	ifstream f;
 	f.open(sceneFilePath);
 
@@ -306,7 +314,12 @@ void CPlayScene::Load()
 
 		DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 	}
-	
+	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+	CKoopas* obj = new CKoopas(player);
+	obj->x = 10.0f;
+	obj->y = 300.0f;
+	obj->SetAnimationSet(animation_sets->Get(4));
+	objects.push_back(obj);
 }
 
 void CPlayScene::Update(DWORD dt)
@@ -400,12 +413,28 @@ void CPlayScene::Update(DWORD dt)
 		CGame::GetInstance()->cam_x = cx;
 	}
 	
-	//camY
-	if (player->y > (SCREEN_HEIGHT / 3) && player->y < map->GetHeightMap() - map->tile_height * 11)
+	if (player->y >= SCREEN_HEIGHT / 3 && player->y < map->GetHeightMap() - map->tile_height * 11)
 	{
-		cy = player->y - (SCREEN_HEIGHT / 3);
-		CGame::GetInstance()->cam_y = cy;
+		CGame::GetInstance()->cam_y = player->y - SCREEN_HEIGHT / 3;
 	}
+	////
+	//if (player->y <= 27*16 - SCREEN_HEIGHT * 2 / 3)
+	//{
+	//	cy = player->y - (SCREEN_HEIGHT / 2);
+	//	CGame::GetInstance()->cam_y = cy;
+	//}
+	/*DebugOut(L"\ny: %f", player->y);
+	if (player->y > SCREEN_HEIGHT/3 && player->y > map->GetHeightMap() - 150)
+	{
+		DebugOut(L"Cam change");
+		CGame::GetInstance()->cam_y = player->y - SCREEN_HEIGHT / 3;
+	}*/
+	//camY
+	/*if (player->y > (SCREEN_HEIGHT/ 2) && player->y  < map->GetHeightMap() - (SCREEN_HEIGHT/2))
+	{
+			cy = player->y - (SCREEN_HEIGHT * 20 / 27);
+			CGame::GetInstance()->cam_y = cy;
+	}*/
 	map->Update();
 }
 
@@ -430,7 +459,7 @@ void CPlayScene::Unload()
 
 	objects.clear();
 	player = NULL;
-
+	map = NULL;
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
@@ -523,8 +552,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 {
 	CGame* game = CGame::GetInstance();
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
-
-
 
 	//Mario Die
 	if (mario->GetState() == MARIO_STATE_DIE) return;

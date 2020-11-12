@@ -2,20 +2,9 @@
 #include "Textures.h"
 #include "Utils.h"
 
-TileMap::TileMap(int ID, LPCWSTR file_path_texture, LPCWSTR file_path_data, int row_texture, int col_texture, int row_data, int col_data, int width_tile, int height_tile)
-{
-	this->ID = ID;
-	this->file_path_texture = file_path_texture;
-	this->file_path_data = file_path_data;
-	this->row_text = row_texture;
-	this->col_text = col_texture;
-	this->row_tilemap = row_data;
-	this->col_tilemap = col_data;
-	this->tile_width = width_tile;
-	this->tile_height = height_tile;
-	LoadTileMap();
-	LoadMap();
 
+TileMap::TileMap()
+{	
 }
 
 TileMap::~TileMap()
@@ -25,103 +14,137 @@ TileMap::~TileMap()
 void TileMap::LoadTileMap()
 {
 	//Load texture
-	CTextures* texture = CTextures::GetInstance();
-	texture->Add(ID, file_path_texture, D3DCOLOR_XRGB(255, 0, 255));
-	LPDIRECT3DTEXTURE9 textileMap = texture->Get(ID);
-
-	int idSprite = 1;
-	for (UINT i = 0; i < row_text; i++)
+	if (__instance != NULL)
 	{
-		for (UINT j = 0; j < col_text; j++)
+		CTextures* texture = CTextures::GetInstance();
+		texture->Add(ID, file_path_texture, D3DCOLOR_XRGB(255, 0, 255));
+		LPDIRECT3DTEXTURE9 textileMap = texture->Get(ID);
+
+		int idSprite = 1;
+		for (UINT i = 0; i < row_text; i++)
 		{
-			sprites->Add(idSprite, tile_width * j, tile_width * i, tile_width * (j + 1), tile_height * (i + 1), textileMap);
-			idSprite = idSprite + 1;
+			for (UINT j = 0; j < col_text; j++)
+			{
+				sprites->Add(idSprite, tile_width * j, tile_width * i, tile_width * (j + 1), tile_height * (i + 1), textileMap);
+				idSprite = idSprite + 1;
+			}
 		}
 	}
 }
 
 void TileMap::LoadMap()
 {
-	ifstream fs(file_path_data, ios::in);
-	if (fs.fail())
+	if (__instance != NULL)
 	{
-		fs.close();
-		return;
-	}
-	//DebugOut(L"row %d", row_tilemap);
-	//DebugOut(L"\ncol %d", col_tilemap);
-	for (int i = 0; i < row_tilemap; i++)
-	{
-		for (int j = 0; j < col_tilemap; j++)
+		ifstream fs(file_path_data, ios::in);
+		if (fs.fail())
 		{
-			fs >> tilemap[i][j];
-			DebugOut(L"\ni,j %d,%d", i, j);
-			DebugOut(L"\ttilemap[i][j] = %d", tilemap[i][j]);
+			fs.close();
+			return;
 		}
-	}
-	fs.close();
+		DebugOut(L"row %d", row_tilemap);
+		DebugOut(L"\ncol %d", col_tilemap);
+		for (int i = 0; i < row_tilemap; i++)
+		{
+			for (int j = 0; j < col_tilemap; j++)
+			{
+				fs >> tilemap[i][j];
+				DebugOut(L"\ni,j %d,%d", i, j);
+				DebugOut(L"\ttilemap[i][j] = %d", tilemap[i][j]);
+			}
+		}
+		fs.close();
+	}	
 }
 
 void TileMap::Draw()
 {
-	for (UINT i = 0; i < row_tilemap; i++)
+	if (__instance != NULL)
 	{
-		for (UINT j = firstcol; j <= lastcol; j++)
+		for (UINT i = firstrow; i < lastrow; i++)
 		{
-			float x;
-			float y;
-			if (isBeginMap)
-				x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % 16;
-			else
-				x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % 16 - 16 * MAP_RESIDUAL;
-			if (isBellow)
-				y = tile_height * (i - firstrow) + CGame::GetInstance()->GetCamPosY() - (int)(CGame::GetInstance()->GetCamPosY()) % 16 - 16 * MAP_RESIDUAL;
-			else
-				y=tile_height* (i - firstrow) + CGame::GetInstance()->GetCamPosY() - (int)(CGame::GetInstance()->GetCamPosY()) % 16;
-			/*DebugOut(L"\ni,j %d,%d", i, j);
-			DebugOut(L"\ttilemap[i][j] = %d", tilemap[i][j]);*/
-			sprites->Get(tilemap[i][j])->Draw(x, y);
-			
+			for (UINT j = firstcol; j < lastcol; j++)
+			{
+				float x;
+				float y;
+				if (isBeginMapX)
+					x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % tile_width;
+				else
+					x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % tile_width - tile_width * MAP_RESIDUAL;
+				if (isBeginMapY)
+					y = tile_height * (i - firstrow) + CGame::GetInstance()->GetCamPosY() - (int)(CGame::GetInstance()->GetCamPosY()) % tile_height;
+				else
+					y = tile_height * (i - firstrow) + CGame::GetInstance()->GetCamPosY() - (int)(CGame::GetInstance()->GetCamPosY()) % tile_height - tile_width * MAP_RESIDUAL;
+				/*DebugOut(L"\ni,j %d,%d", i, j);
+				DebugOut(L"\ttilemap[i][j] = %d", tilemap[i][j]);*/
+				sprites->Get(tilemap[i][j])->Draw(x, y);
+			}
 		}
 	}
+	
 }
 
 void TileMap::Update()
 {
 
-	//Truc x, firstcol, lastcol
-	if (CGame::GetInstance()->GetCamPosX() > SCREEN_WIDTH)
+	if (__instance != NULL)
 	{
-		isBeginMap = false;
-		firstcol = ((int)CGame::GetInstance()->GetCamPosX()) / 16 - MAP_RESIDUAL;
-	}
-	else
-	{
-		isBeginMap = true;
-		firstcol = ((int)CGame::GetInstance()->GetCamPosX()) / 16;
-	}
-    lastcol = firstcol + ((SCREEN_WIDTH) / 16) + MAP_RESIDUAL;
+		//Truc x, firstcol, lastcol
+		if (CGame::GetInstance()->GetCamPosX() > tile_width * 5)
+		{
+			DebugOut(L"IMhere");
+			isBeginMapX = false;
+			firstcol = ((int)CGame::GetInstance()->GetCamPosX()) / 16 - mapResidualX;
+		}
+		else
+		{
+			isBeginMapX = true;
+			firstcol = ((int)CGame::GetInstance()->GetCamPosX()) / 16;
+		}
+		lastcol = firstcol + (SCREEN_WIDTH / tile_width) + mapResidualX*2;
 
-	//Truc y, firstrow, lastrow
-	if (CGame::GetInstance()->GetCamPosY() > (GetWeightMap() - SCREEN_HEIGHT))
-	{
-		isBellow = true;
-		firstrow = CGame::GetInstance()->GetCamPosY() / tile_height - MAP_RESIDUAL;
+		//Truc y, firstrow, lastrow
+		if (CGame::GetInstance()->GetCamPosY() > SCREEN_HEIGHT)
+		{
+			DebugOut(L"false");
+			isBeginMapY = false;
+			firstrow = (int)CGame::GetInstance()->GetCamPosY() / 16 - MAP_RESIDUAL;
+			
+		}
+		else
+		{
+			DebugOut(L"true");
+			isBeginMapY = true;
+			firstrow = (int)CGame::GetInstance()->GetCamPosY()/16;
+		}
+		lastrow = firstrow + SCREEN_HEIGHT / 16;
+		
+		DebugOut(L"\nfirst ROW: %d", firstcol);
+		DebugOut(L"\nlast ROW: %d", lastcol);
 	}
-	else
-	{
-		isBellow = false;
-		firstrow = CGame::GetInstance()->GetCamPosY() / tile_height;
-	}
-	//DebugOut(L"Last col, first col %d,%d", lastcol, firstcol);
+	
 }
 
 int TileMap::GetWeightMap()
 {
-	return (col_tilemap) * tile_width;
+	if (__instance != NULL)
+		return (col_tilemap - 5)*tile_width;
+	else
+		return -1;
 }
 
 int TileMap::GetHeightMap()
 {
-	return ( row_tilemap* tile_height);
+	if (__instance != NULL)
+		return ((row_tilemap - 5)* tile_height);
+	else
+		return -1;
+}
+
+TileMap * TileMap::__instance = NULL;
+
+TileMap* TileMap::GetInstance()
+{
+	if (__instance == NULL) __instance = new TileMap();
+	return __instance;
 }

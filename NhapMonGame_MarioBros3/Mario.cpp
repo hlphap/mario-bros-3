@@ -33,8 +33,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// Simple fall down
 	vy += MARIO_GRAVITY * dt;
-	
-//	DebugOut(L"\nvx: %f", y);
+
+	//DebugOut(L"\nvx: %f", vy);
 	
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -143,6 +143,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		x += dx;
 		y += dy;
+		
 	}
 	else
 	{
@@ -172,7 +173,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy = 0;
 			isOnAir = false;
 			isKeepJump_SlowFalling = false;
-			isBlockFall = false;
 			isKeepJump_HightFlying = false;
 			isKeepJump = false;
 			numJump = 0;
@@ -354,7 +354,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							else
 							{
 								isHoldingShell = true;
-								//Cập nhật khoảng cách cầm rùa
 								koopas->isHeld = true;
 							}
 						}
@@ -423,7 +422,7 @@ void CMario::Render()
 	int alpha = 255;
 	if (untouchable) alpha = 128;
 	animation_set->at(ani)->Render(x,y,alpha);
-//	RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 
@@ -638,7 +637,7 @@ int CMario::RenderFromAniGroup()
 					ani = MARIO_ANI_BIG_TAIL_KEEPJUMP_FALLING_RIGHT;
 			}
 		}
-		else if (isSpeedMax && isOnAir && isFalling) // Roi khi chay nhanh
+		else if (isKeepJump_HightFlying && isOnAir && isFalling) // Roi khi chay nhanh
 		{
 			if (nx < 0)
 			{
@@ -648,10 +647,6 @@ int CMario::RenderFromAniGroup()
 			{
 				ani = MARIO_ANI_BIG_TAIL_FALLING_WHEN_RUNNING_RIGHT;
 			}
-		}
-		else if (isHoldingShell)
-		{
-			//ani = MARIO_ANI_BIG_TAIL_IDLE_HOLD_SHELL_RIGHT;
 		}
 		if (isAttacking)
 		{
@@ -748,7 +743,6 @@ int CMario::RenderFromAniGroup()
 	{
 		animation_set->at(ani)->SetHightSpeed(MARIO_RATIO_WHEN_KEEP_JUMPPING);
 	}
-	//animation_set->at(ani)->SetHightSpeed(5);
 	return ani;
 }
 
@@ -869,10 +863,10 @@ void CMario::SetState(int state)
 
 	case MARIO_STATE_FALLING:	// Roi nhanh
 	{
-		if (!isBlockFall && isOnAir)
-		{
+		
+			DebugOut(L"Phap bro");
 			vy += MARIO_GRAVITY * dt * MARIO_BOUNCE;
-		}
+		
 		break;
 	}
 	//=============================SPECIAL STATE MARIO_TAIL=============================
@@ -988,6 +982,7 @@ void CMario::Right()
 
 void CMario::Jump()
 {
+	
 	isOnAir = true;
 	isFalling = false;
 	SetState(MARIO_STATE_JUMPING);
@@ -996,13 +991,16 @@ void CMario::Jump()
 }
 void CMario::Fall()
 {
-	//isFalling = true;
-	SetState(MARIO_STATE_FALLING);
-	isBlockFall = true;
-	//Kiem tra KeepJump
 
+	SetState(MARIO_STATE_FALLING);
+	
+	////Kiem tra KeepJump
+	
 //	DebugOut(L"NumJump: %d", numJump);
-	if (numJump >= 1) isKeepJump = true;
+	if (numJump >= 1)
+	{
+		isKeepJump = true;
+	}
 	numJump++;
 	//DebugOut(L"NumJump sau: %d", numJump);
 }

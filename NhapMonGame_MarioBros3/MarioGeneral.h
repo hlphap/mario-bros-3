@@ -180,7 +180,7 @@
 
 //================================MARIO RENDER BOX GENERAL ZONE=================================
 #define MARIO_BIG_BBOX_WIDTH							15
-#define MARIO_BIG_BBOX_HEIGHT							28
+#define MARIO_BIG_BBOX_HEIGHT							26
 #define MARIO_BIG_TAIL_BBOX_WIDTH						15
 #define MARIO_BIG_TAIL_BBOX_HEIGHT						28
 #define MARIO_BIG_BBOX_SITTING_HEIGHT					14
@@ -196,7 +196,7 @@
 #define MARIO_RATIO_WHEN_KEEP_JUMPPING				0.5f
 #define MARIO_UNTOUCHABLE_TIME							1000
 #define KOOPAS_MAX_HEALTH								2
-#define MARIO_TIME_ALLOWED_FLY							500
+#define MARIO_TIME_ALLOWED_FLY							1800
 #define MARIO_TIME_FLYING_MAX							4500
 #define MARIO_TIME_KICK									200
 #define MARIO_TIME_BIG_TAIL_ATTACK						375
