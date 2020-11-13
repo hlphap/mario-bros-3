@@ -5,12 +5,12 @@
 #include <sstream>
 #include<string>
 
-#define MAP_RESIDUAL 5
+#define MAP_RESIDUALX 5
+#define MAP_RESIDUALY 2
 
 class TileMap
 {
 public:
-	int temp = 0;
 	int last_firstcol;
 	bool isBeginMapX = true;
 	bool isBeginMapY = false;

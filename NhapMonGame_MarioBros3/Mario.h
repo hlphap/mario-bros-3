@@ -13,7 +13,7 @@
 #define MARIO_RUNNING_MAX_SPEED							0.15f
 
 #define MARIO_SPEED_CAN_STOP							0.04
-#define MARIO_BOUNCE									10
+#define MARIO_BOUNCE									15
 
 #define FRICTION										0.0016875f
 #define MARIO_JUMP_SPEED_Y								0.255f
@@ -52,6 +52,7 @@ public:
 	bool isSpeedUping = false;
 	bool isSpeedUp = false;
 	bool isSpeedMax = false;
+	bool isBlockFall = false;
 	bool isStop = false;
 	bool isFalling = false;
 	bool isKeepJump_SlowFalling = false;
@@ -61,7 +62,7 @@ public:
 	bool isKicking = false;
 	bool isHoldShell = false;
 	bool isHoldingShell = false;
-	byte numJump = 0;
+	byte numFall = 0;
 	int ani = -1;
 
 public:
@@ -94,5 +95,6 @@ public:
 	void KeepJump();
 	void Kick();
 	void SpeedUp();
+	void HoldShell();
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 };

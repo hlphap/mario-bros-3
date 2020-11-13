@@ -12,7 +12,7 @@ CTail::CTail()
 void CTail::Render()
 {
 	//DebugOut(L"Imhera");
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CTail::GetBoundingBox(float& l, float& t, float& r, float& b)

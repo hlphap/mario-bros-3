@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 #include <fstream>
 
@@ -497,7 +497,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		if (!mario->isOnAir)
 		{
 			mario->Jump();
-		}	
+		}
 		break;
 	case DIK_A:
 		if (!mario->isAttacking)
@@ -535,6 +535,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		mario->isHoldingShell = false;
 		break;
 	case DIK_A:
+		//Cập nhật nhả cờ
 		mario->isSpeedUp = false;
 		mario->isHoldShell = false;
 		mario->isHoldingShell = false;
@@ -567,6 +568,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	if (game->IsKeyDown(DIK_A))
 	{
 		mario->SpeedUp();
+		mario->HoldShell();
 	}
 	
 	//Mario Go Right
@@ -575,7 +577,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 		//(L"\nvx: %f", mario->vx);
 		if ((mario->nx * mario->vx < 0)&&(!mario->GetJump())&&(mario->Getvx()<-MARIO_SPEED_CAN_STOP))
 		{
-			mario->Stop();
+			mario->Stop();	
 		}
 			mario->Right();
 			mario->Go();
