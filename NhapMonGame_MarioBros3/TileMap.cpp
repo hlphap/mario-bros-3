@@ -59,6 +59,7 @@ void TileMap::LoadMap()
 
 void TileMap::Draw()
 {
+
 	if (__instance != NULL)
 	{
 		for (UINT i = firstrow; i < lastrow; i++)
@@ -68,15 +69,19 @@ void TileMap::Draw()
 				float x;
 				float y;
 				if (isBeginMapX)
-					x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % tile_width;
+				{
+					x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % tile_width;	
+				}
 				else
-					x = tile_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % tile_width - tile_width * MAP_RESIDUAL;
+				{
+					x = tile_width * (j - firstcol) +CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % tile_width - tile_width * mapResidualX;
+				
+				}
+					
 				if (isBeginMapY)
 					y = tile_height * (i - firstrow) + CGame::GetInstance()->GetCamPosY() - (int)(CGame::GetInstance()->GetCamPosY()) % tile_height;
 				else
-					y = tile_height * (i - firstrow) + CGame::GetInstance()->GetCamPosY() - (int)(CGame::GetInstance()->GetCamPosY()) % tile_height - tile_width * MAP_RESIDUAL;
-				/*DebugOut(L"\ni,j %d,%d", i, j);
-				DebugOut(L"\ttilemap[i][j] = %d", tilemap[i][j]);*/
+					y = tile_height * (i - firstrow) + CGame::GetInstance()->GetCamPosY() - (int)(CGame::GetInstance()->GetCamPosY()) % tile_height - tile_width * mapResidualY;
 				sprites->Get(tilemap[i][j])->Draw(x, y);
 			}
 		}
@@ -90,9 +95,10 @@ void TileMap::Update()
 	if (__instance != NULL)
 	{
 		//Truc x, firstcol, lastcol
-		if (CGame::GetInstance()->GetCamPosX() > tile_width * 5)
+		if (CGame::GetInstance()->GetCamPosX() > 0) // Cam X bat dau di chuyen
 		{
-			DebugOut(L"IMhere");
+			mapResidualX = CGame::GetInstance()->GetCamPosX() / 16;
+			if (mapResidualX > MAP_RESIDUAL) mapResidualX = MAP_RESIDUAL;
 			isBeginMapX = false;
 			firstcol = ((int)CGame::GetInstance()->GetCamPosX()) / 16 - mapResidualX;
 		}
@@ -104,23 +110,24 @@ void TileMap::Update()
 		lastcol = firstcol + (SCREEN_WIDTH / tile_width) + mapResidualX*2;
 
 		//Truc y, firstrow, lastrow
-		if (CGame::GetInstance()->GetCamPosY() > SCREEN_HEIGHT)
+		if (CGame::GetInstance()->GetCamPosY() > 0)
 		{
-			DebugOut(L"false");
+			mapResidualY = CGame::GetInstance()->GetCamPosY() / 16;
+			if (mapResidualY > 2) mapResidualY = 2;
 			isBeginMapY = false;
-			firstrow = (int)CGame::GetInstance()->GetCamPosY() / 16 - MAP_RESIDUAL;
-			
+			firstrow = (int)CGame::GetInstance()->GetCamPosY() / 16 - mapResidualY;
+
 		}
 		else
 		{
-			DebugOut(L"true");
+			//DebugOut(L"true");
 			isBeginMapY = true;
-			firstrow = (int)CGame::GetInstance()->GetCamPosY()/16;
+			firstrow = (int)CGame::GetInstance()->GetCamPosY() / 16;
 		}
-		lastrow = firstrow + SCREEN_HEIGHT / 16;
-		
-		DebugOut(L"\nfirst ROW: %d", firstcol);
-		DebugOut(L"\nlast ROW: %d", lastcol);
+		lastrow = firstrow + SCREEN_HEIGHT / 16 + mapResidualY *2;
+		DebugOut(L"\nCam Y%f", CGame::GetInstance()->GetCamPosY());
+		DebugOut(L"\nfirst ROW: %d", firstrow);
+		DebugOut(L"\nlast ROW: %d", lastrow);
 	}
 	
 }

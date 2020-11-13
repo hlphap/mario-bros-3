@@ -413,10 +413,16 @@ void CPlayScene::Update(DWORD dt)
 		CGame::GetInstance()->cam_x = cx;
 	}
 	
-	if (player->y >= SCREEN_HEIGHT / 3 && player->y < map->GetHeightMap() - map->tile_height * 11)
+	//CAMY TOT NHAT 
+	if (player->y > SCREEN_HEIGHT / 3 && player->y < map->GetHeightMap() - SCREEN_HEIGHT *2/3)
+	{
+		cy = player->y - SCREEN_HEIGHT / 3 + MARIO_BIG_BBOX_HEIGHT;
+		CGame::GetInstance()->cam_y = cy;
+	}
+	/*if (player->y >= SCREEN_HEIGHT / 3 && player->y < map->GetHeightMap() - map->tile_height * 11)
 	{
 		CGame::GetInstance()->cam_y = player->y - SCREEN_HEIGHT / 3;
-	}
+	}* best/
 	////
 	//if (player->y <= 27*16 - SCREEN_HEIGHT * 2 / 3)
 	//{

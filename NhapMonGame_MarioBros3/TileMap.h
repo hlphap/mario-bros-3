@@ -10,6 +10,8 @@
 class TileMap
 {
 public:
+	int temp = 0;
+	int last_firstcol;
 	bool isBeginMapX = true;
 	bool isBeginMapY = false;
 	int firstcol;
@@ -17,7 +19,8 @@ public:
 	int firstrow;
 	int lastrow;
 	int ID;
-	int mapResidualX = 5;
+	int mapResidualX = 0;
+	int mapResidualY = 0;
 	CSprites* sprites = new CSprites;
 	LPCWSTR file_path_texture, file_path_data;
 	int col_text, row_text, col_tilemap, row_tilemap;
