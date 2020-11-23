@@ -2,9 +2,9 @@
 #include "ColorBox.h"
 #include "Utils.h"
 
-CKoopas::CKoopas(CMario *m)
+CKoopas::CKoopas(CMario* m)
 {
-	mario = m;
+	player = m;
 	SetState(KOOPAS_STATE_MOVING);
 }
 
@@ -25,49 +25,48 @@ void CKoopas::GetBoundingBox(float& left, float& top, float& right, float& botto
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	//Bi cam thi khong co gia toc trong truong
-	//Bị cầm -> hết cầm
+		//Bị cầm -> hết cầm
 	if (isHeld)
 	{
-		if (!mario->isHoldingShell)
+		if (!player->isHoldingShell)
 		{
 			isHeld = false;
 			isKicked = true;
-			this->nx = mario->nx;
-			mario->Kick();
+			this->nx = player->nx;
+			player->Kick();
 			SetState(KOOPAS_STATE_MOVING);
 		}
-		if (mario->level == MARIO_LEVEL_BIG || mario->level == MARIO_LEVEL_BIG_FIRE)
+		if (player->level == MARIO_LEVEL_BIG || player->level == MARIO_LEVEL_BIG_FIRE)
 		{
-			if (mario->nx < 0)
+			if (player->nx < 0)
 				rangeX = -KOOPAS_BBOX_WIDTH + 5;
 			else
 				rangeX = MARIO_BIG_BBOX_WIDTH - 3;
 			rangeY = 2;
 		}
-		else if (mario->level == MARIO_LEVEL_BIG_TAIL)
+		else if (player->level == MARIO_LEVEL_BIG_TAIL)
 		{
-			if (mario->nx < 0)
+			if (player->nx < 0)
 				rangeX = -KOOPAS_BBOX_WIDTH + 12;
 			else
 				rangeX = MARIO_BIG_TAIL_BBOX_WIDTH + 5;
 			rangeY = 1;
 		}
-		else if (mario->level == MARIO_LEVEL_SMALL)
+		else if (player->level == MARIO_LEVEL_SMALL)
 		{
-			if (mario->nx < 0)
+			if (player->nx < 0)
 				rangeX = -KOOPAS_BBOX_WIDTH + 5;
 			else
 				rangeX = MARIO_SMALL_BBOX_WIDTH - 4;
 			rangeY = 12;
 		}
-		SetPosition(mario->x + rangeX, mario->y - rangeY);
+		SetPosition(player->x + rangeX, player->y - rangeY);
 		return;
-		
 	}
-	
+
 
 	CGameObject::Update(dt);
-	vy += ENEMY_GRAVITY *dt;
+	vy += ENEMY_GRAVITY * dt;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -126,7 +125,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			else
 				if (dynamic_cast<CColorBox*>(e->obj))
 				{
-
 					if (e->nx != 0)
 					{
 						this->nx = -this->nx;
@@ -139,21 +137,18 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 
 		}
-		if (isMove) SetState(KOOPAS_STATE_MOVING);
+		if (isMoving) SetState(KOOPAS_STATE_MOVING);
 		// clean up collision events
 		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
-}
-		
-
-		
+	}
 }
 
-			
+
 
 void CKoopas::Render()
 {
 	int ani = KOOPAS_ANI_WALKING_LEFT;
-	if (!isMove)
+	if (!isMoving)
 	{
 		if (isSleeping)
 		{
@@ -175,7 +170,7 @@ void CKoopas::Render()
 				if (isKillByWeapon)
 					ani = KOOPAS_ANI_SHELL_OVERTURNED_MOVE;
 				else
-				ani = KOOPAS_ANI_SHELL_MOVE;
+					ani = KOOPAS_ANI_SHELL_MOVE;
 			}
 	}
 	else if (nx == -1)
@@ -190,7 +185,7 @@ void CKoopas::Render()
 				if (isKillByWeapon)
 					ani = KOOPAS_ANI_SHELL_OVERTURNED_MOVE;
 				else
-				ani = KOOPAS_ANI_SHELL_MOVE;
+					ani = KOOPAS_ANI_SHELL_MOVE;
 			}
 	}
 
@@ -206,7 +201,7 @@ void CKoopas::SetState(int state)
 	switch (state)
 	{
 	case KOOPAS_STATE_MOVING:
-		isMove = true;
+		isMoving = true;
 		if (nx == 1)
 		{
 			if (isKicked)
@@ -226,14 +221,14 @@ void CKoopas::SetState(int state)
 	case KOOPAS_STATE_SLEEP:
 		isKicked = false;
 		isSleeping = true;
-		isMove = false;
+		isMoving = false;
 		vx = 0;
 		vy = 0;
 		break;
 	case KOOPAS_STATE_DIE:
 		isKicked = false;
 		isSleeping = false;
-		isMove = false;
+		isMoving = false;
 		vx = 0;
 		vy = 0;
 		break;

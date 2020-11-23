@@ -17,6 +17,7 @@
 #include "TileMap.h"
 #include "BoundaryBrick.h"
 #include "Tail.h"
+#include "Weapon.h"
 
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_TEXTURES 2
@@ -52,8 +53,8 @@ public:
 	TileMap *map;
 	
 	vector<LPGAMEOBJECT> objects;
+	vector<CEnemy*> listEnemies;
 	vector<CBullet*> bullets;
-	CTail *tail = new CTail();
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);

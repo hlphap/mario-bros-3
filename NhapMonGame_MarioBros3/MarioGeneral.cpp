@@ -38,11 +38,11 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_KICK_LEFT);	//13
 
 
-		//Ngồi mario nhỏ không ngồi
+		//Ngồi player nhỏ không ngồi
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_IDLE_RIGHT);	//14
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_IDLE_LEFT);	//15
 
-		//Rơi (mario nhỏ không rơi)
+		//Rơi (player nhỏ không rơi)
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLYING_RIGHT);	//16
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_FLYING_LEFT);	//17
 

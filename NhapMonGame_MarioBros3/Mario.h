@@ -29,12 +29,13 @@ class CMario : public CGameObject
 public:
 	CMarioGeneral* mario_general;
 	CGameObject *bringKoopas = NULL;
+	CWeapon* weapon;
 	int level;
 
 	int untouchable;
 	float start_x;	
 	float start_y;
-	float backup_vy;
+
 	//Timer
 	DWORD untouchable_start;
 	DWORD timeAllowFly;
@@ -82,7 +83,7 @@ public:
 	bool GetJump() { return isOnAir; }
 	void Reset();
 
-	//Control mario
+	//Control player
 	void Go();
 	void Left();
 	void Right();

@@ -10,6 +10,9 @@
 class CEnemy : public CGameObject
 {
 public:
-	CMario* mario;
+	CMario* player;
+	bool isKillByWeapon = false;
+public:
 	CEnemy();
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 };

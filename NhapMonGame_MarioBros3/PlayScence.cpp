@@ -157,8 +157,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	int ani_set_id = atoi(tokens[3].c_str());
 
-	//int nx = atoi(tokens[4].c_str());
-	//int ny = atoi(tokens[5].c_str());
 	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
 
 	CGameObject* obj = NULL;
@@ -176,7 +174,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
-	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(player); break;
+	case OBJECT_TYPE_GOOMBA:
+		obj = new CGoomba(player);
+		break;
 	case OBJECT_TYPE_BRICK: //Oker
 		obj = new CBrick();
 		obj->amountX = atoi(tokens[4].c_str());
@@ -251,7 +251,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 void CPlayScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
-
+	//LPCWSTR
 	
 	ifstream f;
 	f.open(sceneFilePath);
@@ -314,73 +314,34 @@ void CPlayScene::Load()
 
 		DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 	}
-	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+	/*CAnimationSets* animation_sets = CAnimationSets::GetInstance();
 	CKoopas* obj = new CKoopas(player);
 	obj->x = 10.0f;
 	obj->y = 300.0f;
 	obj->SetAnimationSet(animation_sets->Get(4));
-	objects.push_back(obj);
+	objects.push_back(obj);*/
 }
 
 void CPlayScene::Update(DWORD dt)
 {
 	
+
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
-	
+
 	//Update playscence chay truong nen isAttack chua kip ve false thi ben nay da ban dan r
-	if (player->isAttacking 
-		&&  player->level == MARIO_LEVEL_BIG_FIRE
+	if (player->isAttacking
+		&& player->level == MARIO_LEVEL_BIG_FIRE
 		&& ((!player->isOnAir && GetTickCount() - player->timeStartAttack >= MARIO_TIME_BIG_FIRE_ATTACK_ON_GROUND)
 			|| (player->isOnAir && GetTickCount() - player->timeStartAttack >= MARIO_TIME_BIG_FIRE_ATTACK_ON_AIR)))
 	{
-		CBullet* bullet = new CBullet();
-		bullet->timer = GetTickCount();
-		if (player->nx == 1)
-		{
-			bullet->SetPosition(player->x + MARIO_BIG_BBOX_WIDTH, player->y + MARIO_D_HEED_TO_HAND_ATTACK);
-			bullet->nx = 1;
-			bullet->SetState(BULLET_STATE_FLY_RIGHT);
-		} 
-		else if (player->nx == -1)
-		{
-			bullet->SetPosition(player->x,player->y + MARIO_D_HEED_TO_HAND_ATTACK);	
-			bullet->nx = -1;
-			bullet->SetState(BULLET_STATE_FLY_LEFT);
-		}
 		if (bullets.size() < BULLET_AMOUNT) {
-			bullets.push_back(bullet);
+			bullets.push_back(dynamic_cast<CBullet*>(player->weapon));
 		}
 	}
 	if (bullets.size() == BULLET_AMOUNT)
 		player->isAttacking = false;
 
-
-	if (player->isAttacking
-		&& player->level == MARIO_LEVEL_BIG_TAIL)
-	{
-		if (tail->timer == TIME_DEFAUL) tail->timer = GetTickCount();
-		tail->nx = player->nx;
-		tail->SetState(TAIL_CAN_KILL);
-	}
-	else if (player->level == MARIO_LEVEL_BIG_TAIL)/*if (GetTickCount() - tail->timer >= 375 && tail->timer != TIME_DEFAUL)*/
-	{
-		tail->timer = TIME_DEFAUL;
-		if (player->nx == 1)
-		{
-			//DebugOut(L"Im heare");
-			tail->SetPosition(player->x, player->y + MARIO_D_HEED_TO_TAIL_ATTACK);
-			tail->nx = 1;
-			tail->SetState(TAIL_CANNOT_KILL);
-		}
-		else if (player->nx == -1)
-		{
-			tail->SetPosition(player->x + MARIO_BIG_TAIL_BBOX_WIDTH + 8, player->y+ MARIO_D_HEED_TO_TAIL_ATTACK);
-			tail->nx = -1;
-			tail->SetState(TAIL_CANNOT_KILL);
-		}
-	}
-	
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 1; i < objects.size(); i++)
 	{
@@ -388,10 +349,9 @@ void CPlayScene::Update(DWORD dt)
 	}
 
 	for (int i = 0; i < bullets.size(); i++) {
-		
+
 		bullets[i]->Update(dt, &coObjects);
 	}
-	if (tail!=NULL) tail->Update(dt ,&coObjects);
 	//DebugOut(L"\nSize Truoc Xoa Bullet: %d", bullets.size());
 	DeleteBullet();
 	//DebugOut(L"\nSize Bullet: %d", bullets.size());
@@ -405,42 +365,20 @@ void CPlayScene::Update(DWORD dt)
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
 
-	// Update camera to follow mario
+	// Update camera to follow player
 	float cx, cy;
-	if (player->x > (SCREEN_WIDTH / 2) && player->x < map->GetWeightMap() - (SCREEN_WIDTH/2))
+	if (player->x > (SCREEN_WIDTH / 2) && player->x < map->GetWeightMap() - (SCREEN_WIDTH / 2))
 	{
 		cx = player->x - (SCREEN_WIDTH / 2);
 		CGame::GetInstance()->cam_x = cx;
 	}
-	
+
 	//CAMY TOT NHAT 
-	if (player->y > SCREEN_HEIGHT / 3 && player->y < map->GetHeightMap() - SCREEN_HEIGHT *2/3)
+	if (player->y > SCREEN_HEIGHT / 3 && player->y < map->GetHeightMap() - SCREEN_HEIGHT * 2 / 3)
 	{
 		cy = player->y - SCREEN_HEIGHT / 3 + MARIO_BIG_BBOX_HEIGHT;
 		CGame::GetInstance()->cam_y = cy;
 	}
-	/*if (player->y >= SCREEN_HEIGHT / 3 && player->y < map->GetHeightMap() - map->tile_height * 11)
-	{
-		CGame::GetInstance()->cam_y = player->y - SCREEN_HEIGHT / 3;
-	}* best/
-	////
-	//if (player->y <= 27*16 - SCREEN_HEIGHT * 2 / 3)
-	//{
-	//	cy = player->y - (SCREEN_HEIGHT / 2);
-	//	CGame::GetInstance()->cam_y = cy;
-	//}
-	/*DebugOut(L"\ny: %f", player->y);
-	if (player->y > SCREEN_HEIGHT/3 && player->y > map->GetHeightMap() - 150)
-	{
-		DebugOut(L"Cam change");
-		CGame::GetInstance()->cam_y = player->y - SCREEN_HEIGHT / 3;
-	}*/
-	//camY
-	/*if (player->y > (SCREEN_HEIGHT/ 2) && player->y  < map->GetHeightMap() - (SCREEN_HEIGHT/2))
-	{
-			cy = player->y - (SCREEN_HEIGHT * 20 / 27);
-			CGame::GetInstance()->cam_y = cy;
-	}*/
 	map->Update();
 }
 
@@ -452,7 +390,6 @@ void CPlayScene::Render()
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->Render();
 	}
-	tail->Render();
 }
 
 /*
@@ -479,10 +416,9 @@ void CPlayScene::DeleteBullet()
 			bullets.erase(bullets.begin() + i);
 		}
 		else
-		if (GetTickCount() - bullets[i]->timer > BULLET_TIME_EXITS)
+		if (GetTickCount() - bullets[i]->timeStartAttack > BULLET_TIME_EXITS)
 			bullets.erase(bullets.begin() + i);
 	}
-
 }
 
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
@@ -541,7 +477,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		mario->isHoldingShell = false;
 		break;
 	case DIK_S:
-		//DebugOut(L"\nKeepJump: %d", mario->isKeepJump);
+		//DebugOut(L"\nKeepJump: %d", player->isKeepJump);
 		if (mario->isFalling && mario->isKeepJump)
 		{
 			if (mario->level == MARIO_LEVEL_BIG_TAIL && mario->isOnAir)
@@ -574,7 +510,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	//Mario Go Right
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
-		//(L"\nvx: %f", mario->vx);
+		//(L"\nvx: %f", player->vx);
 		if ((mario->nx * mario->vx < 0)&&(!mario->GetJump())&&(mario->Getvx()<-MARIO_SPEED_CAN_STOP))
 		{
 			mario->Stop();	

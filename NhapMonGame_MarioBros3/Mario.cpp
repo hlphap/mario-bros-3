@@ -93,8 +93,22 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (level == MARIO_LEVEL_BIG_TAIL)
 	{
-		
 		//Update IsAttack BigTail
+		weapon = CTail::GetInstance();
+		weapon->nx = nx;
+		if (isAttacking)
+		{
+			weapon->SetState(TAIL_CAN_KILL);
+		}
+		else
+		{
+			if (nx == 1)
+				weapon->SetPosition(x, y + MARIO_D_HEED_TO_TAIL_ATTACK);
+			else
+				weapon->SetPosition(x + MARIO_BIG_TAIL_BBOX_WIDTH + 8, y + MARIO_D_HEED_TO_TAIL_ATTACK);
+			weapon->SetState(TAIL_CANNOT_KILL);
+		}
+		weapon->Update(dt,coObjects); // Duoi thuoc Mario Update Duoi trong Mario
 		if (GetTickCount() - timeStartAttack >= MARIO_TIME_BIG_TAIL_ATTACK)
 		{
 			timeStartAttack = TIME_DEFAUL;
@@ -117,6 +131,22 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//Update IsAttack BigFire
 	else if (level == MARIO_LEVEL_BIG_FIRE)	
 	{
+		if (isAttacking)
+		{
+			weapon = new CBullet();
+			weapon->nx = nx;
+			weapon->timeStartAttack = GetTickCount();
+			if (nx == 1)
+			{
+				weapon->SetPosition(x + MARIO_BIG_BBOX_WIDTH, y + MARIO_D_HEED_TO_HAND_ATTACK);
+				weapon->SetState(BULLET_STATE_FLY_RIGHT);
+			}
+			else if (nx == -1)
+			{
+				weapon->SetPosition(x, y + MARIO_D_HEED_TO_HAND_ATTACK);
+				weapon->SetState(BULLET_STATE_FLY_LEFT);
+			}
+		}
 		if (!isOnAir)
 		{
 			if (GetTickCount() - timeStartAttack >= MARIO_TIME_BIG_FIRE_ATTACK_ON_GROUND)
@@ -131,9 +161,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				timeStartAttack = TIME_DEFAUL;
 				isAttacking = false;
-				
 			}
-		
 		}
 	
 	}
@@ -284,7 +312,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					x += dx;
 				}
 			}
-			else
+//Va chạm với quái
 			if (dynamic_cast<CKoopas*>(e->obj)) // if e->obj is Goomba 
 			{
 				CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
@@ -292,7 +320,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
 				{
-					
 					if (koopas->GetState() != KOOPAS_STATE_SLEEP)
 					{
 						//DebugOut(L"Sleep");
@@ -335,7 +362,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 								Fall();
 								SetState(MARIO_STATE_DIE);
 							}
-								
+
 						}
 						else
 						{
@@ -373,7 +400,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					{
 						goomba->isKillByWeapon = false;
 						goomba->SetState(GOOMBA_STATE_DIE);
-						
 						Jump();
 						Fall();
 					}
@@ -423,7 +449,7 @@ void CMario::Render()
 	int alpha = 255;
 	if (untouchable) alpha = 128;
 	animation_set->at(ani)->Render(x,y,alpha);
-	RenderBoundingBox();
+//	RenderBoundingBox();
 }
 
 

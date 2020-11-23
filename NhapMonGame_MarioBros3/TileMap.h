@@ -11,9 +11,6 @@
 class TileMap
 {
 public:
-	int last_firstcol;
-	bool isBeginMapX = true;
-	bool isBeginMapY = false;
 	int firstcol;
 	int lastcol;
 	int firstrow;

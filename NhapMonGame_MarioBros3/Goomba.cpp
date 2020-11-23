@@ -1,8 +1,11 @@
 #include "Goomba.h"
 #include "Utils.h"
+#include "ColorBox.h"
 CGoomba::CGoomba(CMario *m)
 {
-	SetState(GOOMBA_STATE_WALKING);
+	player = m;
+	nx = -1;
+	SetState(GOOMBA_STATE_MOVE);
 }
 
 void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -19,20 +22,9 @@ void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& botto
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	CGameObject::Update(dt, coObjects);
+	CEnemy::Update(dt, coObjects);
+	
 
-	//
-	// TO-DO: make sure Goomba can interact with the world and to each of them too!
-	// 
-	vy += ENEMY_GRAVITY * dt;
-
-	if (vx < 0 && x < 0) {
-		x = 0; vx = -vx;
-	}
-
-	if (vx > 0 && x > 290) {
-		x = 290; vx = -vx;
-	}
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -40,7 +32,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (!isKillByWeapon)
 	{
 		CalcPotentialCollisions(coObjects, coEvents);
-
 	}
 
 	// No collision occured, proceed normally
@@ -55,19 +46,33 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float rdx = 0;
 		float rdy = 0;
 
-		
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.1f;
 
-
-		if (ny != 0)
+		if (ny < 0)
 		{
-				vy = 0;
+			vy = 0;
 		}
-		// clean up collision events
+		else
+			if (nx != 0)
+			{
+				backup_vx = vx;
+				vx = -vx;
+			}
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+			if (dynamic_cast<CColorBox*>(e->obj))
+			{
+				if (e->nx != 0)
+				{
+					vx = backup_vx;
+					x += dx;
+				}
+			}
+		}
 		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 	}
 }
@@ -77,9 +82,12 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CGoomba::Render()
 {
-	int ani = GOOMBA_ANI_WALKING;
+	int ani = GOOMBA_ANI_MOVING;
 	if (state == GOOMBA_STATE_DIE) {
-		ani = GOOMBA_ANI_DIE;
+		if (isKillByWeapon)
+			ani = GOOMBA_ANI_DIE_REVERSE;
+		else
+			ani = GOOMBA_ANI_DIE;
 	}
 	animation_set->at(ani)->Render(x, y);
 }
@@ -89,11 +97,34 @@ void CGoomba::SetState(int state)
 	CGameObject::SetState(state);
 	switch (state)
 	{
-	case GOOMBA_STATE_DIE:
-		vx = 0;
-		vy = 0;
+	case GOOMBA_STATE_MOVE:
+		if (nx == 1)
+		{
+			vx = GOOMBA_SPEED_MOVE;
+		}
+		else
+		{
+			vx = -GOOMBA_SPEED_MOVE;
+		}
 		break;
-	case GOOMBA_STATE_WALKING:
-		vx = -GOOMBA_WALKING_SPEED;
+	case GOOMBA_STATE_DIE:
+		if (isKillByWeapon)
+		{
+			vy = -GOOMBA_SPEED_BOUNCE;
+			if (player->nx == 1)
+			{
+				vx = GOOMBA_SPEED_WHEN_DIE;
+			}
+			else if (player->nx == -1)
+			{
+				vx = -GOOMBA_SPEED_WHEN_DIE;
+			}
+		}
+		else
+		{
+			vy = 0;
+			vx = 0;
+		}
+		break;
 	}
 }

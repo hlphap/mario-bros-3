@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Ground.h"
-
+#include "Weapon.h"
 #define TAIL_BBOX_WIDTH  8
 #define TAIL_BBOX_HEIGHT 8
 
@@ -10,7 +10,7 @@
 #define TAIL_CANNOT_KILL		101	
 
 #define TIME_DEFAUL		0
-class CTail : public CGameObject
+class CTail : public CWeapon
 {
 public:
 

@@ -57,6 +57,9 @@ public:
 	float vx;
 	float vy;
 
+	float backup_vx;
+	float backup_vy;
+
 	int nx;
 
 	int state;
@@ -95,8 +98,6 @@ public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	virtual void Render() = 0;
 	virtual void SetState(int state) { this->state = state; }
-
-
 	~CGameObject();
 };
 

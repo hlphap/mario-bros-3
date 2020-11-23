@@ -32,15 +32,15 @@ void CBullet::Render()
 				ani = 0;
 			}
 	animation_set->at(ani)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CBullet::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	l = x;
 	t = y;
-	r = x + BULLET_BBOX_WIDTH * amountX;
-	b = y + BULLET_BBOX_WIDTH * amountY;
+	r = x + BULLET_BBOX_WIDTH;
+	b = y + BULLET_BBOX_WIDTH;
 }
 void CBullet::SetState(int state)
 {
@@ -189,18 +189,11 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (dynamic_cast<CGoomba*>(e->obj))
 			{
 				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-				if (e->nx != 0)
+				if ((e->nx != 0)||(e->ny != 0))
 				{
 					if (goomba->GetState() != GOOMBA_STATE_DIE)
 					{
-						goomba->SetState(GOOMBA_STATE_DIE);
-						SetState(BULLET_STATE_EXPLOSIVE);
-					}
-				}
-				if (e->ny != 0)
-				{
-					if (goomba->GetState() != GOOMBA_STATE_DIE)
-					{
+						goomba->isKillByWeapon = true;
 						goomba->SetState(GOOMBA_STATE_DIE);
 						SetState(BULLET_STATE_EXPLOSIVE);
 					}
@@ -216,6 +209,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						{
 							koopas->isKillByWeapon = true;
 							koopas->SetState(KOOPAS_STATE_SLEEP);
+							koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
 							SetState(BULLET_STATE_EXPLOSIVE);
 						}
 					}
@@ -224,7 +218,9 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						if (koopas->GetState() != KOOPAS_STATE_DIE)
 						{
 							koopas->isKillByWeapon = true;
-							koopas->SetState(KOOPAS_STATE_DIE);
+							
+							koopas->SetState(KOOPAS_STATE_SLEEP);
+							koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
 							SetState(BULLET_STATE_EXPLOSIVE);
 						}
 					}

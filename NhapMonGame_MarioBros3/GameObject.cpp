@@ -128,7 +128,7 @@ void CGameObject::RenderBoundingBox()
 	rect.right = (int)right - (int)left;
 	rect.bottom = (int)bottom - (int)top;
 
-	//DebugOut(L"Left mario bb : %f", left);
+	//DebugOut(L"Left player bb : %f", left);
 	CGame::GetInstance()->Draw(left, top , bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
 }
 

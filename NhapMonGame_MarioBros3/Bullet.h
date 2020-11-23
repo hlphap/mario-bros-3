@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Ground.h"
-
+#include "Weapon.h"
 #define BULLET_BBOX_WIDTH  8
 #define BULLET_BBOX_HEIGHT 8
 
@@ -16,11 +16,9 @@
 #define BULLET_TIME_EXITS	3000
 #define BULLET_TIME_EXPLOSIVE 800
 #define TIME_DEFAUL		0
-class CBullet : public CGameObject
+class CBullet : public CWeapon
 {
 public:
-	
-	DWORD timer;
 	DWORD timeStartColl = TIME_DEFAUL;
 	bool isExploding = false;
 	CBullet();
