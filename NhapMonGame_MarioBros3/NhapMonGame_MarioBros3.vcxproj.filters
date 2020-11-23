@@ -111,9 +111,6 @@
     <ClCompile Include="Item.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="BoundaryBrick.cpp">
-      <Filter>GameObject\Map Object</Filter>
-    </ClCompile>
     <ClCompile Include="Tail.cpp">
       <Filter>GameObject\Weapon</Filter>
     </ClCompile>
@@ -199,9 +196,6 @@
     </ClInclude>
     <ClInclude Include="Item.h">
       <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="BoundaryBrick.h">
-      <Filter>GameObject\Map Object</Filter>
     </ClInclude>
     <ClInclude Include="Tail.h">
       <Filter>GameObject\Weapon</Filter>

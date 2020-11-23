@@ -300,18 +300,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					vx = 0;
 				}
 			}
-			else if (dynamic_cast<CBoundaryBrick*>(e->obj))
-			{
-				if (e->ny != 0)
-				{
-					vy = backup_vy;
-					y += dy;
-				}
-				if (e->nx != 0)
-				{
-					x += dx;
-				}
-			}
 //Va chạm với quái
 			if (dynamic_cast<CKoopas*>(e->obj)) // if e->obj is Goomba 
 			{
@@ -1060,7 +1048,6 @@ void CMario::KeepJump()
 		isKeepJump_SlowFalling = true;
 		SetState(MARIO_STATE_BIG_TAIL_KEEP_JUMP_FALL_SLOW);
 	}
-
 }
 
 void CMario::Kick()

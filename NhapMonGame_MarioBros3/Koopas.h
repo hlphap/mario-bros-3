@@ -1,6 +1,5 @@
 #pragma once
 #include "Enemy.h"
-#include "BoundaryBrick.h"
 
 #define KOOPAS_WALKING_SPEED 0.03f
 #define KOOPAS_RUNNING_WHEN_KICKED 0.15f

@@ -216,12 +216,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
 		break;
-	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(player); break;
-	
-	case OBJECT_TYPE_BOUNDARYBRICK:
-		obj = new CBoundaryBrick();
-		obj->amountX = atoi(tokens[4].c_str());
-		obj->amountY = atoi(tokens[5].c_str());
+	case OBJECT_TYPE_KOOPAS: 
+		obj = new CKoopas(player);
 		break;
 	case OBJECT_TYPE_PORTAL:
 	{

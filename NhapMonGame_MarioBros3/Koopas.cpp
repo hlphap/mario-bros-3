@@ -71,7 +71,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
-
 	CalcPotentialCollisions(coObjects, coEvents);
 
 	// No collision occured, proceed normally
@@ -88,54 +87,54 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-
-		if (!isHeld)
+		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+		y += min_ty * dy + ny * 0.1f;
+		if (ny != 0)
 		{
-			x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-			y += min_ty * dy + ny * 0.1f;
-
-
-			if (nx != 0)
-			{
-				this->nx = -this->nx;
-			}
-			if (ny != 0)
-			{
-				vy = 0;
-			}
+			vy = 0;
 		}
 		// Collision logic with other objects
 		//
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-
 			// Brick defaul
-			if (dynamic_cast<CBoundaryBrick*>(e->obj))
+			if (dynamic_cast<CColorBox*>(e->obj))
 			{
+				CColorBox* colorbox = dynamic_cast<CColorBox*>(e->obj);
 				if (e->nx != 0)
 				{
-					if (isSleeping)
+					x += dx;
+				}
+				else if (e->ny < 0)
+				{
+					if (!isSleeping)
 					{
-						this->nx = -this->nx;
-						x += dx;
+						if (x <= colorbox->x)
+						{
+							x = colorbox->x;
+							this->nx = 1;
+						}
+						else if (x + KOOPAS_BBOX_WIDTH >= colorbox->x + colorbox->amountX * BRICK_BBOX_WIDTH)
+						{
+							x = colorbox->x + colorbox->amountX * BRICK_BBOX_WIDTH - KOOPAS_BBOX_WIDTH;
+							this->nx = -1;
+						}
 					}
 				}
 			}
 			else
-				if (dynamic_cast<CColorBox*>(e->obj))
+			{
+				if (e->nx != 0)
 				{
-					if (e->nx != 0)
+					if (e->nx > 0)
 					{
-						this->nx = -this->nx;
-						x += dx;
+						this->nx = 1;
 					}
-					else if (e->ny < 0)
-					{
-						vy = 0;
-					}
+					else
+						this->nx = -1;
 				}
-
+			}
 		}
 		if (isMoving) SetState(KOOPAS_STATE_MOVING);
 		// clean up collision events
