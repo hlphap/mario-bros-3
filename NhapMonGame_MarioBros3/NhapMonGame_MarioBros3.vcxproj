@@ -32,6 +32,7 @@
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Koopas.cpp" />
+    <ClCompile Include="KoopasGeneral.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="MarioGeneral.cpp" />
@@ -63,6 +64,7 @@
     <ClInclude Include="Item.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Koopas.h" />
+    <ClInclude Include="KoopasGeneral.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="MarioGeneral.h" />
     <ClInclude Include="Pipe.h" />

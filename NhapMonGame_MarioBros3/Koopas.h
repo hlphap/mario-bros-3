@@ -1,6 +1,6 @@
 #pragma once
 #include "Enemy.h"
-
+#include "KoopasGeneral.h"
 #define KOOPAS_WALKING_SPEED 0.03f
 #define KOOPAS_RUNNING_WHEN_KICKED 0.15f
 #define KOOPAS_JUMP_DEFLECT_SPEED	0.2f
@@ -13,21 +13,19 @@
 #define KOOPAS_STATE_DIE 200
 #define KOOPAS_STATE_SLEEP 300
 
-#define KOOPAS_ANI_WALKING_LEFT 0
-#define KOOPAS_ANI_WALKING_RIGHT 1
-#define KOOPAS_ANI_SHELL_IDLE 2
-#define KOOPAS_ANI_SHELL_HEALTH 3
-#define KOOPAS_ANI_SHELL_MOVE 4
-#define KOOPAS_ANI_SHELL_OVERTURNED_IDLE 5
-#define KOOPAS_ANI_SHELL_OVERTURNED_MOVE 10
-#define KOOPAS_ANI_SHELL_OVERTURNED_HEALTH 11
+
 
 
 class CKoopas : public CEnemy
 {
 public:
+	CKoopasGeneral* koopasGeneral;
+	int ani = -1;
+	int type;
+	int level;
 	int rangeX;
 	int rangeY;
+	DWORD timeStartSleep = TIME_DEFAUL;
 public:
 	bool isMoving = true;
 	bool isKicked = false;
@@ -36,6 +34,6 @@ public:
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
     void Render();
-	CKoopas(CMario *m);
+	CKoopas(CMario *m, int type, int level);
 	void SetState(int state);
 };

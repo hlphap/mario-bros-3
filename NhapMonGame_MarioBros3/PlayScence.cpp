@@ -79,7 +79,7 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 
 	int ani_id = atoi(tokens[0].c_str());
 //	DebugOut(L"\nAdd IDAni:", ani_id);
-	for (int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
+	for (size_t i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
 	{
 		int sprite_id = atoi(tokens[i].c_str());
 		int frame_time = atoi(tokens[i + 1].c_str());
@@ -101,7 +101,7 @@ void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 
 	CAnimations* animations = CAnimations::GetInstance();
 
-	for (int i = 1; i < tokens.size(); i++)
+	for (size_t i = 1; i < tokens.size(); i++)
 	{
 		int ani_id = atoi(tokens[i].c_str());
 
@@ -216,8 +216,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
 		break;
-	case OBJECT_TYPE_KOOPAS: 
-		obj = new CKoopas(player);
+	case OBJECT_TYPE_KOOPAS:
+		{
+			int type = atoi(tokens[4].c_str());
+			int level = atoi(tokens[5].c_str());
+			obj = new CKoopas(player, type, level);
+			DebugOut(L"Phap");
+		}
 		break;
 	case OBJECT_TYPE_PORTAL:
 	{
@@ -231,7 +236,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
 	}
-
 	// General object setup
 	obj->SetPosition(x, y);
 
@@ -344,7 +348,7 @@ void CPlayScene::Update(DWORD dt)
 		coObjects.push_back(objects[i]);
 	}
 
-	for (int i = 0; i < bullets.size(); i++) {
+	for (UINT i = 0; i < bullets.size(); i++) {
 
 		bullets[i]->Update(dt, &coObjects);
 	}
@@ -393,7 +397,7 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	for (int i = 0; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 		delete objects[i];
 
 	objects.clear();
@@ -404,7 +408,7 @@ void CPlayScene::Unload()
 
 void CPlayScene::DeleteBullet()
 {
-	for (int i = 0; i < bullets.size(); i++)
+	for (size_t i = 0; i < bullets.size(); i++)
 	{
 		if (bullets[i]->isExploding)
 		{

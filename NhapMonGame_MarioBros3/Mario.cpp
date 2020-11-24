@@ -311,7 +311,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					if (koopas->GetState() != KOOPAS_STATE_SLEEP)
 					{
 						//DebugOut(L"Sleep");
-						koopas->SetState(KOOPAS_STATE_SLEEP);
+						if (koopas->level > 1)
+						{
+							koopas->level--;
+						}
+						else
+							koopas->SetState(KOOPAS_STATE_SLEEP);
 						Jump();
 						Fall();
 					}
@@ -352,7 +357,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							}
 
 						}
-						else
+						else 
 						{
 							//Khong tang toc (ko giu A) thi da ruaf
 							if (!isHoldShell)
@@ -437,7 +442,7 @@ void CMario::Render()
 	int alpha = 255;
 	if (untouchable) alpha = 128;
 	animation_set->at(ani)->Render(x,y,alpha);
-//	RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 

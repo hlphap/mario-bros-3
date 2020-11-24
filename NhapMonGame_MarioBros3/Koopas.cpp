@@ -2,8 +2,12 @@
 #include "ColorBox.h"
 #include "Utils.h"
 
-CKoopas::CKoopas(CMario* m)
+CKoopas::CKoopas(CMario* m, int type, int level)
 {
+	this->type = type;
+	this->level = level;
+	koopasGeneral = CKoopasGeneral::GetInstance();
+	koopasGeneral->LoadListAni();
 	player = m;
 	SetState(KOOPAS_STATE_MOVING);
 }
@@ -14,7 +18,7 @@ void CKoopas::GetBoundingBox(float& left, float& top, float& right, float& botto
 	top = y;
 	right = left + KOOPAS_BBOX_WIDTH;
 	bottom = top + KOOPAS_BBOX_HEIGHT;
-	if (isSleeping)
+	if (isSleeping)	
 		top = top + KOOPAS_BBOX_HEIGHT_SLEEP;
 	if (state == KOOPAS_STATE_DIE)
 	{
@@ -24,8 +28,22 @@ void CKoopas::GetBoundingBox(float& left, float& top, float& right, float& botto
 
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	//Hoi sinh
+	if (state == KOOPAS_STATE_SLEEP && timeStartSleep != 0 && GetTickCount() - timeStartSleep >= 5000)
+	{
+		level++;
+		isSleeping = false;
+		if (isHeld)
+		{
+			x += rangeX;
+			y -= rangeY;
+			isHeld = false; // Khi nó hồi sinh thì không bị cầm nưa
+		}
+		nx = -player->nx;
+		SetState(KOOPAS_STATE_MOVING);
+	}
 	//Bi cam thi khong co gia toc trong truong
-		//Bị cầm -> hết cầm
+	//Bị cầm -> hết cầm
 	if (isHeld)
 	{
 		if (!player->isHoldingShell)
@@ -63,8 +81,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		SetPosition(player->x + rangeX, player->y - rangeY);
 		return;
 	}
-
-
 	CGameObject::Update(dt);
 	vy += ENEMY_GRAVITY * dt;
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -108,7 +124,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 				else if (e->ny < 0)
 				{
-					if (!isSleeping)
+					if (!isSleeping && level != KOOPAS_LEVEL_HAVE_WING)
 					{
 						if (x <= colorbox->x)
 						{
@@ -146,50 +162,41 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CKoopas::Render()
 {
-	int ani = KOOPAS_ANI_WALKING_LEFT;
-	if (!isMoving)
+	int aniIndex = -1;	
+	if (isMoving)
 	{
-		if (isSleeping)
+		if (level == KOOPAS_LEVEL_HAVE_WING)
 		{
-			if (isKillByWeapon)
-				ani = KOOPAS_ANI_SHELL_OVERTURNED_IDLE;
+			if (nx > 0)
+				aniIndex = KOOPAS_ANI_FLYING_RIGHT;
 			else
-				ani = KOOPAS_ANI_SHELL_IDLE;
-		}
-	}
-	else if (nx == 1)
-	{
-		if (!isSleeping)
-		{
-			ani = KOOPAS_ANI_WALKING_RIGHT;
+				aniIndex = KOOPAS_ANI_FLYING_LEFT;
 		}
 		else
-			if (isSleeping)
+			if (level == KOOPAS_LEVEL_DEFAULT)
 			{
-				if (isKillByWeapon)
-					ani = KOOPAS_ANI_SHELL_OVERTURNED_MOVE;
+				if (nx > 0)
+					aniIndex = KOOPAS_ANI_WALKING_RIGHT;
 				else
-					ani = KOOPAS_ANI_SHELL_MOVE;
+					aniIndex = KOOPAS_ANI_WALKING_LEFT;
+			}
+			else
+			{
+				if (!isKillByWeapon)
+					aniIndex = KOOPAS_ANI_SHELL_MOVING;
+				else
+					aniIndex = KOOPAS_ANI_SHELL_OVERTURNED_MOVING;
 			}
 	}
-	else if (nx == -1)
-	{
-		if (!isSleeping)
-		{
-			ani = KOOPAS_ANI_WALKING_LEFT;
-		}
+	else
+		if (!isKillByWeapon)
+			aniIndex = KOOPAS_ANI_SHELL_IDLE;
 		else
-			if (isSleeping)
-			{
-				if (isKillByWeapon)
-					ani = KOOPAS_ANI_SHELL_OVERTURNED_MOVE;
-				else
-					ani = KOOPAS_ANI_SHELL_MOVE;
-			}
-	}
-
+			aniIndex = KOOPAS_ANI_SHELL_OVERTURNED_IDLE;
+	ani = koopasGeneral->GetAni_Koopas(type, aniIndex);
+	DebugOut(L"Koopas Ani %d", ani);
 	animation_set->at(ani)->Render(x, y);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 
@@ -201,26 +208,43 @@ void CKoopas::SetState(int state)
 	{
 	case KOOPAS_STATE_MOVING:
 		isMoving = true;
-		if (nx == 1)
+		if (level == KOOPAS_LEVEL_HAVE_WING)
 		{
-			if (isKicked)
-				vx = KOOPAS_RUNNING_WHEN_KICKED;
-			else
+			vy = -KOOPAS_SPEED_BOUNCE;
+			if (nx > 0)
+			{
 				vx = KOOPAS_WALKING_SPEED;
+			}
+			else
+				vx = -KOOPAS_WALKING_SPEED;
 		}
 		else
-			if (nx == -1)
+			if (level == KOOPAS_LEVEL_DEFAULT)
 			{
-				if (isKicked)
-					vx = -KOOPAS_RUNNING_WHEN_KICKED;
+				if (nx > 0)
+				{
+					vx = KOOPAS_WALKING_SPEED;
+				}
 				else
 					vx = -KOOPAS_WALKING_SPEED;
 			}
+		else
+			if (level == KOOPAS_LEVEL_SHELL)
+			{
+				if (nx > 0)
+				{
+					vx = KOOPAS_RUNNING_WHEN_KICKED;
+				}
+				else
+					vx = -KOOPAS_RUNNING_WHEN_KICKED;
+			}
 		break;
 	case KOOPAS_STATE_SLEEP:
+		timeStartSleep = GetTickCount();
 		isKicked = false;
 		isSleeping = true;
 		isMoving = false;
+		level = KOOPAS_LEVEL_SHELL;
 		vx = 0;
 		vy = 0;
 		break;
@@ -228,6 +252,7 @@ void CKoopas::SetState(int state)
 		isKicked = false;
 		isSleeping = false;
 		isMoving = false;
+		level = KOOPAS_LEVEL_SHELL;
 		vx = 0;
 		vy = 0;
 		break;
