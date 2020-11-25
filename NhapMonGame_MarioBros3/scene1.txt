@@ -405,22 +405,27 @@
 410099	294	92	312	120	60
 
 #=======================================================================================Pipe flower sprite
-# bong hoa nguoc CLOSE MOUTH len troi LEFT
-80000	165	545	181	578	60
-# bong hoa nguoc open mouth len troi LEFT
-80001	65	545	81	578	60
-# bong hoa nguoc close mouth xuong LEFT
-80002	115	545	131	578	60
-# bong hoa nguoc open mouth xuong LEFT
-80003	15	545	31	578	60
-# bong hoa nguoc close mouth len troi RIGHT
-80004	215	545	231	578	60
-# bong hoa nguoc open mouth len troi RIGHT
-80005	315	545	331	578	60
-# bong hoa nguoc close mouth xuong RIGHT
-80006	265	545	281	578	60
-# bong hoa nguoc open mouth xuong RIGHT
-80007	365	545	381	578	60
+#======================================================================Flower red
+#Hoa xanh type = 0, hoa đỏ type = 1, hướng lên = 1, hướng xuống = 0
+#ani_set	type 	ny	stt(2x)	nx 
+# Đỏng mở hướng xuống, LEFT
+610000	115	545	131	578	60
+# Mở mỏ hướng xuống, LEFT
+610010	15	545	31	578	60
+# Đóng mỏ hướng lên, LEFT
+611000	165	545	181	578	60
+# Mở mỏ hướng lên, LEFT
+611010	65	545	81	578	60
+
+#Đỏng mở hướng xuống, RIGHT
+610001	265	545	281	578	60
+# Mở mỏ hướng xuống, RIGHT
+610011	365	545	381	578	60s
+# Đóng mỏ hướng lên, RIGHT
+611001	215	545	231	578	60
+# Mở mỏ hướng lên, RIGHT
+611011	315	545	331	578	60
+
 
 
 #=======================================================================================Fire bullet sprite
@@ -753,14 +758,24 @@
 21002	21040	100
 
 #=======================================================================================Flower ani
-6	80000	100	80001	100
-7	80001	100
-8	80002	100	80003	100
-9	80003	100
-10	80004	100	80005	100
-11	80005	100
-12	80006	100	80007	100
-13	80007	100
+#ani_set	type 	ny	stt(x)	nx 
+#move right (ny = 0)
+61001	610001	100	610011 100
+#shoot right (ny = 0)
+61011	610011 100
+#move right (ny = 1)
+61101	611001	100	611011	100
+#shoot right (ny = 1)
+61111	611011	100
+
+#move left  (ny =0)
+61000	610000	100	610010	100
+#shoot left (ny = 0)
+61010	610010	100
+#move left  (ny =1)
+61100	611000	100	611010	100
+#shoot left (ny = 1)
+61110	611010	100
 
 
 #=======================================================================================Bullet ani
