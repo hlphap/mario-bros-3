@@ -194,7 +194,7 @@ void CKoopas::Render()
 		else
 			aniIndex = KOOPAS_ANI_SHELL_OVERTURNED_IDLE;
 	ani = koopasGeneral->GetAni_Koopas(type, aniIndex);
-	DebugOut(L"Koopas Ani %d", ani);
+//	DebugOut(L"Koopas Ani %d", ani);
 	animation_set->at(ani)->Render(x, y);
 	RenderBoundingBox();
 }

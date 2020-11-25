@@ -175,8 +175,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
 	case OBJECT_TYPE_GOOMBA:
-		obj = new CGoomba(player);
+	{
+		int type = atoi(tokens[4].c_str());
+		int level = atoi(tokens[5].c_str());
+		obj = new CGoomba(player, type, level);
 		break;
+	}
 	case OBJECT_TYPE_BRICK: //Oker
 		obj = new CBrick();
 		obj->amountX = atoi(tokens[4].c_str());
@@ -412,7 +416,7 @@ void CPlayScene::DeleteBullet()
 	{
 		if (bullets[i]->isExploding)
 		{
-			if (GetTickCount() - bullets[i]->timeStartColl >= BULLET_TIME_EXPLOSIVE && bullets[i]->timeStartColl != TIME_DEFAUL)
+			if (GetTickCount() - bullets[i]->timeStartColl >= BULLET_TIME_EXPLOSIVE && bullets[i]->timeStartColl != TIME_DEFAULT)
 			bullets.erase(bullets.begin() + i);
 		}
 		else

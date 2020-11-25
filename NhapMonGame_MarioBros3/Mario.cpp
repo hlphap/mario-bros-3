@@ -82,7 +82,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//Update isKicking
 	if (GetTickCount() - timeStartKick >= MARIO_TIME_KICK)
 	{
-		timeStartKick = TIME_DEFAUL;
+		timeStartKick = TIME_DEFAULT;
 		isKicking = false;
 	}
 
@@ -111,7 +111,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		weapon->Update(dt,coObjects); // Duoi thuoc Mario Update Duoi trong Mario
 		if (GetTickCount() - timeStartAttack >= MARIO_TIME_BIG_TAIL_ATTACK)
 		{
-			timeStartAttack = TIME_DEFAUL;
+			timeStartAttack = TIME_DEFAULT;
 			isAttacking = false;
 		}
 		//Update thoi gian bay
@@ -123,7 +123,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (GetTickCount() - timeStartFly >= MARIO_TIME_FLYING_MAX)
 				{
 					isKeepJump_HightFlying = false;
-					timeStartFly = TIME_DEFAUL;
+					timeStartFly = TIME_DEFAULT;
 				}
 		}
 
@@ -151,7 +151,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			if (GetTickCount() - timeStartAttack >= MARIO_TIME_BIG_FIRE_ATTACK_ON_GROUND)
 			{
-				timeStartAttack = TIME_DEFAUL;
+				timeStartAttack = TIME_DEFAULT;
 				isAttacking = false;
 			}
 		}
@@ -159,7 +159,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			if (GetTickCount() - timeStartAttack >= MARIO_TIME_BIG_FIRE_ATTACK_ON_AIR)
 			{
-				timeStartAttack = TIME_DEFAUL;
+				timeStartAttack = TIME_DEFAULT;
 				isAttacking = false;
 			}
 		}
@@ -391,6 +391,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					if (goomba->GetState() != GOOMBA_STATE_DIE)
 					{
+						if (goomba->level == GOOMBA_LEVEL_HAVE_WING)
+							goomba->level = GOOMBA_LEVEL_DEFAULT;
 						goomba->isKillByWeapon = false;
 						goomba->SetState(GOOMBA_STATE_DIE);
 						Jump();
@@ -910,7 +912,7 @@ void CMario::SetState(int state)
 
 	case MARIO_STATE_BIG_TAIL_ATTACK:
 	{
-		if (timeStartAttack == TIME_DEFAUL) timeStartAttack = GetTickCount();
+		if (timeStartAttack == TIME_DEFAULT) timeStartAttack = GetTickCount();
 		break;
 	}
 	
@@ -919,14 +921,14 @@ void CMario::SetState(int state)
 	//=============================SPECIAL STATE MARIO_FIRE=============================
 	case MARIO_STATE_BIG_FIRE_ATTACK:
 	{
-		if (timeStartAttack == TIME_DEFAUL) timeStartAttack = GetTickCount();
+		if (timeStartAttack == TIME_DEFAULT) timeStartAttack = GetTickCount();
 		break;
 	}
 
 
 	case MARIO_STATE_KICK:
 	{
-		if (timeStartKick == TIME_DEFAUL) timeStartKick = GetTickCount();
+		if (timeStartKick == TIME_DEFAULT) timeStartKick = GetTickCount();
 	}
 	//=============================END SPECIAL STATE MARIO_FIRE=============================
 	case MARIO_STATE_STOP_RUNNING:

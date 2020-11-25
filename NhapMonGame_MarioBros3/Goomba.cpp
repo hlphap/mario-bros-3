@@ -1,29 +1,48 @@
 #include "Goomba.h"
 #include "Utils.h"
 #include "ColorBox.h"
-CGoomba::CGoomba(CMario *m)
+CGoomba::CGoomba(CMario *m,int type, int level)
 {
+	this->level = level;
+	this->type = type;
 	player = m;
-	nx = -1;
+	goombaGeneral = new CGoombaGeneral();
+	goombaGeneral->LoadListAni();
 	SetState(GOOMBA_STATE_MOVE);
 }
 
 void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-
 	left = x;
 	top = y;
-	right = left + GOOMBA_BBOX_WIDTH;
-	bottom = top + GOOMBA_BBOX_HEIGHT;
+	right = left + 20;
+	bottom = top + 24;
+	if (level == GOOMBA_LEVEL_HAVE_WING)
+	{
+		if (!isFlying)
+		{
+			top = top + 5;
+		}
+	}
+	else
+		top = top + 8;
 	if (state == GOOMBA_STATE_DIE)
-		top = top + GOOMBA_BBOX_HEIGHT;
-	
+		top = top + 15;
+	left = left + 2;
 }
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CEnemy::Update(dt, coObjects);
 	
+
+	//Follow Mario
+	if (x + GOOMBA_BBOX_WIDTH < player->x)
+	{
+		nx = 1;
+	}
+	else
+		nx = -1;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -54,6 +73,14 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (ny < 0)
 		{
 			vy = 0;
+			numJump++;
+			if (numJump == 4)
+			{
+				isFlying = false;
+				if (timeStartMove==TIME_DEFAULT)
+					timeStartMove = GetTickCount();
+				numJump = 0;
+			}
 		}
 		else
 			if (nx != 0)
@@ -73,6 +100,13 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 			}
 		}
+		DebugOut(L"TimeStartMove: %d\n", GetTickCount() - timeStartMove);
+		if (GetTickCount() - timeStartMove >= 1200 && isMoving)
+		{
+			SetState(GOOMBA_STATE_MOVE);
+			timeStartMove = TIME_DEFAULT;
+		}
+			
 		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 	}
 }
@@ -82,14 +116,30 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CGoomba::Render()
 {
-	int ani = GOOMBA_ANI_MOVING;
-	if (state == GOOMBA_STATE_DIE) {
-		if (isKillByWeapon)
-			ani = GOOMBA_ANI_DIE_REVERSE;
+	int aniIndex = -1;
+	if (isMoving)
+	{
+		if (level == GOOMBA_LEVEL_HAVE_WING)
+		{
+			if (isFlying)
+				aniIndex = GOOMBA_ANI_FLYING;
+			else
+				aniIndex = GOOMBA_ANI_HAVE_WING_MOVING;
+		}
 		else
-			ani = GOOMBA_ANI_DIE;
+			aniIndex = GOOMBA_ANI_MOVING;
 	}
+	else
+	{
+		if (isKillByWeapon)
+			aniIndex = GOOMBA_ANI_DIE_BY_WEAPON;
+		else
+			aniIndex = GOOMBA_ANI_DIE;
+	}
+	ani = goombaGeneral->GetAni_Goomba(type, aniIndex);
+	//DebugOut(L"Ani Gomba %d \n", ani);
 	animation_set->at(ani)->Render(x, y);
+	RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)
@@ -98,16 +148,44 @@ void CGoomba::SetState(int state)
 	switch (state)
 	{
 	case GOOMBA_STATE_MOVE:
-		if (nx == 1)
+		isMoving = true;
+		if (level == GOOMBA_LEVEL_HAVE_WING) 
 		{
-			vx = GOOMBA_SPEED_MOVE;
+		//	DebugOut(L"numJump: %d\n", numJump);
+			if (numJump <= 2 ) //Nhayr laanf 2
+			{
+				vy = -0.06;
+				isFlying = true;
+			}
+			else
+			{
+				vy = -0.15;
+				isFlying = true;
+			}
+			if (nx == 1)
+			{
+				vx = GOOMBA_SPEED_MOVE;
+			}
+			else
+			{
+				vx = -GOOMBA_SPEED_MOVE;
+			}
 		}
 		else
+		if (level == GOOMBA_LEVEL_DEFAULT)
 		{
-			vx = -GOOMBA_SPEED_MOVE;
+			if (nx == 1)
+			{
+				vx = GOOMBA_SPEED_MOVE;
+			}
+			else
+			{
+				vx = -GOOMBA_SPEED_MOVE;
+			}
 		}
 		break;
 	case GOOMBA_STATE_DIE:
+		isMoving = false;
 		if (isKillByWeapon)
 		{
 			vy = -GOOMBA_SPEED_BOUNCE;

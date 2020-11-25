@@ -124,7 +124,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KoopasGeneral.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>GameObject\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="GoombaGeneral.cpp">
+      <Filter>GameObject\Enemies</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -213,7 +216,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="KoopasGeneral.h">
-      <Filter>Header Files</Filter>
+      <Filter>GameObject\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="GoombaGeneral.h">
+      <Filter>GameObject\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

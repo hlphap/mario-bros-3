@@ -25,7 +25,7 @@ public:
 	int level;
 	int rangeX;
 	int rangeY;
-	DWORD timeStartSleep = TIME_DEFAUL;
+	DWORD timeStartSleep = TIME_DEFAULT;
 public:
 	bool isMoving = true;
 	bool isKicked = false;

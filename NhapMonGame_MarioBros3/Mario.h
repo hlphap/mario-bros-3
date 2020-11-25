@@ -21,7 +21,7 @@
 #define MARIO_JUMP_DEFLECT_SPEED						0.2f
 #define MARIO_GRAVITY									0.00045f
 #define MARIO_DIE_DEFLECT_SPEED							0.5f
-#define TIME_DEFAUL										0
+#define TIME_DEFAULT										0
 #define MARIO_CAN_FLY_TIME								4500
 
 class CMario : public CGameObject
@@ -39,9 +39,9 @@ public:
 	//Timer
 	DWORD untouchable_start;
 	DWORD timeAllowFly;
-	DWORD timeStartFly = TIME_DEFAUL;
-	DWORD timeStartAttack = TIME_DEFAUL;
-	DWORD timeStartKick = TIME_DEFAUL;
+	DWORD timeStartFly = TIME_DEFAULT;
+	DWORD timeStartAttack = TIME_DEFAULT;
+	DWORD timeStartKick = TIME_DEFAULT;
 	
 
 

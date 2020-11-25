@@ -63,7 +63,7 @@ void CBullet::SetState(int state)
 	case BULLET_STATE_EXPLOSIVE:	
 	{
 		isExploding = true;
-		if (timeStartColl == TIME_DEFAUL) timeStartColl = GetTickCount();
+		if (timeStartColl == TIME_DEFAULT) timeStartColl = GetTickCount();
 		vx = 0;
 		vy = 0;
 		break;

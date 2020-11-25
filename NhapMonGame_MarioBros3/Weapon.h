@@ -1,11 +1,11 @@
 #pragma once
 #include "GameObject.h"
-#define TIME_DEFAUL 0
+#define TIME_DEFAULT 0
 
 class CWeapon : public CGameObject
 {
 public:
-	DWORD timeStartAttack = TIME_DEFAUL;
+	DWORD timeStartAttack = TIME_DEFAULT;
 	bool canKill;
 	int numDame;
 public:

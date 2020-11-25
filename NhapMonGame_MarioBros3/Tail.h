@@ -9,12 +9,12 @@
 #define TAIL_CAN_KILL		100
 #define TAIL_CANNOT_KILL		101	
 
-#define TIME_DEFAUL		0
+#define TIME_DEFAULT		0
 class CTail : public CWeapon
 {
 public:
 
-	DWORD timer = TIME_DEFAUL;
+	DWORD timer = TIME_DEFAULT;
 	bool canKill = false;
 	static CTail* __instance;
 

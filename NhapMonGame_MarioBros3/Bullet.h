@@ -15,11 +15,11 @@
 
 #define BULLET_TIME_EXITS	3000
 #define BULLET_TIME_EXPLOSIVE 800
-#define TIME_DEFAUL		0
+#define TIME_DEFAULT		0
 class CBullet : public CWeapon
 {
 public:
-	DWORD timeStartColl = TIME_DEFAUL;
+	DWORD timeStartColl = TIME_DEFAULT;
 	bool isExploding = false;
 	CBullet();
 	void Render();
