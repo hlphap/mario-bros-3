@@ -20,7 +20,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 }
 
 /*
-	Load scene resources from scene file (textures, sprites, animations and objects)
+	Load scene resources from scene file (textures, sprites, animations and listObj)
 	See scene1.txt, scene2.txt for detail format specification
 */
 
@@ -179,6 +179,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int type = atoi(tokens[4].c_str());
 		int level = atoi(tokens[5].c_str());
 		obj = new CGoomba(player, type, level);
+		listEnemies.push_back(obj);
 		break;
 	}
 	case OBJECT_TYPE_BRICK: //Oker
@@ -212,10 +213,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->amountY = atoi(tokens[5].c_str());
 		break;
 	case OBJECT_TYPE_FLOWER: //Oker
-		obj = new CFlower();
-		obj->state = OBJECT_TYPE_FLOWER;
+	{
+		int type = atoi(tokens[4].c_str());
+		obj = new CFlower(player, type);
+		listEnemies.push_back(obj);
 		break;
-	case OBJECT_TYPE_QUESTIONBRICK: //Oke
+	}
+	case OBJECT_TYPE_QUESTIONBRICK: //);Oke
 		obj = new CQuestionBrick();
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
@@ -246,7 +250,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 
 	obj->SetAnimationSet(ani_set);
-	objects.push_back(obj);
+	listObj.push_back(obj);
 }
 
 
@@ -323,7 +327,7 @@ void CPlayScene::Load()
 	obj->x = 10.0f;
 	obj->y = 300.0f;
 	obj->SetAnimationSet(animation_sets->Get(4));
-	objects.push_back(obj);*/
+	listObj.push_back(obj);*/
 }
 
 void CPlayScene::Update(DWORD dt)
@@ -339,31 +343,31 @@ void CPlayScene::Update(DWORD dt)
 		&& ((!player->isOnAir && GetTickCount() - player->timeStartAttack >= MARIO_TIME_BIG_FIRE_ATTACK_ON_GROUND)
 			|| (player->isOnAir && GetTickCount() - player->timeStartAttack >= MARIO_TIME_BIG_FIRE_ATTACK_ON_AIR)))
 	{
-		if (bullets.size() < BULLET_AMOUNT) {
-			bullets.push_back(dynamic_cast<CBullet*>(player->weapon));
+		if (listBullet.size() < BULLET_AMOUNT) {
+			listBullet.push_back(dynamic_cast<CBullet*>(player->weapon));
 		}
 	}
-	if (bullets.size() == BULLET_AMOUNT)
+	if (listBullet.size() == BULLET_AMOUNT)
 		player->isAttacking = false;
 
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = 1; i < listObj.size(); i++)
 	{
-		coObjects.push_back(objects[i]);
+		coObjects.push_back(listObj[i]);
 	}
 
-	for (UINT i = 0; i < bullets.size(); i++) {
+	for (UINT i = 0; i < listBullet.size(); i++) {
 
-		bullets[i]->Update(dt, &coObjects);
+		listBullet[i]->Update(dt, &coObjects);
 	}
-	//DebugOut(L"\nSize Truoc Xoa Bullet: %d", bullets.size());
+	//DebugOut(L"\nSize Truoc Xoa Bullet: %d", listBullet.size());
 	DeleteBullet();
-	//DebugOut(L"\nSize Bullet: %d", bullets.size());
+	//DebugOut(L"\nSize Bullet: %d", listBullet.size());
 
 
-	for (size_t i = 0; i < objects.size(); i++)
+	for (size_t i = 0; i < listObj.size(); i++)
 	{
-		objects[i]->Update(dt, &coObjects);
+		listObj[i]->Update(dt, &coObjects);
 	}
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
@@ -389,10 +393,10 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::Render()
 {
 	map->Draw();
-	for (int i = objects.size()-1; i >=0; i--)
-		objects[i]->Render();
-	for (int i = 0; i < bullets.size(); i++) {
-		bullets[i]->Render();
+	for (int i = listObj.size()-1; i >=0; i--)
+		listObj[i]->Render();
+	for (int i = 0; i < listBullet.size(); i++) {
+		listBullet[i]->Render();
 	}
 }
 
@@ -401,10 +405,10 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	for (size_t i = 0; i < objects.size(); i++)
-		delete objects[i];
+	for (size_t i = 0; i < listObj.size(); i++)
+		delete listObj[i];
 
-	objects.clear();
+	listObj.clear();
 	player = NULL;
 	map = NULL;
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
@@ -412,16 +416,16 @@ void CPlayScene::Unload()
 
 void CPlayScene::DeleteBullet()
 {
-	for (size_t i = 0; i < bullets.size(); i++)
+	for (size_t i = 0; i < listBullet.size(); i++)
 	{
-		if (bullets[i]->isExploding)
+		if (listBullet[i]->isExploding)
 		{
-			if (GetTickCount() - bullets[i]->timeStartColl >= BULLET_TIME_EXPLOSIVE && bullets[i]->timeStartColl != TIME_DEFAULT)
-			bullets.erase(bullets.begin() + i);
+			if (GetTickCount() - listBullet[i]->timeStartColl >= BULLET_TIME_EXPLOSIVE && listBullet[i]->timeStartColl != TIME_DEFAULT)
+			listBullet.erase(listBullet.begin() + i);
 		}
 		else
-		if (GetTickCount() - bullets[i]->timeStartAttack > BULLET_TIME_EXITS)
-			bullets.erase(bullets.begin() + i);
+		if (GetTickCount() - listBullet[i]->timeStartAttack > BULLET_TIME_EXITS)
+			listBullet.erase(listBullet.begin() + i);
 	}
 }
 

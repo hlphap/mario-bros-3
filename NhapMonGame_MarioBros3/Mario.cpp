@@ -40,8 +40,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
-	/*for (int i = 0; i < bullets.size(); i++) {
-		bullets[i]->Update(dt, coObjects);
+	/*for (int i = 0; i < listBullet.size(); i++) {
+		listBullet[i]->Update(dt, coObjects);
 	}*/
 	// turn off collision when die 
 	if (state != MARIO_STATE_DIE)
@@ -183,7 +183,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		// how to push back Mario if collides with a moving objects, what if Mario is pushed this way into another object?
+		// how to push back Mario if collides with a moving listObj, what if Mario is pushed this way into another object?
 		//if (rdx != 0 && rdx!=dx)
 		//	x += nx*abs(rdx); 
 
@@ -206,7 +206,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			isKeepJump = false;
 			numFall = 0;
 		}
-		// Collision logic with other objects
+		// Collision logic with other listObj
 		//
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{

@@ -1,6 +1,7 @@
 ﻿#include "Koopas.h"
 #include "ColorBox.h"
 #include "Utils.h"
+#include "QuestionBrick.h"
 
 CKoopas::CKoopas(CMario* m, int type, int level)
 {
@@ -109,7 +110,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			vy = 0;
 		}
-		// Collision logic with other objects
+		// Collision logic with other listObj
 		//
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -140,6 +141,31 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 			}
 			else
+				if (dynamic_cast<CQuestionBrick*>(e->obj))
+				{
+					CQuestionBrick* questionbrick = dynamic_cast<CQuestionBrick*>(e->obj);
+					if (e->nx != 0)
+					{
+						x += dx;
+					}
+					else if (e->ny < 0)
+					{
+						if (!isSleeping && level != KOOPAS_LEVEL_HAVE_WING)
+						{
+							if (x <= questionbrick->x)
+							{
+								x = questionbrick->x;
+								this->nx = 1;
+							}
+							else if (x + KOOPAS_BBOX_WIDTH >= questionbrick->x + questionbrick->amountX * BRICK_BBOX_WIDTH)
+							{
+								x = questionbrick->x + questionbrick->amountX * BRICK_BBOX_WIDTH - KOOPAS_BBOX_WIDTH;
+								this->nx = -1;
+							}
+						}
+					}
+				}
+				else
 			{
 				if (e->nx != 0)
 				{

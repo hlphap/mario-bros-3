@@ -8,6 +8,29 @@
 #include "GameObject.h"
 #include "Sprites.h"
 
+bool CGameObject::isCollisionWithObj(LPGAMEOBJECT coObj)
+{
+	if (coObj != NULL)
+	{
+		float thisLeft, thisTop, thisRight, thisBottom, objLeft, objTop, objRight, objBottom;
+		this->GetBoundingBox(thisLeft, thisTop, thisRight, thisBottom);
+		coObj->GetBoundingBox(objLeft, objTop, objRight, objBottom);
+
+		if (CGame::GetInstance()->CheckAABB(thisLeft, thisTop, thisRight, thisBottom, objLeft, objTop, objRight, objBottom))
+			return true;
+
+		LPCOLLISIONEVENT e = SweptAABBEx(coObj);
+		bool check;
+		if (e->t > 0 && e->t <= 1.0f)
+			check = true;
+		else
+			check = false;
+		return check;
+	}
+	else
+		return false;
+}
+
 CGameObject::CGameObject()
 {
 	x = y = 0;
@@ -23,7 +46,7 @@ void CGameObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 }
 
 /*
-	Extension of original SweptAABB to deal with two moving objects
+	Extension of original SweptAABB to deal with two moving listObj
 */
 LPCOLLISIONEVENT CGameObject::SweptAABBEx(LPGAMEOBJECT coO)
 {
@@ -58,9 +81,9 @@ LPCOLLISIONEVENT CGameObject::SweptAABBEx(LPGAMEOBJECT coO)
 }
 
 /*
-	Calculate potential collisions with the list of colliable objects
+	Calculate potential collisions with the list of colliable listObj
 
-	coObjects: the list of colliable objects
+	coObjects: the list of colliable listObj
 	coEvents: list of potential collisions
 */
 void CGameObject::CalcPotentialCollisions(

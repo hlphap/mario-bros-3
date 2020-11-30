@@ -51,9 +51,11 @@ public:
 	CMario* player;					// A play scene has to have player, right? 
 	TileMap *map;
 	
-	vector<LPGAMEOBJECT> objects;
-	vector<CEnemy*> listEnemies;
-	vector<CBullet*> bullets;
+	vector<LPGAMEOBJECT> listObj;
+	vector<CGameObject *> listEnemies;
+	vector<CGameObject *> listItems;
+	vector<CGameObject *> listEffect;
+	vector<CBullet*> listBullet;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);

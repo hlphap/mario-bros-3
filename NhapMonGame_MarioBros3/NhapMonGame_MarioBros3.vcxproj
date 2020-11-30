@@ -25,6 +25,7 @@
     <ClCompile Include="CloudBrick.cpp" />
     <ClCompile Include="ColorBox.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="FireBall.cpp" />
     <ClCompile Include="Flower.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -57,6 +58,7 @@
     <ClInclude Include="CloudBrick.h" />
     <ClInclude Include="ColorBox.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="FireBall.h" />
     <ClInclude Include="Flower.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />

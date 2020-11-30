@@ -24,6 +24,7 @@ public:
 	int level;
 	int type;
 	bool isMoving = true;
+	bool isAllowJump = true;
 	int numJump = 0;
 	bool isFlying = false;
 	DWORD timeStartMove = TIME_DEFAULT;

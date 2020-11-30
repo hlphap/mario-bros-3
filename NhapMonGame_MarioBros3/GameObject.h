@@ -61,6 +61,7 @@ public:
 	float backup_vy;
 
 	int nx;
+	int ny;
 
 	int state;
 
@@ -92,6 +93,7 @@ public:
 		float& rdx,
 		float& rdy);
 
+	bool isCollisionWithObj(LPGAMEOBJECT obj);
 	CGameObject();
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) = 0;

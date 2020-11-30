@@ -110,7 +110,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		//if (nx != 0) vx = 0;
 		
 		//
-		// Collision logic with other objects
+		// Collision logic with other listObj
 		//
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{

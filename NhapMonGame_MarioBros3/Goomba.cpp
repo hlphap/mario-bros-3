@@ -1,7 +1,7 @@
 #include "Goomba.h"
 #include "Utils.h"
 #include "ColorBox.h"
-CGoomba::CGoomba(CMario *m,int type, int level)
+CGoomba::CGoomba(CMario* m, int type, int level)
 {
 	this->level = level;
 	this->type = type;
@@ -34,7 +34,7 @@ void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& botto
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CEnemy::Update(dt, coObjects);
-	
+
 
 	//Follow Mario
 	if (x + GOOMBA_BBOX_WIDTH < player->x)
@@ -43,7 +43,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else
 		nx = -1;
-
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -52,7 +51,10 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		CalcPotentialCollisions(coObjects, coEvents);
 	}
-
+	if (GetTickCount() - timeStartMove >= 2000)
+	{
+		isAllowJump = true;
+	}
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -73,12 +75,13 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (ny < 0)
 		{
 			vy = 0;
-			numJump++;
+			if (isAllowJump)
+				numJump++;
 			if (numJump == 4)
 			{
 				isFlying = false;
-				if (timeStartMove==TIME_DEFAULT)
-					timeStartMove = GetTickCount();
+				timeStartMove = GetTickCount();
+				isAllowJump = false;
 				numJump = 0;
 			}
 		}
@@ -100,13 +103,10 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 			}
 		}
-		DebugOut(L"TimeStartMove: %d\n", GetTickCount() - timeStartMove);
-		if (GetTickCount() - timeStartMove >= 1200 && isMoving)
+		if (isMoving)
 		{
 			SetState(GOOMBA_STATE_MOVE);
-			timeStartMove = TIME_DEFAULT;
 		}
-			
 		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 	}
 }
@@ -149,19 +149,25 @@ void CGoomba::SetState(int state)
 	{
 	case GOOMBA_STATE_MOVE:
 		isMoving = true;
-		if (level == GOOMBA_LEVEL_HAVE_WING) 
+	
+		if (level == GOOMBA_LEVEL_HAVE_WING)
 		{
-		//	DebugOut(L"numJump: %d\n", numJump);
-			if (numJump <= 2 ) //Nhayr laanf 2
+			if (isAllowJump)
 			{
-				vy = -0.06;
-				isFlying = true;
+				if (numJump <= 2) //Nhayr laanf 2
+				{
+					vy = -0.06;
+					isFlying = true;
+				}
+				else
+				{
+					vy = -0.15;
+					isFlying = true;
+				}
 			}
 			else
-			{
-				vy = -0.15;
-				isFlying = true;
-			}
+				vy = 0;
+				
 			if (nx == 1)
 			{
 				vx = GOOMBA_SPEED_MOVE;
@@ -172,17 +178,17 @@ void CGoomba::SetState(int state)
 			}
 		}
 		else
-		if (level == GOOMBA_LEVEL_DEFAULT)
-		{
-			if (nx == 1)
+			if (level == GOOMBA_LEVEL_DEFAULT)
 			{
-				vx = GOOMBA_SPEED_MOVE;
+				if (nx == 1)
+				{
+					vx = GOOMBA_SPEED_MOVE;
+				}
+				else
+				{
+					vx = -GOOMBA_SPEED_MOVE;
+				}
 			}
-			else
-			{
-				vx = -GOOMBA_SPEED_MOVE;
-			}
-		}
 		break;
 	case GOOMBA_STATE_DIE:
 		isMoving = false;
