@@ -26,26 +26,16 @@ CMario::CMario(float x, float y) : CGameObject()
 
 }
 
-void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>* coEnemy, vector<LPGAMEOBJECT>* coItem)
 {
+#pragma region Update Mario
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
 
 	// Simple fall down
 	vy += MARIO_GRAVITY * dt;
 
-	//DebugOut(L"\nvx: %f", vy);
-	
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
 
-	coEvents.clear();
-	/*for (int i = 0; i < listBullet.size(); i++) {
-		listBullet[i]->Update(dt, coObjects);
-	}*/
-	// turn off collision when die 
-	if (state != MARIO_STATE_DIE)
-		CalcPotentialCollisions(coObjects, coEvents);
 
 	// reset untouchable timer if untouchable time has passed
 	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
@@ -90,10 +80,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		isKeepJump_HightFlying = true;
 	}
-
+	//Update IsAttack BigTail
 	if (level == MARIO_LEVEL_BIG_TAIL)
 	{
-		//Update IsAttack BigTail
 		weapon = CTail::GetInstance();
 		weapon->nx = nx;
 		if (isAttacking)
@@ -108,7 +97,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				weapon->SetPosition(x + MARIO_BIG_TAIL_BBOX_WIDTH + 8, y + MARIO_D_HEED_TO_TAIL_ATTACK);
 			weapon->SetState(TAIL_CANNOT_KILL);
 		}
-		weapon->Update(dt,coObjects); // Duoi thuoc Mario Update Duoi trong Mario
+		weapon->Update(dt, coObj); // Duoi thuoc Mario Update Duoi trong Mario
 		if (GetTickCount() - timeStartAttack >= MARIO_TIME_BIG_TAIL_ATTACK)
 		{
 			timeStartAttack = TIME_DEFAULT;
@@ -127,9 +116,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 		}
 
-	} 
+	}
 	//Update IsAttack BigFire
-	else if (level == MARIO_LEVEL_BIG_FIRE)	
+	else if (level == MARIO_LEVEL_BIG_FIRE)
 	{
 		if (isAttacking)
 		{
@@ -163,15 +152,24 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				isAttacking = false;
 			}
 		}
-	
 	}
+#pragma endregion
 
+#pragma region Colision with listObj (MapGame)
+	// Colision with listObj (Map Game)
+	vector<LPCOLLISIONEVENT> coObjEvents;
+	vector<LPCOLLISIONEVENT> coObjEventsResult;
+	coObjEvents.clear();
+	// turn off collision when die 
+	if (state != MARIO_STATE_DIE)
+	{
+		CalcPotentialCollisions(coObj, coObjEvents);
+	}
 	// No collision occured, proceed normally
-	if (coEvents.size() == 0)
+	if (coObjEvents.size() == 0)
 	{
 		x += dx;
 		y += dy;
-		
 	}
 	else
 	{
@@ -181,7 +179,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float rdy = 0;
 
 		// TODO: This is a very ugly designed function!!!!
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+		FilterCollision(coObjEvents, coObjEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 		// how to push back Mario if collides with a moving listObj, what if Mario is pushed this way into another object?
 		//if (rdx != 0 && rdx!=dx)
@@ -190,11 +188,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		// block every object first!
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.1f;
-		//if(va cham gach) // isonair = true ->>  when jump or fly -> isonair = true
-		//if (nx != 0) vx = 0;
-	
+
 		//
 
+		//Va cham voi listObj thì về trạng thái OnGround
 		if (ny < 0)
 		{
 			backup_vy = vy;
@@ -206,11 +203,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			isKeepJump = false;
 			numFall = 0;
 		}
-		// Collision logic with other listObj
-		//
-		for (UINT i = 0; i < coEventsResult.size(); i++)
+		// Collision logic with listObj
+		for (UINT i = 0; i < coObjEventsResult.size(); i++)
 		{
-			LPCOLLISIONEVENT e = coEventsResult[i];
+			LPCOLLISIONEVENT e = coObjEventsResult[i];
 
 			// Brick defaul
 			if (dynamic_cast<CBrick*>(e->obj))
@@ -221,23 +217,23 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					isKeepJump_HightFlying = false;
 				}
 				else
-				if (e->nx != 0)
-				{
-					vx = 0;
-				}
+					if (e->nx != 0)
+					{
+						vx = 0;
+					}
 			}
 			//Brick Cloud
 			else if (dynamic_cast<CCloudBrick*>(e->obj))
-			{	
+			{
 				if (e->ny > 0)
 				{
 					y += dy;
 				}
 				else
-				if (e->nx != 0)
-				{
-					x += dx;
-				}
+					if (e->nx != 0)
+					{
+						x += dx;
+					}
 			}
 
 			//Brick Weak
@@ -249,10 +245,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					isKeepJump_HightFlying = false;
 				}
 				else
-				if (e->nx != 0)
-				{
-					vx = 0;
-				}
+					if (e->nx != 0)
+					{
+						vx = 0;
+					}
 			}
 
 			//Question Brick
@@ -264,10 +260,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					isKeepJump_HightFlying = false;
 				}
 				else
-				if (e->nx != 0)
-				{
-					vx = 0;
-				}
+					if (e->nx != 0)
+					{
+						vx = 0;
+					}
 			}
 
 			//Ground
@@ -291,7 +287,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					x += dx;
 				}
 			}
-
 			//Pipe
 			else if (dynamic_cast<CPipe*>(e->obj))
 			{
@@ -300,7 +295,84 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					vx = 0;
 				}
 			}
-//Va chạm với quái
+				else if (dynamic_cast<CPortal*>(e->obj))
+				{
+					/*if (e->nx != 0) x += vx * dt;*/
+					CPortal* p = dynamic_cast<CPortal*>(e->obj);
+					CGame::GetInstance()->SwitchScene(p->GetSceneId());
+				}
+		}
+	}
+	// clean up collision events
+	for (UINT i = 0; i < coObjEvents.size(); i++) delete coObjEvents[i];
+#pragma endregion
+
+#pragma region Colision with listEnemy
+	vector<LPCOLLISIONEVENT> coEnemyEvents;
+	vector<LPCOLLISIONEVENT> coEnemyEventsResult;
+
+	coEnemyEvents.clear();
+	// turn off collision when die 
+	if (state != MARIO_STATE_DIE && untouchable==0)
+	{
+		CalcPotentialCollisions(coEnemy, coEnemyEvents);
+	}
+
+	if (coEnemyEvents.size() != 0)
+	{
+		float min_tx, min_ty, nx = 0, ny;
+		float rdx = 0;
+		float rdy = 0;
+
+		// TODO: This is a very ugly designed function!!!!
+		FilterCollision(coEnemyEvents, coEnemyEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+
+		// how to push back Mario if collides with a moving listObj, what if Mario is pushed this way into another object?
+		//if (rdx != 0 && rdx!=dx)
+		//	x += nx*abs(rdx); 
+
+		// block every object first!
+		x += min_tx * dx + nx * 0.4f;
+		y += min_ty * dy + ny * 0.1f;
+
+		//
+
+		//Va cham voi listEnemy khi đang bay thì không  về trạng thái OnGround
+		if (ny < 0)
+		{
+			backup_vy = vy;
+			vy = 0;
+		/*	isOnAir = false;
+			isBlockFall = false;
+			isKeepJump_SlowFalling = false;
+			isKeepJump_HightFlying = false;
+			isKeepJump = false;
+			numFall = 0;*/
+		}
+		else
+			if (ny > 0)
+			{
+				y -= min_ty * dy + ny * 0.1f;
+				if (untouchable == 0)
+				{
+						if (level > MARIO_LEVEL_SMALL)
+						{
+							level--;
+							StartUntouchable();
+						}
+						else
+						{
+							Jump();
+							Fall();
+							SetState(MARIO_STATE_DIE);
+						}
+
+					}
+				}
+		for (UINT i = 0; i < coEnemyEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEnemyEventsResult[i];
+			//Va chạm với quái
 			if (dynamic_cast<CKoopas*>(e->obj)) // if e->obj is Goomba 
 			{
 				CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
@@ -357,7 +429,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							}
 
 						}
-						else 
+						else
 						{
 							//Khong tang toc (ko giu A) thi da ruaf
 							if (!isHoldShell)
@@ -382,57 +454,53 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 			} // if Goomba
 			else
-			if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
-			{
-				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+				if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
+				{
+					CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-				// jump on top >> kill Goomba and deflect a bit 
-				if (e->ny < 0)
-				{
-					if (goomba->GetState() != GOOMBA_STATE_DIE)
-					{
-						if (goomba->level == GOOMBA_LEVEL_HAVE_WING)
-							goomba->level = GOOMBA_LEVEL_DEFAULT;
-						goomba->isKillByWeapon = false;
-						goomba->SetState(GOOMBA_STATE_DIE);
-						Jump();
-						Fall();
-					}
-				}
-				else if (e->nx != 0)
-				{
-					if (untouchable == 0)
+					// jump on top >> kill Goomba and deflect a bit 
+					if (e->ny < 0)
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE)
 						{
-							if (level > MARIO_LEVEL_SMALL)
+							if (goomba->level == GOOMBA_LEVEL_HAVE_WING)
+								goomba->level = GOOMBA_LEVEL_DEFAULT;
+							goomba->isKillByWeapon = false;
+							goomba->SetState(GOOMBA_STATE_DIE);
+							Jump();
+							Fall();
+						}
+					}
+					else if (e->nx != 0)
+					{
+						if (untouchable == 0)
+						{
+							if (goomba->GetState() != GOOMBA_STATE_DIE)
 							{
-								level--;
-								StartUntouchable();
+								if (level > MARIO_LEVEL_SMALL)
+								{
+									level--;
+									StartUntouchable();
+								}
+								else
+								{
+									Jump();
+									Fall();
+									vx = 0;
+									SetState(MARIO_STATE_DIE);
+								}
+
 							}
-							else
-							{
-								Jump();
-								Fall();
-								vx = 0;
-								SetState(MARIO_STATE_DIE);
-							}
-								
 						}
 					}
 				}
-			} // if Goomba
-			else if (dynamic_cast<CPortal*>(e->obj))
-			{
-				/*if (e->nx != 0) x += vx * dt;*/
-				CPortal* p = dynamic_cast<CPortal*>(e->obj);
-				CGame::GetInstance()->SwitchScene(p->GetSceneId());
-			}
 		}
 	}
-
 	// clean up collision events
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+	for (UINT i = 0; i < coEnemyEvents.size(); i++) delete coEnemyEvents[i];
+#pragma endregion
+
+
 }
 
 void CMario::Render()

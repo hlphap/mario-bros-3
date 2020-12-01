@@ -11,8 +11,7 @@
 CBullet::CBullet()
 {
 	vy = BULLET_FLY_SPEED_Y;
-	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
-	animation_set = animation_sets->Get(7);
+	animation_set = CAnimationSets::GetInstance()->Get(7);
 }
 
 void CBullet::Render()
@@ -75,7 +74,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
 	if (!isExploding)
-		vy += BULLET_GRAVITY;
+		vy += BULLET_GRAVITY * dt;
 	if (vy > BULLET_FLY_SPEED_Y) vy = BULLET_FLY_SPEED_Y;
 	else
 	if (vy < -BULLET_FLY_SPEED_Y) vy = -BULLET_FLY_SPEED_Y;

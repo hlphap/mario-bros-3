@@ -3,9 +3,10 @@
 #include "ColorBox.h"
 CGoomba::CGoomba(CMario* m, int type, int level)
 {
+	player = m;
 	this->level = level;
 	this->type = type;
-	player = m;
+
 	goombaGeneral = new CGoombaGeneral();
 	goombaGeneral->LoadListAni();
 	SetState(GOOMBA_STATE_MOVE);

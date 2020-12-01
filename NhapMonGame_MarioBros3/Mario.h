@@ -68,7 +68,7 @@ public:
 
 public:
 	CMario(float x = 0.0f, float y = 0.0f);
-	void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
+	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT> *coEnemy, vector<LPGAMEOBJECT> *coItem);
 	void Render();
 	int RenderFromAniGroup();
 

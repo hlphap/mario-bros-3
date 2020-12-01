@@ -161,6 +161,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	CGameObject* obj = NULL;
 
+	
+	
 	switch (object_type)
 	{
 	case OBJECT_TYPE_MARIO:
@@ -170,8 +172,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			return;
 		}
 		obj = new CMario(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		player = (CMario*)obj;
-
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
 	case OBJECT_TYPE_GOOMBA:
@@ -179,6 +181,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int type = atoi(tokens[4].c_str());
 		int level = atoi(tokens[5].c_str());
 		obj = new CGoomba(player, type, level);
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		listEnemies.push_back(obj);
 		break;
 	}
@@ -186,36 +190,56 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CBrick();
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_WEAK_BRICK:	//Oker
 		obj = new CWeakBrick();
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_CLOUD_BRICK:	 //Oker
 		obj = new CCloudBrick();
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_GROUND: // Oker
 		obj = new CGround();
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_COLORBOX: // Oker
 		obj = new CColorBox();
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_PIPE: //Oker
 		obj = new CPipe();
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_FLOWER: //Oker
 	{
 		int type = atoi(tokens[4].c_str());
 		obj = new CFlower(player, type);
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		listEnemies.push_back(obj);
 		break;
 	}
@@ -223,12 +247,18 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CQuestionBrick();
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_KOOPAS:
 		{
 			int type = atoi(tokens[4].c_str());
 			int level = atoi(tokens[5].c_str());
 			obj = new CKoopas(player, type, level);
+			obj->SetPosition(x, y);
+			obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+			listEnemies.push_back(obj);
 			DebugOut(L"Phap");
 		}
 		break;
@@ -238,19 +268,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		float b = atof(tokens[5].c_str());
 		int scene_id = atoi(tokens[6].c_str());
 		obj = new CPortal(x, y, r, b, scene_id);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listObj.push_back(obj);
 	}
 	break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
 	}
-	// General object setup
-	obj->SetPosition(x, y);
-
-	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-
-	obj->SetAnimationSet(ani_set);
-	listObj.push_back(obj);
 }
 
 
@@ -351,24 +376,31 @@ void CPlayScene::Update(DWORD dt)
 		player->isAttacking = false;
 
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < listObj.size(); i++)
+	for (size_t i = 0; i < listObj.size(); i++)
 	{
 		coObjects.push_back(listObj[i]);
 	}
-
-	for (UINT i = 0; i < listBullet.size(); i++) {
-
-		listBullet[i]->Update(dt, &coObjects);
-	}
-	//DebugOut(L"\nSize Truoc Xoa Bullet: %d", listBullet.size());
-	DeleteBullet();
-	//DebugOut(L"\nSize Bullet: %d", listBullet.size());
-
-
 	for (size_t i = 0; i < listObj.size(); i++)
 	{
 		listObj[i]->Update(dt, &coObjects);
 	}
+	player->Update(dt, &coObjects, &listEnemies, &listItems);
+	for (size_t i = 0; i < listEnemies.size(); i++)
+	{
+		listEnemies[i]->Update(dt, &coObjects);
+	}
+	for (UINT i = 0; i < listBullet.size(); i++) {
+
+		if (listBullet[i]!=NULL)
+			listBullet[i]->Update(dt, &coObjects);
+	}
+	//DebugOut(L"\nSize Truoc Xoa Bullet: %d", listBullet.size());
+	if (listBullet.size()!=0)
+		DeleteBullet();
+	//DebugOut(L"\nSize Bullet: %d", listBullet.size());
+
+
+	
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
@@ -393,11 +425,21 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::Render()
 {
 	map->Draw();
-	for (int i = listObj.size()-1; i >=0; i--)
+	for (size_t i = 0; i < listObj.size(); i++)
+	{
 		listObj[i]->Render();
-	for (int i = 0; i < listBullet.size(); i++) {
-		listBullet[i]->Render();
 	}
+	for (size_t i = 0; i < listEnemies.size(); i++)
+	{
+		listEnemies[i]->Render();
+	}
+
+	for (UINT i = 0; i < listBullet.size(); i++) {
+
+		if (listBullet[i] != NULL)
+		listBullet[i]->Render();
+	}	
+	player->Render();
 }
 
 /*
