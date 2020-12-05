@@ -20,7 +20,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 }
 
 /*
-	Load scene resources from scene file (textures, sprites, animations and listObj)
+	Load scene resources from scene file (textures, sprites, animations and listMapObj)
 	See scene1.txt, scene2.txt for detail format specification
 */
 
@@ -192,7 +192,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->amountY = atoi(tokens[5].c_str());
 		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listObj.push_back(obj);
+		listMapObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_WEAK_BRICK:	//Oker
 		obj = new CWeakBrick();
@@ -200,7 +200,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->amountY = atoi(tokens[5].c_str());
 		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listObj.push_back(obj);
+		listMapObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_CLOUD_BRICK:	 //Oker
 		obj = new CCloudBrick();
@@ -208,7 +208,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->amountY = atoi(tokens[5].c_str());
 		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listObj.push_back(obj);
+		listMapObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_GROUND: // Oker
 		obj = new CGround();
@@ -216,7 +216,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->amountY = atoi(tokens[5].c_str());
 		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listObj.push_back(obj);
+		listMapObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_COLORBOX: // Oker
 		obj = new CColorBox();
@@ -224,7 +224,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->amountY = atoi(tokens[5].c_str());
 		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listObj.push_back(obj);
+		listMapObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_PIPE: //Oker
 		obj = new CPipe();
@@ -232,7 +232,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->amountY = atoi(tokens[5].c_str());
 		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listObj.push_back(obj);
+		listMapObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_FLOWER: //Oker
 	{
@@ -244,13 +244,17 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 	case OBJECT_TYPE_QUESTIONBRICK: //);Oke
-		obj = new CQuestionBrick();
+	{
+		int type = atoi(tokens[6].c_str());
+		obj = new CQuestionBrick(y,type);
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
+		
 		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listObj.push_back(obj);
+		listMapObj.push_back(obj);
 		break;
+	}
 	case OBJECT_TYPE_KOOPAS:
 		{
 			int type = atoi(tokens[4].c_str());
@@ -259,7 +263,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			obj->SetPosition(x, y);
 			obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 			listEnemies.push_back(obj);
-			DebugOut(L"Phap");
 		}
 		break;
 	case OBJECT_TYPE_PORTAL:
@@ -269,7 +272,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int scene_id = atoi(tokens[6].c_str());
 		obj = new CPortal(x, y, r, b, scene_id);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listObj.push_back(obj);
+		listMapObj.push_back(obj);
 	}
 	break;
 	default:
@@ -352,16 +355,11 @@ void CPlayScene::Load()
 	obj->x = 10.0f;
 	obj->y = 300.0f;
 	obj->SetAnimationSet(animation_sets->Get(4));
-	listObj.push_back(obj);*/
+	listMapObj.push_back(obj);*/
 }
 
 void CPlayScene::Update(DWORD dt)
 {
-	
-
-	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
-	// TO-DO: This is a "dirty" way, need a more organized way 
-
 	//Update playscence chay truong nen isAttack chua kip ve false thi ben nay da ban dan r
 	if (player->isAttacking
 		&& player->level == MARIO_LEVEL_BIG_FIRE
@@ -375,34 +373,50 @@ void CPlayScene::Update(DWORD dt)
 	if (listBullet.size() == BULLET_AMOUNT)
 		player->isAttacking = false;
 
-	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 0; i < listObj.size(); i++)
+//Remove Obj Not Active
+	if (listBullet.size() != 0)
+		DeleteBullet();
+
+	//Add ListMapObj to coListMapObj
+	vector<LPGAMEOBJECT> coListMapObj;
+	for (size_t i = 0; i < listMapObj.size(); i++)
 	{
-		coObjects.push_back(listObj[i]);
+		coListMapObj.push_back(listMapObj[i]);
 	}
-	for (size_t i = 0; i < listObj.size(); i++)
+
+	//Update player
+	player->Update(dt, &coListMapObj, &listEnemies, &listItems);
+
+	//Update listMapObj
+	for (size_t i = 0; i < listMapObj.size(); i++)
 	{
-		listObj[i]->Update(dt, &coObjects);
+		listMapObj[i]->Update(dt, &listItems);
 	}
-	player->Update(dt, &coObjects, &listEnemies, &listItems);
+	//Update listItem
+	//DebugOut(L"ListItem size: %d \n", listItems.size());
+	for (size_t i = 0; i < listItems.size(); i++)
+	{
+		if (listItems[i]->isActive)
+			listItems[i]->Update(dt, &coListMapObj);
+		else
+			listItems.erase(listItems.begin() + i);
+	}
+
+	//Update listEnemy
 	for (size_t i = 0; i < listEnemies.size(); i++)
 	{
-		listEnemies[i]->Update(dt, &coObjects);
+		if (listEnemies[i]->isActive)
+			listEnemies[i]->Update(dt, &coListMapObj);
+		else
+			listEnemies.erase(listEnemies.begin() + i);
 	}
+	//Update listBullet
 	for (UINT i = 0; i < listBullet.size(); i++) {
 
 		if (listBullet[i]!=NULL)
-			listBullet[i]->Update(dt, &coObjects);
+			listBullet[i]->Update(dt, &coListMapObj);
 	}
-	//DebugOut(L"\nSize Truoc Xoa Bullet: %d", listBullet.size());
-	if (listBullet.size()!=0)
-		DeleteBullet();
-	//DebugOut(L"\nSize Bullet: %d", listBullet.size());
 
-
-	
-
-	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
 
 	// Update camera to follow player
@@ -425,14 +439,20 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::Render()
 {
 	map->Draw();
-	for (size_t i = 0; i < listObj.size(); i++)
+	for (size_t i = 0; i < listItems.size(); i++)
 	{
-		listObj[i]->Render();
+		listItems[i]->Render();
 	}
+	for (size_t i = 0; i < listMapObj.size(); i++)
+	{
+		listMapObj[i]->Render();
+	}
+	
 	for (size_t i = 0; i < listEnemies.size(); i++)
 	{
 		listEnemies[i]->Render();
 	}
+
 
 	for (UINT i = 0; i < listBullet.size(); i++) {
 
@@ -447,10 +467,10 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	for (size_t i = 0; i < listObj.size(); i++)
-		delete listObj[i];
+	for (size_t i = 0; i < listMapObj.size(); i++)
+		delete listMapObj[i];
 
-	listObj.clear();
+	listMapObj.clear();
 	player = NULL;
 	map = NULL;
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);

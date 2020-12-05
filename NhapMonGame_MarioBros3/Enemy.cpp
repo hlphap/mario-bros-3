@@ -2,6 +2,7 @@
 
 CEnemy::CEnemy()
 {
+	isActive = true;
 }
 
 void CEnemy::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

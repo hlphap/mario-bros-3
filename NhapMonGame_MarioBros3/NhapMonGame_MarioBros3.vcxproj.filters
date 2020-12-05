@@ -37,6 +37,12 @@
     <Filter Include="Map">
       <UniqueIdentifier>{86735e3a-bb1b-4dab-a60f-6e30ce3393d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Items">
+      <UniqueIdentifier>{35b2610d-83c6-451c-a5c1-064f730dfe8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Effects">
+      <UniqueIdentifier>{f46f03d8-2a4c-4794-a96d-804c4c2c1685}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -105,9 +111,6 @@
     <ClCompile Include="Scence.cpp">
       <Filter>Scence</Filter>
     </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Tail.cpp">
       <Filter>GameObject\Weapon</Filter>
     </ClCompile>
@@ -131,6 +134,30 @@
     </ClCompile>
     <ClCompile Include="Portal.cpp">
       <Filter>GameObject\Map Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>GameObject\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Mushroom.cpp">
+      <Filter>GameObject\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="LeafTree.cpp">
+      <Filter>GameObject\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>GameObject\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="CoinEffect.cpp">
+      <Filter>GameObject\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosiveEffect.cpp">
+      <Filter>GameObject\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="ImpactEffect.cpp">
+      <Filter>GameObject\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>GameObject\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -200,9 +227,6 @@
     <ClInclude Include="PlayScence.h">
       <Filter>Scence</Filter>
     </ClInclude>
-    <ClInclude Include="Item.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Tail.h">
       <Filter>GameObject\Weapon</Filter>
     </ClInclude>
@@ -226,6 +250,30 @@
     </ClInclude>
     <ClInclude Include="Portal.h">
       <Filter>GameObject\Map Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>GameObject\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Mushroom.h">
+      <Filter>GameObject\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="LeafTree.h">
+      <Filter>GameObject\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>GameObject\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="CoinEffect.h">
+      <Filter>GameObject\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosiveEffect.h">
+      <Filter>GameObject\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="ImpactEffect.h">
+      <Filter>GameObject\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>GameObject\Effects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

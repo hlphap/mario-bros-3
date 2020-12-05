@@ -14,7 +14,7 @@ TileMap::~TileMap()
 void TileMap::LoadTileMap()
 {
 		CTextures* texture = CTextures::GetInstance();
-		texture->Add(ID, file_path_texture, D3DCOLOR_XRGB(255, 0, 255));
+		texture->Add(ID, file_path_texture, D3DCOLOR_XRGB(255, 255, 255));
 		LPDIRECT3DTEXTURE9 textileMap = texture->Get(ID);
 
 		int idSprite = 1;

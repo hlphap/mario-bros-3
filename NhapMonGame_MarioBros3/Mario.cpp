@@ -155,8 +155,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 	}
 #pragma endregion
 
-#pragma region Colision with listObj (MapGame)
-	// Colision with listObj (Map Game)
+#pragma region Colision with listMapObj (MapGame)
+	// Colision with listMapObj (Map Game)
 	vector<LPCOLLISIONEVENT> coObjEvents;
 	vector<LPCOLLISIONEVENT> coObjEventsResult;
 	coObjEvents.clear();
@@ -181,7 +181,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coObjEvents, coObjEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		// how to push back Mario if collides with a moving listObj, what if Mario is pushed this way into another object?
+		// how to push back Mario if collides with a moving listMapObj, what if Mario is pushed this way into another object?
 		//if (rdx != 0 && rdx!=dx)
 		//	x += nx*abs(rdx); 
 
@@ -191,7 +191,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 
 		//
 
-		//Va cham voi listObj thì về trạng thái OnGround
+		//Va cham voi listMapObj thì về trạng thái OnGround
 		if (ny < 0)
 		{
 			backup_vy = vy;
@@ -203,7 +203,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 			isKeepJump = false;
 			numFall = 0;
 		}
-		// Collision logic with listObj
+		// Collision logic with listMapObj
 		for (UINT i = 0; i < coObjEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coObjEventsResult[i];
@@ -214,7 +214,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 				if (e->ny > 0)
 				{
 					vy = 0;
-					isKeepJump_HightFlying = false;
+					
 				}
 				else
 					if (e->nx != 0)
@@ -242,7 +242,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 				if (e->ny > 0)
 				{
 					vy = 0;
-					isKeepJump_HightFlying = false;
+				
 				}
 				else
 					if (e->nx != 0)
@@ -254,10 +254,34 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 			//Question Brick
 			else if (dynamic_cast<CQuestionBrick*>(e->obj))
 			{
+				CQuestionBrick* questionBrick = dynamic_cast<CQuestionBrick*>(e->obj);
 				if (e->ny > 0)
 				{
 					vy = 0;
-					isKeepJump_HightFlying = false;
+					if (questionBrick->isItem)
+					{
+						//Update typeQuestion
+						if (questionBrick->typeQuestion == QUESTION_TYPE_COIN)
+						{
+							questionBrick->typeItem = ITEM_LEVEL_COIN;
+						}
+						else
+						{
+							if (level == MARIO_LEVEL_SMALL)
+								questionBrick->typeItem = ITEM_LEVEL_MUSHROOM;
+							else
+								if (level == MARIO_LEVEL_BIG)
+								{
+									questionBrick->typeItem = ITEM_LEVEL_TREE_LEAF;
+								}
+								else
+										questionBrick->typeItem = ITEM_LEVEL_TREE_LEAF;
+
+						}
+						questionBrick->SetState(QUESTION_STATE_MOVE_UP);
+					}
+						
+					
 				}
 				else
 					if (e->nx != 0)
@@ -327,21 +351,21 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEnemyEvents, coEnemyEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		// how to push back Mario if collides with a moving listObj, what if Mario is pushed this way into another object?
+		// how to push back Mario if collides with a moving listMapObj, what if Mario is pushed this way into another object?
 		//if (rdx != 0 && rdx!=dx)
 		//	x += nx*abs(rdx); 
 
 		// block every object first!
 		x += min_tx * dx + nx * 0.4f;
-		y += min_ty * dy + ny * 0.1f;
 
 		//
 
-		//Va cham voi listEnemy khi đang bay thì không  về trạng thái OnGround
+		//Va cham voi listEnemy khi đang bay thì không về trạng thái OnGround
 		if (ny < 0)
 		{
 			backup_vy = vy;
 			vy = 0;
+			y += min_ty * dy + ny * 0.1f;
 		/*	isOnAir = false;
 			isBlockFall = false;
 			isKeepJump_SlowFalling = false;
@@ -427,7 +451,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 								Fall();
 								SetState(MARIO_STATE_DIE);
 							}
-
 						}
 						else
 						{
@@ -463,10 +486,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE)
 						{
+							
 							if (goomba->level == GOOMBA_LEVEL_HAVE_WING)
 								goomba->level = GOOMBA_LEVEL_DEFAULT;
+							else
+								if (goomba->level == GOOMBA_LEVEL_DEFAULT)
+									goomba->SetState(GOOMBA_STATE_DIE);
 							goomba->isKillByWeapon = false;
-							goomba->SetState(GOOMBA_STATE_DIE);
 							Jump();
 							Fall();
 						}
@@ -499,6 +525,30 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 	// clean up collision events
 	for (UINT i = 0; i < coEnemyEvents.size(); i++) delete coEnemyEvents[i];
 #pragma endregion
+
+#pragma region Colision with listItem
+	for (int i = 0; i < coItem->size(); i++)
+	{
+		if (coItem->at(i) != NULL)
+		{
+			if (isCollisionWithObj(coItem->at(i)))
+			{
+				if (dynamic_cast<CMushroom*>(coItem->at(i)))
+				{
+					level = MARIO_LEVEL_BIG;
+				}
+				else
+					if (dynamic_cast<CLeafTree*>(coItem->at(i)))
+					{
+						level = MARIO_LEVEL_BIG_TAIL;
+					}
+				coItem->at(i)->isActive = false;
+			}
+		}
+	}
+
+#pragma endregion
+
 
 
 }

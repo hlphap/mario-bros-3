@@ -20,7 +20,6 @@ class CGoomba : public CEnemy
 {
 public:
 	CGoombaGeneral* goombaGeneral;
-	int ani = -1;
 	int level;
 	int type;
 	bool isMoving = true;

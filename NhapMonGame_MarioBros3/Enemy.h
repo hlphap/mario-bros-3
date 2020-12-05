@@ -12,6 +12,7 @@ class CEnemy : public CGameObject
 public:
 	CMario* player;
 	bool isKillByWeapon = false;
+	DWORD timeStartDie = TIME_DEFAULT;
 public:
 	CEnemy();
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

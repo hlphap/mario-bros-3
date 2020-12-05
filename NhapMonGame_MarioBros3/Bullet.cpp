@@ -18,11 +18,11 @@ void CBullet::Render()
 {
 	int ani = 0;
 	if (isExploding)
-		ani = 2;
+		ani = 1;
 	else
 		if (nx == 1)
 		{
-			ani = 1;
+			ani = 0;
 		}
 		else
 			if (nx == -1)
@@ -109,7 +109,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		//if (nx != 0) vx = 0;
 		
 		//
-		// Collision logic with other listObj
+		// Collision logic with other listMapObj
 		//
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{

@@ -64,7 +64,6 @@ public:
 	bool isHoldShell = false;
 	bool isHoldingShell = false;
 	byte numFall = 0;
-	int ani = -1;
 
 public:
 	CMario(float x = 0.0f, float y = 0.0f);

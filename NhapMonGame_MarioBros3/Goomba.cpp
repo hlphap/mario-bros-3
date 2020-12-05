@@ -6,7 +6,6 @@ CGoomba::CGoomba(CMario* m, int type, int level)
 	player = m;
 	this->level = level;
 	this->type = type;
-
 	goombaGeneral = new CGoombaGeneral();
 	goombaGeneral->LoadListAni();
 	SetState(GOOMBA_STATE_MOVE);
@@ -35,6 +34,12 @@ void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& botto
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CEnemy::Update(dt, coObjects);
+	
+	if (GetTickCount() - timeStartDie >= 1000 && timeStartDie != TIME_DEFAULT)
+	{
+		isActive = false;
+		timeStartDie = 0;
+	}
 
 
 	//Follow Mario
@@ -193,6 +198,8 @@ void CGoomba::SetState(int state)
 		break;
 	case GOOMBA_STATE_DIE:
 		isMoving = false;
+		if (timeStartDie == TIME_DEFAULT)
+			timeStartDie = GetTickCount();
 		if (isKillByWeapon)
 		{
 			vy = -GOOMBA_SPEED_BOUNCE;

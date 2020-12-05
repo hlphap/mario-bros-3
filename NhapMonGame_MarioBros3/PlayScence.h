@@ -51,7 +51,7 @@ public:
 	CMario* player;					// A play scene has to have player, right? 
 	TileMap *map;
 	
-	vector<LPGAMEOBJECT> listObj;
+	vector<LPGAMEOBJECT> listMapObj;
 	vector<CGameObject *> listEnemies;
 	vector<CGameObject *> listItems;
 	vector<CGameObject *> listEffect;

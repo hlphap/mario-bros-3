@@ -20,7 +20,6 @@ class CKoopas : public CEnemy
 {
 public:
 	CKoopasGeneral* koopasGeneral;
-	int ani = -1;
 	int type;
 	int level;
 	int rangeX;

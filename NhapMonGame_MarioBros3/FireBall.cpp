@@ -18,18 +18,18 @@ void CFireBall::Render()
 {
 	int ani = 0;
 	if (isExploding)
-		ani = 2;
+		ani = 1;
 	else
 		if (nx == 1)
 		{
-			ani = 1;
+			ani = 0;
 		}
 		else
 			if (nx == -1)
 			{
 				ani = 0;
 			}
-	DebugOut(L"ani: %d\n", ani);
+	//DebugOut(L"ani: %d\n", ani);
 	animation_set->at(ani)->Render(x, y);
 	//RenderBoundingBox();
 }

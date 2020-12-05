@@ -271,7 +271,7 @@ void CFlower::Render()
 			{
 				ani = FLOWER_GREEN_BITE_ANI_MOVE_ATTACK;
 			}
-	DebugOut(L"ani :\n %d", ani);
+	//DebugOut(L"ani :\n %d", ani);
 	animation_set->at(ani)->Render(x, y);
 	//Bắn súng
 	for (UINT i = 0; i < list_FireBall.size(); i++)

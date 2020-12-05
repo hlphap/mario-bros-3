@@ -82,6 +82,10 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		SetPosition(player->x + rangeX, player->y - rangeY);
 		return;
 	}
+	else //Mario khong giu rua
+	{
+		player->isHoldingShell = false;
+	}
 	CGameObject::Update(dt);
 	vy += ENEMY_GRAVITY * dt;
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -110,7 +114,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			vy = 0;
 		}
-		// Collision logic with other listObj
+		// Collision logic with other listMapObj
 		//
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -141,32 +145,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 			}
 			else
-				if (dynamic_cast<CQuestionBrick*>(e->obj))
-				{
-					CQuestionBrick* questionbrick = dynamic_cast<CQuestionBrick*>(e->obj);
-					if (e->nx != 0)
-					{
-						x += dx;
-					}
-					else if (e->ny < 0)
-					{
-						if (!isSleeping && level != KOOPAS_LEVEL_HAVE_WING)
-						{
-							if (x <= questionbrick->x)
-							{
-								x = questionbrick->x;
-								this->nx = 1;
-							}
-							else if (x + KOOPAS_BBOX_WIDTH >= questionbrick->x + questionbrick->amountX * BRICK_BBOX_WIDTH)
-							{
-								x = questionbrick->x + questionbrick->amountX * BRICK_BBOX_WIDTH - KOOPAS_BBOX_WIDTH;
-								this->nx = -1;
-							}
-						}
-					}
-				}
-				else
-			{
 				if (e->nx != 0)
 				{
 					if (e->nx > 0)
@@ -176,7 +154,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else
 						this->nx = -1;
 				}
-			}
 		}
 		if (isMoving) SetState(KOOPAS_STATE_MOVING);
 		// clean up collision events

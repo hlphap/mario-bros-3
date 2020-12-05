@@ -46,7 +46,7 @@ void CGameObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 }
 
 /*
-	Extension of original SweptAABB to deal with two moving listObj
+	Extension of original SweptAABB to deal with two moving listMapObj
 */
 LPCOLLISIONEVENT CGameObject::SweptAABBEx(LPGAMEOBJECT coO)
 {
@@ -81,9 +81,9 @@ LPCOLLISIONEVENT CGameObject::SweptAABBEx(LPGAMEOBJECT coO)
 }
 
 /*
-	Calculate potential collisions with the list of colliable listObj
+	Calculate potential collisions with the list of colliable listMapObj
 
-	coObjects: the list of colliable listObj
+	coObjects: the list of colliable listMapObj
 	coEvents: list of potential collisions
 */
 void CGameObject::CalcPotentialCollisions(
