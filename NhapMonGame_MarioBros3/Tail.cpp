@@ -50,7 +50,7 @@ void CTail::SetState(int state)
 
 }
 
-void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT> *listEffect)
 {
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
@@ -60,9 +60,8 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	coEvents.clear();
 
-	CalcPotentialCollisions(coObjects, coEvents);
+	CalcPotentialCollisions(listEnemy, coEvents);
 
-	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
 		
@@ -101,6 +100,8 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					{
 						if (canKill)
 						{
+							effect = new CImpactEffect(goomba->x,goomba->y);
+							listEffect->push_back(effect);
 							goomba->isKillByWeapon = true;
 							goomba->SetState(GOOMBA_STATE_DIE);
 						}
@@ -118,6 +119,8 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						{
 							if (koopas->GetState() != KOOPAS_STATE_DIE)
 							{
+								effect = new CImpactEffect(koopas->x, koopas->y);
+								listEffect->push_back(effect);
 								koopas->vy = - KOOPAS_JUMP_DEFLECT_SPEED;
 								koopas->SetState(KOOPAS_STATE_SLEEP);
 								if (koopas->GetState() == KOOPAS_STATE_SLEEP)

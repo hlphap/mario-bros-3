@@ -52,7 +52,6 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* ListItem)
 		}
 		y = start_y;
 		ListItem->push_back(item);
-		DebugOut(L"Phap");
 		SetState(QUESTION_STATE_IDLE);
 	}
 #pragma region Collison with Coin

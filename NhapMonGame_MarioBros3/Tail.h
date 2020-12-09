@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Ground.h"
 #include "Weapon.h"
+#include "ImpactEffect.h"
 #define TAIL_BBOX_WIDTH  8
 #define TAIL_BBOX_HEIGHT 8
 
@@ -13,15 +14,15 @@
 class CTail : public CWeapon
 {
 public:
-
+	CEffect* effect;
 	DWORD timer = TIME_DEFAULT;
 	bool canKill = false;
 	static CTail* __instance;
-
+public:
 	CTail();
 	void Render();
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 	void SetState(int state);
-	void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
+	void Update(DWORD dt, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT> *listEffect);
 	static CTail* GetInstance();
 };

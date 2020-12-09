@@ -22,6 +22,7 @@
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CloudBrick.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="CoinEffect.cpp" />
@@ -62,6 +63,7 @@
     <ClInclude Include="Animations.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CloudBrick.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="CoinEffect.h" />

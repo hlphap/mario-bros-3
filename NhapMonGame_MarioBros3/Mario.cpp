@@ -26,7 +26,7 @@ CMario::CMario(float x, float y) : CGameObject()
 
 }
 
-void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>* coEnemy, vector<LPGAMEOBJECT>* coItem)
+void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>* coEnemy, vector<LPGAMEOBJECT>* coItem, vector<LPGAMEOBJECT> *listEffect)
 {
 #pragma region Update Mario
 	// Calculate dx, dy 
@@ -83,21 +83,21 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 	//Update IsAttack BigTail
 	if (level == MARIO_LEVEL_BIG_TAIL)
 	{
-		weapon = CTail::GetInstance();
-		weapon->nx = nx;
+		tail = CTail::GetInstance();
+		tail->nx = nx;
 		if (isAttacking)
 		{
-			weapon->SetState(TAIL_CAN_KILL);
+			tail->SetState(TAIL_CAN_KILL);
 		}
 		else
 		{
 			if (nx == 1)
-				weapon->SetPosition(x, y + MARIO_D_HEED_TO_TAIL_ATTACK);
+				tail->SetPosition(x, y + MARIO_D_HEED_TO_TAIL_ATTACK);
 			else
-				weapon->SetPosition(x + MARIO_BIG_TAIL_BBOX_WIDTH + 8, y + MARIO_D_HEED_TO_TAIL_ATTACK);
-			weapon->SetState(TAIL_CANNOT_KILL);
+				tail->SetPosition(x + MARIO_BIG_TAIL_BBOX_WIDTH + 8, y + MARIO_D_HEED_TO_TAIL_ATTACK);
+			tail->SetState(TAIL_CANNOT_KILL);
 		}
-		weapon->Update(dt, coObj); // Duoi thuoc Mario Update Duoi trong Mario
+		tail->Update(dt, coEnemy, listEffect); // Duoi thuoc Mario Update Duoi trong Mario
 		if (GetTickCount() - timeStartAttack >= MARIO_TIME_BIG_TAIL_ATTACK)
 		{
 			timeStartAttack = TIME_DEFAULT;
@@ -115,25 +115,24 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 					timeStartFly = TIME_DEFAULT;
 				}
 		}
-
 	}
 	//Update IsAttack BigFire
 	else if (level == MARIO_LEVEL_BIG_FIRE)
 	{
 		if (isAttacking)
 		{
-			weapon = new CBullet();
-			weapon->nx = nx;
-			weapon->timeStartAttack = GetTickCount();
+			bullet = new CBullet();
+			bullet->nx = nx;
+			bullet->timeStartAttack = GetTickCount();
 			if (nx == 1)
 			{
-				weapon->SetPosition(x + MARIO_BIG_BBOX_WIDTH, y + MARIO_D_HEED_TO_HAND_ATTACK);
-				weapon->SetState(BULLET_STATE_FLY_RIGHT);
+				bullet->SetPosition(x + MARIO_BIG_BBOX_WIDTH, y + MARIO_D_HEED_TO_HAND_ATTACK);
+				bullet->SetState(BULLET_STATE_FLY_RIGHT);
 			}
 			else if (nx == -1)
 			{
-				weapon->SetPosition(x, y + MARIO_D_HEED_TO_HAND_ATTACK);
-				weapon->SetState(BULLET_STATE_FLY_LEFT);
+				bullet->SetPosition(x, y + MARIO_D_HEED_TO_HAND_ATTACK);
+				bullet->SetState(BULLET_STATE_FLY_LEFT);
 			}
 		}
 		if (!isOnAir)
@@ -188,7 +187,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 		// block every object first!
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.1f;
-
+	
 		//
 
 		//Va cham voi listMapObj thì về trạng thái OnGround
@@ -347,18 +346,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
-
-		// TODO: This is a very ugly designed function!!!!
+                       
 		FilterCollision(coEnemyEvents, coEnemyEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		// how to push back Mario if collides with a moving listMapObj, what if Mario is pushed this way into another object?
-		//if (rdx != 0 && rdx!=dx)
-		//	x += nx*abs(rdx); 
-
-		// block every object first!
 		x += min_tx * dx + nx * 0.4f;
 
-		//
 
 		//Va cham voi listEnemy khi đang bay thì không về trạng thái OnGround
 		if (ny < 0)
@@ -561,7 +553,7 @@ void CMario::Render()
 		ani = RenderFromAniGroup();
 	int alpha = 255;
 	if (untouchable) alpha = 128;
-	animation_set->at(ani)->Render(x,y,alpha);
+	animation_set->at(110)->Render(x,y,alpha);
 	RenderBoundingBox();
 }
 

@@ -5,6 +5,7 @@
 
 CKoopas::CKoopas(CMario* m, int type, int level)
 {
+	nx = -1;
 	this->type = type;
 	this->level = level;
 	koopasGeneral = CKoopasGeneral::GetInstance();

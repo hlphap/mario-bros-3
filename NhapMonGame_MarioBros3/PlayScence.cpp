@@ -282,8 +282,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 }
 
 
-
-
 void CPlayScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
@@ -347,7 +345,7 @@ void CPlayScene::Load()
 		f.close();
 
 		CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
-
+		cam = new Camera(player);
 		DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 	}
 	/*CAnimationSets* animation_sets = CAnimationSets::GetInstance();
@@ -367,25 +365,16 @@ void CPlayScene::Update(DWORD dt)
 			|| (player->isOnAir && GetTickCount() - player->timeStartAttack >= MARIO_TIME_BIG_FIRE_ATTACK_ON_AIR)))
 	{
 		if (listBullet.size() < BULLET_AMOUNT) {
-			listBullet.push_back(dynamic_cast<CBullet*>(player->weapon));
+			listBullet.push_back(player->bullet);
 		}
 	}
 	if (listBullet.size() == BULLET_AMOUNT)
 		player->isAttacking = false;
 
-//Remove Obj Not Active
-	if (listBullet.size() != 0)
-		DeleteBullet();
 
-	//Add ListMapObj to coListMapObj
-	vector<LPGAMEOBJECT> coListMapObj;
-	for (size_t i = 0; i < listMapObj.size(); i++)
-	{
-		coListMapObj.push_back(listMapObj[i]);
-	}
 
 	//Update player
-	player->Update(dt, &coListMapObj, &listEnemies, &listItems);
+	player->Update(dt, &listMapObj, &listEnemies, &listItems,&listEffect);
 
 	//Update listMapObj
 	for (size_t i = 0; i < listMapObj.size(); i++)
@@ -397,7 +386,7 @@ void CPlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < listItems.size(); i++)
 	{
 		if (listItems[i]->isActive)
-			listItems[i]->Update(dt, &coListMapObj);
+			listItems[i]->Update(dt, &listMapObj);
 		else
 			listItems.erase(listItems.begin() + i);
 	}
@@ -406,34 +395,35 @@ void CPlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < listEnemies.size(); i++)
 	{
 		if (listEnemies[i]->isActive)
-			listEnemies[i]->Update(dt, &coListMapObj);
+			listEnemies[i]->Update(dt, &listMapObj);
 		else
 			listEnemies.erase(listEnemies.begin() + i);
 	}
 	//Update listBullet
 	for (UINT i = 0; i < listBullet.size(); i++) {
 
-		if (listBullet[i]!=NULL)
-			listBullet[i]->Update(dt, &coListMapObj);
+		if (listBullet[i]->isActive)
+			listBullet[i]->Update(dt, &listMapObj, &listEnemies, &listEffect);
+		else
+			listBullet.erase(listBullet.begin() + i);
 	}
+
+	//Update list Effect
+	for (size_t i = 0; i < listEffect.size(); i++)
+	{
+		if (listEffect[i]->isActive)
+			listEffect[i]->Update(dt,&listMapObj);
+		else
+			listEffect.erase(listEffect.begin() + i);
+	}
+
+	
 
 	if (player == NULL) return;
 
-	// Update camera to follow player
-	float cx, cy;
-	if (player->x > (SCREEN_WIDTH / 2) && player->x < map->GetWeightMap() - (SCREEN_WIDTH / 2))
-	{
-		cx = player->x - (SCREEN_WIDTH / 2);
-		CGame::GetInstance()->cam_x = cx;
-	}
-
-	//CAMY TOT NHAT 
-	if (player->y > SCREEN_HEIGHT / 3 && player->y < map->GetHeightMap() - SCREEN_HEIGHT * 2 / 3)
-	{
-		cy = player->y - SCREEN_HEIGHT / 3 + MARIO_BIG_BBOX_HEIGHT;
-		CGame::GetInstance()->cam_y = cy;
-	}
+	
 	map->Update();
+	cam->Update();
 }
 
 void CPlayScene::Render()
@@ -453,12 +443,16 @@ void CPlayScene::Render()
 		listEnemies[i]->Render();
 	}
 
-
 	for (UINT i = 0; i < listBullet.size(); i++) {
 
 		if (listBullet[i] != NULL)
 		listBullet[i]->Render();
 	}	
+	for (UINT i = 0; i < listEffect .size(); i++) {
+
+		if (listEffect[i] != NULL)
+			listEffect[i]->Render();
+	}
 	player->Render();
 }
 
@@ -476,20 +470,7 @@ void CPlayScene::Unload()
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
-void CPlayScene::DeleteBullet()
-{
-	for (size_t i = 0; i < listBullet.size(); i++)
-	{
-		if (listBullet[i]->isExploding)
-		{
-			if (GetTickCount() - listBullet[i]->timeStartColl >= BULLET_TIME_EXPLOSIVE && listBullet[i]->timeStartColl != TIME_DEFAULT)
-			listBullet.erase(listBullet.begin() + i);
-		}
-		else
-		if (GetTickCount() - listBullet[i]->timeStartAttack > BULLET_TIME_EXITS)
-			listBullet.erase(listBullet.begin() + i);
-	}
-}
+
 
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {

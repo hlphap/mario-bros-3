@@ -159,6 +159,9 @@
     <ClCompile Include="Effect.cpp">
       <Filter>GameObject\Effects</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -239,9 +242,6 @@
     <ClInclude Include="GoombaGeneral.h">
       <Filter>GameObject\Enemies</Filter>
     </ClInclude>
-    <ClInclude Include="FireBall.h">
-      <Filter>GameObject\Enemies</Filter>
-    </ClInclude>
     <ClInclude Include="Weapon.h">
       <Filter>GameObject\Weapon</Filter>
     </ClInclude>
@@ -274,6 +274,12 @@
     </ClInclude>
     <ClInclude Include="Effect.h">
       <Filter>GameObject\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireBall.h">
+      <Filter>GameObject\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -17,6 +17,7 @@
 #include "TileMap.h"
 #include "Tail.h"
 #include "Weapon.h"
+#include "Camera.h"
 
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_TEXTURES 2
@@ -50,6 +51,7 @@ class CPlayScene : public CScene
 public:
 	CMario* player;					// A play scene has to have player, right? 
 	TileMap *map;
+	Camera* cam;
 	
 	vector<LPGAMEOBJECT> listMapObj;
 	vector<CGameObject *> listEnemies;
@@ -74,7 +76,6 @@ public:
 	virtual void Render();
 	virtual void Unload();
 	
-	void DeleteBullet();
 	CMario* GetPlayer() { return player; }
 
 	//friend class CPlayScenceKeyHandler;

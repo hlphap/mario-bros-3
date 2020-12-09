@@ -29,7 +29,8 @@ class CMario : public CGameObject
 public:
 	CMarioGeneral* mario_general;
 	CGameObject *bringKoopas = NULL;
-	CWeapon* weapon;
+	CTail* tail;
+	CBullet* bullet;
 	int level;
 
 	int untouchable;
@@ -67,7 +68,7 @@ public:
 
 public:
 	CMario(float x = 0.0f, float y = 0.0f);
-	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT> *coEnemy, vector<LPGAMEOBJECT> *coItem);
+	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT> *coEnemy, vector<LPGAMEOBJECT> *coItem, vector<LPGAMEOBJECT>* listEffect);
 	void Render();
 	int RenderFromAniGroup();
 

@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Ground.h"
 #include "Weapon.h"
+#include "ExplosiveEffect.h"
 #define BULLET_BBOX_WIDTH  8
 #define BULLET_BBOX_HEIGHT 8
 
@@ -19,11 +20,12 @@
 class CBullet : public CWeapon
 {
 public:
-	DWORD timeStartColl = TIME_DEFAULT;
-	bool isExploding = false;
+	CEffect* effect;
+public:
+
 	CBullet();
 	void Render();
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 	void SetState(int state);
-	void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
+	void Update(DWORD dt, vector<LPGAMEOBJECT>* listMapObj, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT>* listEffect);
 };

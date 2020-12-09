@@ -10,27 +10,14 @@
 
 CBullet::CBullet()
 {
+	isActive = true;
 	vy = BULLET_FLY_SPEED_Y;
 	animation_set = CAnimationSets::GetInstance()->Get(7);
 }
 
 void CBullet::Render()
 {
-	int ani = 0;
-	if (isExploding)
-		ani = 1;
-	else
-		if (nx == 1)
-		{
-			ani = 0;
-		}
-		else
-			if (nx == -1)
-			{
-			//	DebugOut(L"ImHeare");
-				ani = 0;
-			}
-	animation_set->at(ani)->Render(x, y);
+	animation_set->at(0)->Render(x, y);
 	//RenderBoundingBox();
 }
 
@@ -61,20 +48,17 @@ void CBullet::SetState(int state)
 	}
 	case BULLET_STATE_EXPLOSIVE:	
 	{
-		isExploding = true;
-		if (timeStartColl == TIME_DEFAULT) timeStartColl = GetTickCount();
 		vx = 0;
 		vy = 0;
 		break;
 	}
 	}
 }
-void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* listMapObj,vector<LPGAMEOBJECT> *listEnemy, vector<LPGAMEOBJECT> *listEffect)
 {
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
-	if (!isExploding)
-		vy += BULLET_GRAVITY * dt;
+	vy += BULLET_GRAVITY * dt;
 	if (vy > BULLET_FLY_SPEED_Y) vy = BULLET_FLY_SPEED_Y;
 	else
 	if (vy < -BULLET_FLY_SPEED_Y) vy = -BULLET_FLY_SPEED_Y;
@@ -86,7 +70,13 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	coEvents.clear();
 	
 	if (state != BULLET_STATE_EXPLOSIVE)
-		CalcPotentialCollisions(coObjects, coEvents);
+		CalcPotentialCollisions(listMapObj, coEvents);
+	else
+	{
+		effect = new CExplosiveEffect(x, y);
+		listEffect->push_back(effect);
+		isActive = false;
+	}
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -106,11 +96,6 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
 		y += min_ty * dy + ny * 0.4f;
 
-		//if (nx != 0) vx = 0;
-		
-		//
-		// Collision logic with other listMapObj
-		//
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
@@ -230,7 +215,6 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			
 		}
 	}
-
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
