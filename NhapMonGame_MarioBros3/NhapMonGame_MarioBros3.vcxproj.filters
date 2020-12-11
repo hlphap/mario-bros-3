@@ -147,9 +147,6 @@
     <ClCompile Include="Coin.cpp">
       <Filter>GameObject\Items</Filter>
     </ClCompile>
-    <ClCompile Include="CoinEffect.cpp">
-      <Filter>GameObject\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="ExplosiveEffect.cpp">
       <Filter>GameObject\Effects</Filter>
     </ClCompile>
@@ -161,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreEffect.cpp">
+      <Filter>GameObject\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,9 +263,6 @@
     <ClInclude Include="Coin.h">
       <Filter>GameObject\Items</Filter>
     </ClInclude>
-    <ClInclude Include="CoinEffect.h">
-      <Filter>GameObject\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="ExplosiveEffect.h">
       <Filter>GameObject\Effects</Filter>
     </ClInclude>
@@ -280,6 +277,12 @@
     </ClInclude>
     <ClInclude Include="FireBall.h">
       <Filter>GameObject\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreEffect.h">
+      <Filter>GameObject\Effects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

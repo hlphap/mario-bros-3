@@ -2,6 +2,7 @@
 
 CMushroom::CMushroom(float x, float y)
 {
+	type = TYPE::MUSHROOM;
 	SetPosition(x, y);
 	minPosY = y - QUESTION_BRICK_BBOX_HEIGHT - 1;
 	SetState(MUSHROOM_STATE_GROWN_UP);

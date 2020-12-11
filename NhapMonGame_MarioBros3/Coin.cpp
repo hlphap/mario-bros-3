@@ -5,11 +5,23 @@ CCoin::CCoin(float x, float y, int type)
 	SetPosition(x + 4, y);
 	minPosY = y - DISTANCE_FROM_QUESTIONBRICK_TO_MINPOSY;
 	this->typeCoin = type;
+	switch (this->typeCoin)
+	{
+	case COIN_TYPE_EFFECT:
+		type = TYPE::COIN_EFFECT;
+		break;
+	case COIN_TYPE_IDLE_STATIC:
+		type = TYPE::COIN_IDLE_STATIC;
+		break;
+	case COIN_TYPE_IDLE_SPIN:
+		type = TYPE::COIN_IDLE_SPIN;
+		break;
+	}
 	if (this->typeCoin == COIN_TYPE_EFFECT)
 	{
 		vy = -0.2f;
 	}
-		
+
 }
 
 void CCoin::Update(DWORD dt, vector<CGameObject*>* listMapObj)
@@ -54,21 +66,6 @@ void CCoin::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 			{
 				backup_vx = vx;
 				vx = -vx;
-			}
-
-			for (UINT i = 0; i < coObjEventsResult.size(); i++)
-			{
-				LPCOLLISIONEVENT e = coObjEventsResult[i];
-				if (dynamic_cast<CColorBox*>(e->obj))
-				{
-					CColorBox* colorbox = dynamic_cast<CColorBox*>(e->obj);
-					if (e->nx != 0)
-					{
-						vx = backup_vx;
-						x += dx;
-						DebugOut(L"Dx: %f\n", dx);
-					}
-				}
 			}
 			for (UINT i = 0; i < coObjEvents.size(); i++) delete coObjEvents[i];
 		}

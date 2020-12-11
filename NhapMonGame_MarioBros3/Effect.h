@@ -10,7 +10,6 @@ public:
 	DWORD timestartEffect = TIME_DEFAULT;
 public:
 	CEffect();
-	//virtual void Update(DWORD dt,);
 	virtual void Render() = 0;
 	virtual void SetState(int state);
 	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);

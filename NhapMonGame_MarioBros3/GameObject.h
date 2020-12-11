@@ -4,6 +4,7 @@
 #include <d3dx9.h>
 #include <vector>
 
+#include "define.h"
 #include "Sprites.h"
 #include "Animations.h"
 
@@ -46,6 +47,8 @@ class CGameObject
 public:
 
 	bool isActive;
+	int category;
+	int type;
 
 	float x;
 	float y;

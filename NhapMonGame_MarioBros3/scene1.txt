@@ -276,6 +276,14 @@
 21031	215	188	231	204	20
 #Question brick unnavailable (0die)
 21040	235	188	251	204	20
+
+
+#**********************************************WEAK BRICK
+55	274	188	290	204	20
+56	293	188	309	204	20
+57	312	188	328	204	20
+58	331	188	347	204	20
+
 #ITEM
 #=========COIN==========
 5001	334	100	348	116	20
@@ -920,7 +928,7 @@
 # type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas,4 = Flower, 5 = Ground, 6 = ColorBox, 7 = Pipe, 8 = QuestionBrick, 9 = WeakBreak, 10 = CloundBrick, 11 = Item, 12 = Bullet
 
 # MARIO
-0	50	1	1
+0	1952	1	1
 
 # KOOPAS
 #type x y	id	type_detail	level
@@ -1039,7 +1047,7 @@
 
 # Question Brick
 #objtype x	y	ani_set	aMX	aMY	typeItem (0 coin, 1 la item khac)
-8	175	351	21	1	1	0
+8	175	351	21	1	1	1
 
 # --- SCENE PORTAL ----
 # type	l	t	ani_set_id	r	b	scene_id

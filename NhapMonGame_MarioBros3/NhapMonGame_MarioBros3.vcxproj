@@ -25,7 +25,6 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CloudBrick.cpp" />
     <ClCompile Include="Coin.cpp" />
-    <ClCompile Include="CoinEffect.cpp" />
     <ClCompile Include="ColorBox.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -51,6 +50,7 @@
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="QuestionBrick.cpp" />
     <ClCompile Include="Scence.cpp" />
+    <ClCompile Include="ScoreEffect.cpp" />
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Tail.cpp" />
     <ClCompile Include="Textures.cpp" />
@@ -66,8 +66,8 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CloudBrick.h" />
     <ClInclude Include="Coin.h" />
-    <ClInclude Include="CoinEffect.h" />
     <ClInclude Include="ColorBox.h" />
+    <ClInclude Include="define.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="ExplosiveEffect.h" />
@@ -92,6 +92,7 @@
     <ClInclude Include="Portal.h" />
     <ClInclude Include="QuestionBrick.h" />
     <ClInclude Include="Scence.h" />
+    <ClInclude Include="ScoreEffect.h" />
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Tail.h" />
     <ClInclude Include="Textures.h" />

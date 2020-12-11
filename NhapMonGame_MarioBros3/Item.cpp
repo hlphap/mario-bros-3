@@ -5,6 +5,7 @@
 CItem::CItem()
 {
 	isActive = true;
+	category = CATEGORY::ITEM;
 	animation_set = CAnimationSets::GetInstance()->Get(5);
 }
 

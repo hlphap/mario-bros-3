@@ -2,12 +2,14 @@
 
 CLeafTree::CLeafTree(float x, float y)
 {
+	type = TYPE::LEAF_TREE;
+	isActive = true;
 	SetPosition(x, y);
-	minPosY = y - QUESTION_BRICK_BBOX_HEIGHT;
+	minPosY = y - QUESTION_BRICK_BBOX_HEIGHT; // Vi tri cao nhat co the
 	minPosX = x;
-	maxPosX = x + DISTANCE_FROM_QUESTIONBRICK_TO_MAXPOSX;
+	maxPosX = x + DISTANCE_FROM_QUESTIONBRICK_TO_MAXPOSX; //min,maxPos bien do dao dong theo phuong X
 	nx = 1;
-	SetState(LEAF_TREE_STATE_GROW_UP);
+	SetState(LEAF_TREE_STATE_GROW_UP); //Cho Item phat trien ra khoi QuesionBrick
 }
 
 void CLeafTree::Update(DWORD dt, vector<CGameObject*>* listMapObj)
@@ -28,7 +30,6 @@ void CLeafTree::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 
 	if (isComplete)
 	{
-		
 		SetState(LEAF_TREE_STATE_FALL);
 	}
 	x += dx;

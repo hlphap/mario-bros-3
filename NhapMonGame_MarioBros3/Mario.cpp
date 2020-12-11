@@ -13,6 +13,8 @@
 
 CMario::CMario(float x, float y) : CGameObject()
 {
+	category = CATEGORY::PLAYER;
+	type = TYPE::MARIO;
 	level = MARIO_LEVEL_BIG;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
@@ -177,18 +179,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 		float rdx = 0;
 		float rdy = 0;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coObjEvents, coObjEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		// how to push back Mario if collides with a moving listMapObj, what if Mario is pushed this way into another object?
-		//if (rdx != 0 && rdx!=dx)
-		//	x += nx*abs(rdx); 
 
-		// block every object first!
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.1f;
-	
-		//
 
 		//Va cham voi listMapObj thì về trạng thái OnGround
 		if (ny < 0)
@@ -201,6 +196,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 			isKeepJump_HightFlying = false;
 			isKeepJump = false;
 			numFall = 0;
+
+			//Va cham voi Ground thi reset Score
+			createdScore = false;
+			score = 100;
 		}
 		// Collision logic with listMapObj
 		for (UINT i = 0; i < coObjEventsResult.size(); i++)
@@ -275,12 +274,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 								}
 								else
 										questionBrick->typeItem = ITEM_LEVEL_TREE_LEAF;
-
 						}
 						questionBrick->SetState(QUESTION_STATE_MOVE_UP);
-					}
-						
-					
+					}					
 				}
 				else
 					if (e->nx != 0)
@@ -358,6 +354,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 			backup_vy = vy;
 			vy = 0;
 			y += min_ty * dy + ny * 0.1f;
+			if (createdScore)
+				score *= 2;
+			CScoreEffect *scoreEffect = new CScoreEffect(x, y);
+			scoreEffect->SetScore(score);
+			listEffect->push_back(scoreEffect);
 		/*	isOnAir = false;
 			isBlockFall = false;
 			isKeepJump_SlowFalling = false;
@@ -383,8 +384,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 							SetState(MARIO_STATE_DIE);
 						}
 
-					}
 				}
+			}
 		for (UINT i = 0; i < coEnemyEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEnemyEventsResult[i];
@@ -553,7 +554,7 @@ void CMario::Render()
 		ani = RenderFromAniGroup();
 	int alpha = 255;
 	if (untouchable) alpha = 128;
-	animation_set->at(110)->Render(x,y,alpha);
+	animation_set->at(ani)->Render(x,y,alpha);
 	RenderBoundingBox();
 }
 

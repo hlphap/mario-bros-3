@@ -54,14 +54,6 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* ListItem)
 		ListItem->push_back(item);
 		SetState(QUESTION_STATE_IDLE);
 	}
-#pragma region Collison with Coin
-	if (isCollisionWithObj(item))
-	{
-		if (item->isComplete)
-			item->isActive = false;
-	}
-	
-#pragma endregion
 
 }
 

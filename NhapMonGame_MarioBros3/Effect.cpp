@@ -2,6 +2,7 @@
 
 CEffect::CEffect()
 {
+	category = CATEGORY::EFFECT;                                   
 	isActive = true;
 	if (timestartEffect == TIME_DEFAULT)
 		timestartEffect = GetTickCount();
@@ -12,8 +13,10 @@ CEffect::CEffect()
 
 void CEffect::SetState(int state)
 {
+
 }
 
 void CEffect::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
+
 }

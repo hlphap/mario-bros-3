@@ -383,13 +383,6 @@ void CPlayScene::Update(DWORD dt)
 	}
 	//Update listItem
 	//DebugOut(L"ListItem size: %d \n", listItems.size());
-	for (size_t i = 0; i < listItems.size(); i++)
-	{
-		if (listItems[i]->isActive)
-			listItems[i]->Update(dt, &listMapObj);
-		else
-			listItems.erase(listItems.begin() + i);
-	}
 
 	//Update listEnemy
 	for (size_t i = 0; i < listEnemies.size(); i++)
@@ -406,6 +399,33 @@ void CPlayScene::Update(DWORD dt)
 			listBullet[i]->Update(dt, &listMapObj, &listEnemies, &listEffect);
 		else
 			listBullet.erase(listBullet.begin() + i);
+	}
+
+	for (size_t i = 0; i < listItems.size(); i++)
+	{
+		if (listItems[i]->isActive)
+			listItems[i]->Update(dt, &listMapObj);
+		else
+		{
+			//Khi Item đc dùng thì tạo Effect
+			CScoreEffect* scoreEffect = new CScoreEffect(listItems[i]->x, listItems[i]->y);
+			if (listItems[i]->type == TYPE::COIN_EFFECT)
+			{
+				scoreEffect->SetScore(100);
+			}
+			else
+				if (listItems[i]->type == TYPE::LEAF_TREE)
+				{
+					scoreEffect->SetScore(1000);
+				}
+				else
+					if (listItems[i]->type == TYPE::MUSHROOM)
+					{
+						scoreEffect->SetScore(1000);
+					}
+			listEffect.push_back(scoreEffect);
+			listItems.erase(listItems.begin() + i);
+		}
 	}
 
 	//Update list Effect
@@ -535,7 +555,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 			{
 				mario->KeepJump();
 				break;
-			}
+			} 
 		}
 		mario->Fall();
 		break;

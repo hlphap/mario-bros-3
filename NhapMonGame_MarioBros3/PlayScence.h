@@ -18,6 +18,8 @@
 #include "Tail.h"
 #include "Weapon.h"
 #include "Camera.h"
+#include "Effect.h"
+#include "ScoreEffect.h"
 
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_TEXTURES 2

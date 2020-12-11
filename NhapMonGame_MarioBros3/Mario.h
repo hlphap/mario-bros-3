@@ -32,6 +32,8 @@ public:
 	CTail* tail;
 	CBullet* bullet;
 	int level;
+	int score = 100;
+	bool createdScore = false;
 
 	int untouchable;
 	float start_x;	

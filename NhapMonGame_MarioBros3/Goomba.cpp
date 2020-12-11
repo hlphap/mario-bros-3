@@ -27,7 +27,7 @@ void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& botto
 	else
 		top = top + 8;
 	if (state == GOOMBA_STATE_DIE)
-		top = top + 15;
+		top = top + 16;
 	left = left + 2;
 }
 
@@ -43,7 +43,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 
 	//Follow Mario
-	if (x + GOOMBA_BBOX_WIDTH < player->x)
+	if (x + GOOMBA_BBOX_WIDTH <= player->x)
 	{
 		nx = 1;
 	}

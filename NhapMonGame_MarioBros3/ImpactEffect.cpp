@@ -2,6 +2,7 @@
 
 CImpactEffect::CImpactEffect(float x, float y)
 {
+	type = TYPE::IMPACT_EFFECT;
 	SetPosition(x, y);
 }
 

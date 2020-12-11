@@ -2,6 +2,7 @@
 
 CExplosiveEffect::CExplosiveEffect(float x, float y)
 {
+	type = TYPE::EXPLOSIVE_EFFECT;
 	SetPosition(x, y);
 }
 
