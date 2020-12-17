@@ -3,6 +3,8 @@
 #include "Ground.h"
 #include "Weapon.h"
 #include "ImpactEffect.h"
+#include "PieceBrickEffect.h"
+
 #define TAIL_BBOX_WIDTH  8
 #define TAIL_BBOX_HEIGHT 8
 
@@ -23,6 +25,6 @@ public:
 	void Render();
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 	void SetState(int state);
-	void Update(DWORD dt, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT> *listEffect);
+	void Update(DWORD dt, vector<LPGAMEOBJECT>* listMapObj, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT>* listItem,vector<LPGAMEOBJECT> *listEffect);
 	static CTail* GetInstance();
 };

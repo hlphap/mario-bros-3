@@ -2,6 +2,7 @@
 
 CColorBox::CColorBox()
 {
+	isActive = true;
 }
 
 void CColorBox::Render()

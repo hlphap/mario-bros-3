@@ -10,6 +10,7 @@
 #include "Brick.h"
 #include "Koopas.h"
 #include "PlayScence.h"
+#include "Switch_P.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -28,7 +29,7 @@ CMario::CMario(float x, float y) : CGameObject()
 
 }
 
-void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>* coEnemy, vector<LPGAMEOBJECT>* coItem, vector<LPGAMEOBJECT> *listEffect)
+void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT>* listItem, vector<LPGAMEOBJECT> *listEffect)
 {
 #pragma region Update Mario
 	// Calculate dx, dy 
@@ -99,7 +100,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 				tail->SetPosition(x + MARIO_BIG_TAIL_BBOX_WIDTH + 8, y + MARIO_D_HEED_TO_TAIL_ATTACK);
 			tail->SetState(TAIL_CANNOT_KILL);
 		}
-		tail->Update(dt, coEnemy, listEffect); // Duoi thuoc Mario Update Duoi trong Mario
+		tail->Update(dt, listMapObj, listEnemy,listItem, listEffect); // Duoi thuoc Mario Update Duoi trong Mario
 		if (GetTickCount() - timeStartAttack >= MARIO_TIME_BIG_TAIL_ATTACK)
 		{
 			timeStartAttack = TIME_DEFAULT;
@@ -164,7 +165,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 	// turn off collision when die 
 	if (state != MARIO_STATE_DIE)
 	{
-		CalcPotentialCollisions(coObj, coObjEvents);
+		CalcPotentialCollisions(listMapObj, coObjEvents);
 	}
 	// No collision occured, proceed normally
 	if (coObjEvents.size() == 0)
@@ -240,7 +241,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 				if (e->ny > 0)
 				{
 					vy = 0;
-				
 				}
 				else
 					if (e->nx != 0)
@@ -334,7 +334,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 	// turn off collision when die 
 	if (state != MARIO_STATE_DIE && untouchable==0)
 	{
-		CalcPotentialCollisions(coEnemy, coEnemyEvents);
+		CalcPotentialCollisions(listEnemy, coEnemyEvents);
 	}
 
 	if (coEnemyEvents.size() != 0)
@@ -356,6 +356,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 			y += min_ty * dy + ny * 0.1f;
 			if (createdScore)
 				score *= 2;
+			createdScore = true;
 			CScoreEffect *scoreEffect = new CScoreEffect(x, y);
 			scoreEffect->SetScore(score);
 			listEffect->push_back(scoreEffect);
@@ -520,25 +521,64 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT>*
 #pragma endregion
 
 #pragma region Colision with listItem
-	for (int i = 0; i < coItem->size(); i++)
+//P_Switch
+	vector<LPCOLLISIONEVENT> coItemEvents;
+	vector<LPCOLLISIONEVENT> coItemEventsResult;
+	coItemEvents.clear();
+	// turn off collision when die 
+	CalcPotentialCollisions(listItem, coItemEvents);
+	if (coItemEvents.size() != 0)
 	{
-		if (coItem->at(i) != NULL)
+		float min_tx, min_ty, nx = 0, ny;
+		float rdx = 0;
+		float rdy = 0;
+
+		FilterCollision(coItemEvents, coItemEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+		// Collision logic with listMapObj
+		for (UINT i = 0; i < coItemEventsResult.size(); i++)
 		{
-			if (isCollisionWithObj(coItem->at(i)))
+			LPCOLLISIONEVENT e = coItemEventsResult[i];
+			if (e->obj->type == TYPE::SWITCH_P)
 			{
-				if (dynamic_cast<CMushroom*>(coItem->at(i)))
+				CSwitch_P* switchP = dynamic_cast<CSwitch_P*>(e->obj);
+				if (e->ny < 0)
 				{
-					level = MARIO_LEVEL_BIG;
+					switchP->SetState(SWITCH_P_STATE_PRESSED);
+					switchP->TranFormationBrick(listMapObj, listItem);
+					Jump();
+					Fall();
 				}
-				else
-					if (dynamic_cast<CLeafTree*>(coItem->at(i)))
-					{
-						level = MARIO_LEVEL_BIG_TAIL;
-					}
-				coItem->at(i)->isActive = false;
 			}
 		}
 	}
+//Item khac
+	for (int i = 0; i < listItem->size(); i++)
+	{
+		if (listItem->at(i) != NULL)
+		{
+			if (isCollisionWithObj(listItem->at(i)))
+			{
+				if (listItem->at(i)->type == TYPE::MUSHROOM)
+				{
+					level = MARIO_LEVEL_BIG;
+					listItem->at(i)->isActive = false;
+				}
+				else
+				if (listItem->at(i)->type == TYPE::LEAF_TREE)
+				{
+					level = MARIO_LEVEL_BIG_TAIL;
+					listItem->at(i)->isActive = false;
+				}
+				else
+					if (listItem->at(i)->type == TYPE::COIN_IDLE_STATIC || listItem->at(i)->type == TYPE::COIN_IDLE_SPIN)
+					{
+						listItem->at(i)->isActive = false;
+					}
+			}
+		}
+	}
+
+
 
 #pragma endregion
 

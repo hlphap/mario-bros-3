@@ -1,23 +1,12 @@
 #include "Coin.h"
+#include "WeakBrick.h"
 
 CCoin::CCoin(float x, float y, int type)
 {
 	SetPosition(x + 4, y);
 	minPosY = y - DISTANCE_FROM_QUESTIONBRICK_TO_MINPOSY;
-	this->typeCoin = type;
-	switch (this->typeCoin)
-	{
-	case COIN_TYPE_EFFECT:
-		type = TYPE::COIN_EFFECT;
-		break;
-	case COIN_TYPE_IDLE_STATIC:
-		type = TYPE::COIN_IDLE_STATIC;
-		break;
-	case COIN_TYPE_IDLE_SPIN:
-		type = TYPE::COIN_IDLE_SPIN;
-		break;
-	}
-	if (this->typeCoin == COIN_TYPE_EFFECT)
+	this->type = type;
+	if (this->type == TYPE::COIN_EFFECT)
 	{
 		vy = -0.2f;
 	}
@@ -29,7 +18,7 @@ void CCoin::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 	vector<LPCOLLISIONEVENT> coObjEvents;
 	vector<LPCOLLISIONEVENT> coObjEventsResult;
 	coObjEvents.clear();
-	if (typeCoin == COIN_TYPE_EFFECT)
+	if (type == TYPE::COIN_EFFECT)
 	{
 		if (!isComplete)
 			if (y <= minPosY)
@@ -61,15 +50,23 @@ void CCoin::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 			if (ny < 0)
 			{
 				vy = 0;
-			}
-			if (nx != 0)
-			{
-				backup_vx = vx;
-				vx = -vx;
+				isActive = false;
 			}
 			for (UINT i = 0; i < coObjEvents.size(); i++) delete coObjEvents[i];
 		}
 	}
+	else
+		if (type == TYPE::COIN_IDLE_STATIC)
+		{
+			if (GetTickCount() - timeStartTranForM >= 2000 && timeStartTranForM != TIME_DEFAULT)
+			{
+				isActive = false;
+				//Return WeakBrick
+				CWeakBrick* weakBrick = new CWeakBrick(0);
+				weakBrick->SetPosition(x-4, y);
+				listMapObj->push_back(weakBrick);
+			}
+		}
 }
 
 
@@ -81,13 +78,13 @@ void CCoin::SetState(int state)
 
 void CCoin::Render()
 {
-	if (typeCoin == COIN_TYPE_EFFECT)
+	if (type == TYPE::COIN_EFFECT)
 		ani = ITEM_ANI_COIN_MOVE_FAST;
 	else
-		if (typeCoin == COIN_TYPE_IDLE_STATIC)
+		if (type == TYPE::COIN_IDLE_STATIC)
 			ani = ITEM_ANI_COIN_IDLE;
 		else
-			if (typeCoin == COIN_TYPE_IDLE_SPIN)
+			if (type == TYPE::COIN_IDLE_SPIN)
 				ani = ITEM_ANI_COIN_MOVE_SLOW;
 	animation_set->at(ani)->Render(x, y);
 }

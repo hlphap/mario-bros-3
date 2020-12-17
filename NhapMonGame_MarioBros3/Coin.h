@@ -4,11 +4,6 @@
 #include "ColorBox.h"
 #include "Utils.h"
 
-//Type
-#define COIN_TYPE_EFFECT		0
-#define COIN_TYPE_IDLE_STATIC	1
-#define COIN_TYPE_IDLE_SPIN		2
-
 //Speed
 #define COIN_SPEED_GROUW		 0.05
 #define COIN_SPEED_FALL			 0.02
@@ -29,11 +24,15 @@
 #define ITEM_ANI_COIN_MOVE_SLOW		1
 #define ITEM_ANI_COIN_MOVE_FAST		2
 
+#define TIME_DEFAULT	0
+
 class CCoin : public CItem
 {
 public:
+	DWORD timeStartTranForM = TIME_DEFAULT;
+public:
 	float minPosY;
-	int typeCoin; //type static, type unstatic
+
 	CCoin(float x, float y, int type);
 	void Update(DWORD dt, vector<CGameObject*>* listMapObj);
 	void Render();

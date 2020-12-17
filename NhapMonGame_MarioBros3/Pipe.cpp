@@ -1,4 +1,8 @@
 #include "Pipe.h"
+CPipe::CPipe()
+{
+	isActive = true;
+}
 void CPipe::Render()
 {
 	//animation_set->at(0)->Render(x, y);

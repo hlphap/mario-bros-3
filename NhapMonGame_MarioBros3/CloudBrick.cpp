@@ -1,9 +1,13 @@
 #include "CloudBrick.h"
 
+CCloudBrick::CCloudBrick()
+{
+	isActive = true;
+}
+
 void CCloudBrick::Render()
 {
-	//animation_set->at(0)->Render(x, y);
-	//RenderBoundingBox();
+	
 }
 
 void CCloudBrick::GetBoundingBox(float& l, float& t, float& r, float& b)

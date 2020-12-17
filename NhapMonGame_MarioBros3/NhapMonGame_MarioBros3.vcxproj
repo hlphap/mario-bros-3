@@ -45,6 +45,7 @@
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="MarioGeneral.cpp" />
     <ClCompile Include="Mushroom.cpp" />
+    <ClCompile Include="PieceBrickEffect.cpp" />
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="PlayScence.cpp" />
     <ClCompile Include="Portal.cpp" />
@@ -52,6 +53,7 @@
     <ClCompile Include="Scence.cpp" />
     <ClCompile Include="ScoreEffect.cpp" />
     <ClCompile Include="Sprites.cpp" />
+    <ClCompile Include="Switch_P.cpp" />
     <ClCompile Include="Tail.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="TileMap.cpp" />
@@ -87,6 +89,7 @@
     <ClInclude Include="Mario.h" />
     <ClInclude Include="MarioGeneral.h" />
     <ClInclude Include="Mushroom.h" />
+    <ClInclude Include="PieceBrickEffect.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="PlayScence.h" />
     <ClInclude Include="Portal.h" />
@@ -94,6 +97,7 @@
     <ClInclude Include="Scence.h" />
     <ClInclude Include="ScoreEffect.h" />
     <ClInclude Include="Sprites.h" />
+    <ClInclude Include="Switch_P.h" />
     <ClInclude Include="Tail.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="TileMap.h" />

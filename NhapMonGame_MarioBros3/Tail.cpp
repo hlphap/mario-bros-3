@@ -3,6 +3,9 @@
 #include "Brick.h"
 #include "Goomba.h"
 #include "Koopas.h"
+#include "WeakBrick.h"
+#include "QuestionBrick.h"
+#include "Switch_P.h"
 
 CTail::CTail()
 {
@@ -50,11 +53,13 @@ void CTail::SetState(int state)
 
 }
 
-void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT> *listEffect)
+void CTail::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT> *listItem, vector<LPGAMEOBJECT> *listEffect)
 {
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
 	//DebugOut(L"\nx: %f", x);
+
+#pragma region Collision with Enemy
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -64,7 +69,7 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJEC
 
 	if (coEvents.size() == 0)
 	{
-		
+
 		x += dx;
 		y += dy;
 	}
@@ -100,7 +105,7 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJEC
 					{
 						if (canKill)
 						{
-							effect = new CImpactEffect(goomba->x,goomba->y);
+							effect = new CImpactEffect(goomba->x, goomba->y);
 							listEffect->push_back(effect);
 							goomba->isKillByWeapon = true;
 							goomba->SetState(GOOMBA_STATE_DIE);
@@ -121,7 +126,7 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJEC
 							{
 								effect = new CImpactEffect(koopas->x, koopas->y);
 								listEffect->push_back(effect);
-								koopas->vy = - KOOPAS_JUMP_DEFLECT_SPEED;
+								koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
 								koopas->SetState(KOOPAS_STATE_SLEEP);
 								if (koopas->GetState() == KOOPAS_STATE_SLEEP)
 								{
@@ -137,6 +142,68 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJEC
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+#pragma endregion
+
+#pragma region Collision with MapObj
+	for (int i = 0; i < listMapObj->size(); i++)
+	{
+		if (listMapObj->at(i) != NULL)
+		{
+			if (isCollisionWithObj(listMapObj->at(i)))
+			{
+				if (this->canKill)
+				{
+					if (listMapObj->at(i)->type == TYPE::WEAK_BRICK)
+					{
+						CWeakBrick* weakbrick = dynamic_cast<CWeakBrick*>(listMapObj->at(i));
+						if (weakbrick->typeWeakBrick == WEAKBRICK_TYPE_NON_ITEM)
+						{
+							//Dame WeakBrick Non Item
+							weakbrick->Deployed_WeakBrick(listEffect); // WeakBrick destroyed -> Tao Effect
+						}
+						else
+						if (weakbrick->typeWeakBrick == WEAKBRICK_TYPE_ITEM_P_SWITCH)
+						{
+							//Dame WeakBrick -> Item Switch P
+							CSwitch_P* switchP = new CSwitch_P(weakbrick->x, weakbrick->y - 16);
+							CQuestionBrick* questionBrick = new CQuestionBrick(weakbrick->y, 0);
+							questionBrick->SetPosition(weakbrick->x, weakbrick->y);
+							questionBrick->isItem = false;	//Non Item
+							listMapObj->push_back(questionBrick);
+							listItem->push_back(switchP);	//Add SwitchP to ListItem
+							listEffect->push_back(switchP->effect);	//Add Effect Create SWitchP to ListItem
+							weakbrick->isActive = false;	//WeakBrick non Active ->Changed QuestionBrick ->State Normal
+						}
+						
+					}
+					else
+					if (listMapObj->at(i)->type == TYPE::QUESTION_BRICK)
+					{
+						//Dame QuestionBrick
+						CQuestionBrick* questionBrick = dynamic_cast<CQuestionBrick*>(listMapObj->at(i));
+						if (questionBrick->isItem)
+						{
+							//Update typeQuestion
+							if (questionBrick->typeQuestion == QUESTION_TYPE_COIN)
+							{
+								questionBrick->typeItem = ITEM_LEVEL_COIN;
+							}
+							else
+							{
+								questionBrick->typeItem = ITEM_LEVEL_TREE_LEAF;
+							}
+							questionBrick->SetState(QUESTION_STATE_MOVE_UP);
+						}
+					}
+				}
+				
+			}
+		}
+	}
+
+#pragma endregion
+
+	
 }
 
 CTail* CTail::__instance = NULL;

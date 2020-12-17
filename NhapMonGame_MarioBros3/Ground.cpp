@@ -1,5 +1,10 @@
 #include "Ground.h"
 
+CGround::CGround()
+{
+	isActive = true;
+}
+
 void CGround::Render()
 {
 	//animation_set->at(0)->Render(x, y);

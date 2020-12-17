@@ -3,10 +3,13 @@
 
 CQuestionBrick::CQuestionBrick(float startY, int type)
 {
-	this->typeQuestion = type;
+	category = CATEGORY::BRICK;
+	this->type = TYPE::QUESTION_BRICK;
+	isActive = true;
+	this->typeQuestion = type; // 0 -> coin , 1 special
 	this->start_y = startY;
 	SetState(QUESTION_STATE_IDLE);
-	
+	animation_set = CAnimationSets::GetInstance()->Get(21);
 }
 
 void CQuestionBrick::Render()
@@ -23,14 +26,14 @@ void CQuestionBrick::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	l = x;
 	t = y;
-	r = x + QUESTION_BRICK_BBOX_WIDTH * amountX;
-	b = y + QUESTION_BRICK_BBOX_WIDTH * amountY;
+	r = x + QUESTION_BRICK_BBOX_WIDTH;
+	b = y + QUESTION_BRICK_BBOX_WIDTH;
 }
 
 
-void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* ListItem)
+void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* listItem)
 {
-	CGameObject::Update(dt, ListItem);
+	CGameObject::Update(dt, listItem);
 	y += dy;
 	if (start_y - y > 10) // Nayr
 		vy = -vy;
@@ -41,17 +44,17 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* ListItem)
 		switch (typeItem)
 		{
 		case ITEM_LEVEL_MUSHROOM:
-			item = new CMushroom(x,y);
+			item = new CMushroom(x, y);
 			break;
 		case ITEM_LEVEL_TREE_LEAF:
 			item = new CLeafTree(x, y);
 			break;
 		case ITEM_LEVEL_COIN:
-			item = new CCoin(x, y,COIN_TYPE_EFFECT);
+			item = new CCoin(x, y, TYPE::COIN_EFFECT);
 			break;
 		}
 		y = start_y;
-		ListItem->push_back(item);
+		listItem->push_back(item);
 		SetState(QUESTION_STATE_IDLE);
 	}
 

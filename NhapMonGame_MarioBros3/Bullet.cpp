@@ -7,6 +7,7 @@
 #include "Goomba.h"
 #include "Koopas.h"
 #include "Utils.h"
+#include "WeakBrick.h"
 
 CBullet::CBullet()
 {
@@ -159,6 +160,17 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* listMapObj,vector<LPGAMEOBJ
 			}
 			else
 			if (dynamic_cast<CCloudBrick*>(e->obj))
+			{
+				if (e->nx != 0)
+				{
+					SetState(BULLET_STATE_EXPLOSIVE);
+				}
+				if (e->ny != 0)
+				{
+					vy = -vy;
+				}
+			}
+			if (dynamic_cast<CWeakBrick*>(e->obj))
 			{
 				if (e->nx != 0)
 				{

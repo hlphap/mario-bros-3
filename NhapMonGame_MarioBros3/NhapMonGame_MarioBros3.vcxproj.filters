@@ -162,6 +162,12 @@
     <ClCompile Include="ScoreEffect.cpp">
       <Filter>GameObject\Effects</Filter>
     </ClCompile>
+    <ClCompile Include="PieceBrickEffect.cpp">
+      <Filter>GameObject\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Switch_P.cpp">
+      <Filter>GameObject\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -283,6 +289,12 @@
     </ClInclude>
     <ClInclude Include="ScoreEffect.h">
       <Filter>GameObject\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="PieceBrickEffect.h">
+      <Filter>GameObject\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Switch_P.h">
+      <Filter>GameObject\Items</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

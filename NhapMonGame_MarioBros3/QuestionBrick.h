@@ -4,6 +4,7 @@
 #include "Mushroom.h"
 #include "LeafTree.h"
 #include "Coin.h"
+#include "QuestionBrick.h"
 
 #define QUESTION_BRICK_BBOX_WIDTH  16
 #define QUESTION_BRICK_BBOX_HEIGHT 16

@@ -25,10 +25,6 @@ void CMushroom::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 	}
 	CGameObject::Update(dt, listMapObj);
 
-
-
-	
-
 	if (isComplete)
 	{
 		vy += ITEM_GRAVITY * dt;

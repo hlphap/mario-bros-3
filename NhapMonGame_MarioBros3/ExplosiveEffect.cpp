@@ -18,6 +18,7 @@ void CExplosiveEffect::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CExplosiveEffect::Render()
 {
+
 	animation_set->at(EFFECT_ANI_BULLET_EXPLOSIVE)->Render(x, y);
 }
 

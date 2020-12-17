@@ -195,13 +195,16 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		listMapObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_WEAK_BRICK:	//Oker
-		obj = new CWeakBrick();
+	{
+		int type = atoi(tokens[6].c_str());
+		obj = new CWeakBrick(type);
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
 		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		listMapObj.push_back(obj);
 		break;
+	}
 	case OBJECT_TYPE_CLOUD_BRICK:	 //Oker
 		obj = new CCloudBrick();
 		obj->amountX = atoi(tokens[4].c_str());
@@ -348,12 +351,6 @@ void CPlayScene::Load()
 		cam = new Camera(player);
 		DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 	}
-	/*CAnimationSets* animation_sets = CAnimationSets::GetInstance();
-	CKoopas* obj = new CKoopas(player);
-	obj->x = 10.0f;
-	obj->y = 300.0f;
-	obj->SetAnimationSet(animation_sets->Get(4));
-	listMapObj.push_back(obj);*/
 }
 
 void CPlayScene::Update(DWORD dt)
@@ -376,10 +373,16 @@ void CPlayScene::Update(DWORD dt)
 	//Update player
 	player->Update(dt, &listMapObj, &listEnemies, &listItems,&listEffect);
 
+	DebugOut(L"\nsize MapOBJ: %d", listMapObj.size());
 	//Update listMapObj
 	for (size_t i = 0; i < listMapObj.size(); i++)
 	{
-		listMapObj[i]->Update(dt, &listItems);
+		if (listMapObj[i]->isActive)
+			listMapObj[i]->Update(dt, &listItems);
+		else
+		{
+			listMapObj.erase(listMapObj.begin() + i);
+		}
 	}
 	//Update listItem
 	//DebugOut(L"ListItem size: %d \n", listItems.size());
@@ -412,18 +415,20 @@ void CPlayScene::Update(DWORD dt)
 			if (listItems[i]->type == TYPE::COIN_EFFECT)
 			{
 				scoreEffect->SetScore(100);
+				listEffect.push_back(scoreEffect);
+			}
+			else 
+			if (listItems[i]->type == TYPE::LEAF_TREE)
+			{
+				scoreEffect->SetScore(1000);
+				listEffect.push_back(scoreEffect);
 			}
 			else
-				if (listItems[i]->type == TYPE::LEAF_TREE)
-				{
-					scoreEffect->SetScore(1000);
-				}
-				else
-					if (listItems[i]->type == TYPE::MUSHROOM)
-					{
-						scoreEffect->SetScore(1000);
-					}
-			listEffect.push_back(scoreEffect);
+			if (listItems[i]->type == TYPE::MUSHROOM)
+			{
+				scoreEffect->SetScore(1000);
+				listEffect.push_back(scoreEffect);
+			}
 			listItems.erase(listItems.begin() + i);
 		}
 	}
@@ -468,7 +473,8 @@ void CPlayScene::Render()
 		if (listBullet[i] != NULL)
 		listBullet[i]->Render();
 	}	
-	for (UINT i = 0; i < listEffect .size(); i++) {
+	//DebugOut(L"\nsize Effect:%d", listEffect.size());
+	for (UINT i = 0; i < listEffect.size(); i++) {
 
 		if (listEffect[i] != NULL)
 			listEffect[i]->Render();

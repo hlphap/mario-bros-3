@@ -2,6 +2,7 @@
 
 CBrick::CBrick()
 {
+	isActive = true;
 }
 
 void CBrick::Render()
