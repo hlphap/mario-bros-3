@@ -23,6 +23,8 @@
 #define MARIO_STATE_BIG_TAIL_ATTACK						800
 #define MARIO_STATE_BIG_FIRE_ATTACK						900
 #define MARIO_STATE_KICK								1000
+#define MARIO_STATE_GO_HIDDEN_MAP						1100
+#define MARIO_STATE_GO_MAIN_MAP							1200
 
 //================================MARIO ANI GENERAL ZONE=================================
 #define MARIO_ANI_IDLE_RIGHT							0
@@ -49,6 +51,7 @@
 #define MARIO_ANI_HOLD_WALKING_LEFT						21
 #define MARIO_ANI_HOLD_FLYING_RIGHT						22
 #define MARIO_ANI_HOLD_FLYING_LEFT						23
+#define MARIO_ANI_GO_HIDDEN_MAP							24
 
 ////================================END MARIO ANIMATION GENERAL ZONE=================================
 
@@ -56,6 +59,7 @@
 
 //==========================================MARIO SMALL============
 #define MARIO_ANI_DIE									104
+#define MARIO_ANI_SMALL_GO_HIDDEN_MAP					105
 #define MARIO_ANI_SMALL_IDLE_RIGHT						0
 #define MARIO_ANI_SMALL_IDLE_LEFT						1
 #define MARIO_ANI_SMALL_WALKING_RIGHT					2
@@ -80,6 +84,7 @@
 
 
 //=======================================MARIO BIG================
+#define MARIO_ANI_BIG_GO_HIDDEN_MAP						106
 #define MARIO_ANI_BIG_IDLE_RIGHT						14
 #define MARIO_ANI_BIG_IDLE_LEFT							15
 #define MARIO_ANI_BIG_WALKING_RIGHT						16
@@ -106,6 +111,7 @@
 #define MARIO_ANI_BIG_HOLD_FLYING_LEFT					99
 
 //=====================================MARIO BIG TAIL
+#define MARIO_ANI_BIG_TAIL_GO_HIDDEN_MAP				107
 #define MARIO_ANI_BIG_TAIL_IDLE_RIGHT					32
 #define MARIO_ANI_BIG_TAIL_IDLE_LEFT					33
 #define MARIO_ANI_BIG_TAIL_WALKING_RIGHT				34		
@@ -140,6 +146,7 @@
 #define MARIO_ANI_BIG_TAIL_HOLD_FLYING_LEFT				101
 
 //======================================MARIO BIG FIRE
+#define MARIO_ANI_BIG_FIRE_GO_HIDDEN_MAP				108
 #define MARIO_ANI_BIG_FIRE_IDLE_RIGHT					58
 #define MARIO_ANI_BIG_FIRE_IDLE_LEFT					59
 #define MARIO_ANI_BIG_FIRE_WALKING_RIGHT				60		

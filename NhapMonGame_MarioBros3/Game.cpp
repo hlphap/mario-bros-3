@@ -347,7 +347,7 @@ void CGame::_ParseSection_SCENES(string line)
 void CGame::Load(LPCWSTR gameFile) // 
 {
 	DebugOut(L"[INFO] Start loading game file : %s\n", gameFile);
-
+	DebugOut(L"ScreenWidht kldjfklajksldfjlkasdjflksajlfjdsa: %d", screen_width);
 	ifstream f;
 	f.open(gameFile);
 	char str[MAX_GAME_LINE];

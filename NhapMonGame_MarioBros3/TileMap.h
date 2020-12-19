@@ -11,6 +11,8 @@
 class TileMap
 {
 public:
+	float screenWidth;
+	float screenHeight;
 	int firstcol;
 	int lastcol;
 	int firstrow;

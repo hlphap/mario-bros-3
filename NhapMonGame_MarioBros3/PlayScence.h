@@ -54,21 +54,32 @@ public:
 	CMario* player;					// A play scene has to have player, right? 
 	TileMap *map;
 	Camera* cam;
-	
+	DWORD timeStartScreenDark = TIME_DEFAULT;
+	DWORD timeStartScreenLight = TIME_DEFAULT;
+	bool isCompleteTransDark = false;
+	bool isCompleteTransLight = false;
+
+
+	bool isScreenDark = false;
+
 	vector<LPGAMEOBJECT> listMapObj;
 	vector<CGameObject *> listEnemies;
 	vector<CGameObject *> listItems;
 	vector<CGameObject *> listEffect;
+	vector<LPGAMEOBJECT> listPipe;
 	vector<CBullet*> listBullet;
+
+	void TransformDarkScreen();
+	void TransformLightScreen();
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
 	void _ParseSection_ANIMATION_SETS(string line);
 	void _ParseSection_OBJECTS(string line);
-
-
 	void _ParseSection_TILEMAP(string line);
+
+
 
 public:
 	CPlayScene(int id, LPCWSTR filePath);
@@ -80,7 +91,8 @@ public:
 	
 	CMario* GetPlayer() { return player; }
 
-	//friend class CPlayScenceKeyHandler;
+
+
 };
 
 class CPlayScenceKeyHandler : public CScenceKeyHandler

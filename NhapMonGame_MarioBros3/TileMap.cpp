@@ -4,7 +4,9 @@
 
 
 TileMap::TileMap()
-{	
+{
+	screenWidth = CGame::GetInstance()->screen_width;
+	screenHeight = CGame::GetInstance()->screen_height;
 }
 
 TileMap::~TileMap()
@@ -57,7 +59,7 @@ void TileMap::Update()
 		if (mapResidualX > MAP_RESIDUALX) mapResidualX = MAP_RESIDUALX;
 		firstcol = (int)CGame::GetInstance()->GetCamPosX() / tile_width - mapResidualX;
 	}
-	lastcol = firstcol + (SCREEN_WIDTH / tile_width) + mapResidualX * 2;
+	lastcol = firstcol + (screenWidth / tile_width) + mapResidualX * 2;
 
 
 	//Truc Y
@@ -71,7 +73,7 @@ void TileMap::Update()
 		if (mapResidualY > MAP_RESIDUALY) mapResidualY = MAP_RESIDUALY;
 		firstrow = (int)CGame::GetInstance()->GetCamPosY() / tile_height - mapResidualY;
 	}
-	lastrow = firstrow + (SCREEN_HEIGHT / tile_height) + mapResidualY * 2;
+	lastrow = firstrow + (screenHeight / tile_height) + mapResidualY * 2;
 
 
 

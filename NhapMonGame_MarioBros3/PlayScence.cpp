@@ -29,6 +29,52 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 //8 = QuestionBrick, 9 = WeakBreak, 10 = CloundBrick, 11 = Item, 12 = Bullet
 
 
+void CPlayScene::TransformDarkScreen()
+{
+	LPDIRECT3DTEXTURE9 darken = CTextures::GetInstance()->Get(998);
+	RECT rect;
+	float l = CGame::GetInstance()->GetCamPosX();
+	float t = CGame::GetInstance()->GetCamPosY();
+
+	rect.left = 0;
+	rect.top = 0;
+	rect.right = SCREEN_WIDTH;
+	rect.bottom = SCREEN_HEIGHT;
+
+	int alpha = 0;
+	DWORD timer = GetTickCount() - timeStartScreenDark;
+
+	if (timer > 1000) alpha = 255;
+	else if (timer > 450) alpha = 200;
+	else if (timer > 400) alpha = 150;
+	else if (timer > 350) alpha = 100;
+	else if (timer > 300) alpha = 50;
+	CGame::GetInstance()->Draw(l, t, darken, rect.left, rect.top, rect.right, rect.bottom, alpha);
+}
+
+void CPlayScene::TransformLightScreen()
+{
+	LPDIRECT3DTEXTURE9 darken = CTextures::GetInstance()->Get(998);
+	RECT rect;
+	float l = CGame::GetInstance()->GetCamPosX();
+	float t = CGame::GetInstance()->GetCamPosY();
+
+	rect.left = 0;
+	rect.top = 0;
+	rect.right = SCREEN_WIDTH;
+	rect.bottom = SCREEN_HEIGHT;
+
+	int alpha = 255;
+	DWORD timer = GetTickCount() - timeStartScreenLight;
+
+	if (timer > 500) alpha = 0;
+	else if (timer > 450) alpha = 50;
+	else if (timer > 400) alpha = 100;
+	else if (timer > 350) alpha = 150;
+	else if (timer > 300) alpha = 200;
+	CGame::GetInstance()->Draw(l, t, darken, rect.left, rect.top, rect.right, rect.bottom, alpha);
+}
+
 void CPlayScene::_ParseSection_TEXTURES(string line)
 {
 	vector<string> tokens = split(line);
@@ -230,13 +276,20 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		listMapObj.push_back(obj);
 		break;
 	case OBJECT_TYPE_PIPE: //Oker
-		obj = new CPipe();
+	{
+		bool special = atoi(tokens[6].c_str());
+		bool where = atoi(tokens[7].c_str());
+		bool uses = atoi(tokens[8].c_str());
+		DebugOut(L"special: %d", where);
+		obj = new CPipe(special, where, uses);
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
 		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listPipe.push_back(obj);
 		listMapObj.push_back(obj);
 		break;
+	}
 	case OBJECT_TYPE_FLOWER: //Oker
 	{
 		int type = atoi(tokens[4].c_str());
@@ -356,6 +409,7 @@ void CPlayScene::Load()
 void CPlayScene::Update(DWORD dt)
 {
 	//Update playscence chay truong nen isAttack chua kip ve false thi ben nay da ban dan r
+	//FireAttack
 	if (player->isAttacking
 		&& player->level == MARIO_LEVEL_BIG_FIRE
 		&& ((!player->isOnAir && GetTickCount() - player->timeStartAttack >= MARIO_TIME_BIG_FIRE_ATTACK_ON_GROUND)
@@ -369,11 +423,94 @@ void CPlayScene::Update(DWORD dt)
 		player->isAttacking = false;
 
 
+	//HideMap
+	//1.Off Light
+	if (player->GetState() == MARIO_STATE_GO_HIDDEN_MAP)
+	{
+		if (player->y > player->posY_of_PipeIn && player->isInMainMap)
+		{
+			timeStartScreenLight = TIME_DEFAULT;
+			isScreenDark = true;
+			if (timeStartScreenDark == TIME_DEFAULT)
+				timeStartScreenDark = GetTickCount();
+		}
+	}
+	
+	if (player->GetState() == MARIO_STATE_GO_MAIN_MAP)
+	{
+		if (player->y < player->posY_of_PipeIn + 16 && !player->isInMainMap)
+		{
+			timeStartScreenLight = TIME_DEFAULT;
+			isScreenDark = true;
+			if (timeStartScreenDark == TIME_DEFAULT)
+				timeStartScreenDark = GetTickCount();
+		}
+	}
+
+	//2.Go HideMap, Find posision go to 
+
+	if (isScreenDark)
+	{
+			if (player->isInMainMap)
+			{
+				for (size_t i = 0; i < listPipe.size(); i++)
+				{
+					CPipe* pipe = dynamic_cast<CPipe*>(listPipe[i]);
+					if (pipe->isSpecial & !pipe->isPullMario && !pipe->isInMainMap && player->GetState() == MARIO_STATE_GO_HIDDEN_MAP)
+					{
+						if (GetTickCount() - timeStartScreenDark > 500)
+						{
+							player->SetPosition(pipe->x, pipe->y - 16); // SetPosition To Mario Go HideMap
+							
+							player->isInMainMap = false;
+						
+							player->Fall();
+							isScreenDark = false; // Khong tat den nua
+							timeStartScreenDark = TIME_DEFAULT;
+
+							if (timeStartScreenLight == TIME_DEFAULT)
+							{
+								timeStartScreenLight = GetTickCount();
+							}
+						}
+					}
+				}
+			}
+			
+			if (!player->isInMainMap)
+			{
+				for (size_t i = 0; i < listPipe.size(); i++)
+				{
+					CPipe* pipe = dynamic_cast<CPipe*>(listPipe[i]);
+					if (!pipe->isPullMario && pipe->isSpecial && pipe->isInMainMap && player->GetState() == MARIO_STATE_GO_MAIN_MAP) //Non Pull Mario -> Push Mario
+					{
+						if (GetTickCount() - timeStartScreenDark > 500)
+						{
+							player->posY_of_PipeOut = pipe->y;
+							player->isSlideOutPipe = true;
+							player->SetPosition(pipe->x, pipe->y - 17); // SetPosition To Mario Go HideMap
+							player->isInMainMap = true;
+							
+							isScreenDark = false; // Khong tat den nua
+							timeStartScreenDark = TIME_DEFAULT;
+
+							if (timeStartScreenLight == TIME_DEFAULT)
+							{
+								timeStartScreenLight = GetTickCount();
+							}
+						}
+					}
+				}
+			}
+	}
+
+
+
 
 	//Update player
 	player->Update(dt, &listMapObj, &listEnemies, &listItems,&listEffect);
 
-	DebugOut(L"\nsize MapOBJ: %d", listMapObj.size());
+	//DebugOut(L"\nsize MapOBJ: %d", listMapObj.size());
 	//Update listMapObj
 	for (size_t i = 0; i < listMapObj.size(); i++)
 	{
@@ -444,11 +581,12 @@ void CPlayScene::Update(DWORD dt)
 
 	
 
-	if (player == NULL) return;
 
 	
 	map->Update();
 	cam->Update();
+
+	if (player == NULL) return;
 }
 
 void CPlayScene::Render()
@@ -473,13 +611,44 @@ void CPlayScene::Render()
 		if (listBullet[i] != NULL)
 		listBullet[i]->Render();
 	}	
-	//DebugOut(L"\nsize Effect:%d", listEffect.size());
+	
 	for (UINT i = 0; i < listEffect.size(); i++) {
 
 		if (listEffect[i] != NULL)
 			listEffect[i]->Render();
 	}
 	player->Render();
+
+
+	if (isScreenDark)
+	{
+		TransformDarkScreen();
+	}
+	else
+	{
+		TransformLightScreen();	
+	}
+		
+		
+	/*if (player->isAutoGo && !this->isCompleteTransDark)
+	{
+		if (player->y > player->posY_of_PipeIn && player->isInMainMap)
+		{
+			TransformDarkScreen();
+		}
+		else
+		if (player->y < player->posY_of_PipeIn && !player->isInMainMap)
+		{
+			TransformDarkScreen();
+		}
+	}
+	else
+	if (!this->isCompleteTransLight && this->isCompleteTransDark)
+	{
+		DebugOut(L"Sceen");
+		this->TransformLightScreen();
+	}*/
+		
 }
 
 /*
@@ -501,6 +670,7 @@ void CPlayScene::Unload()
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
+	if (mario->isAutoGo) return;
 	switch (KeyCode)
 	{
 	case DIK_Q:
@@ -542,6 +712,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 {
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
+	if (mario->isAutoGo) return;
 	switch (KeyCode)
 	{
 	case DIK_Q:
@@ -575,6 +746,8 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 
 	//Mario Die
 	if (mario->GetState() == MARIO_STATE_DIE) return;
+	if (mario->isAutoGo) return;
+		
 
 
 	//Control

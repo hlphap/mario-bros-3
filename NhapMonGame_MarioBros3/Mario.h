@@ -39,6 +39,10 @@ public:
 	float start_x;	
 	float start_y;
 
+	//GoHideMap
+	float posY_of_PipeIn;
+	float posY_of_PipeOut;
+	
 	//Timer
 	DWORD untouchable_start;
 	DWORD timeAllowFly;
@@ -50,6 +54,8 @@ public:
 
 	
 	//Flag
+	bool isSlideOutPipe = false;
+	bool isInMainMap = true;
 	bool isWalking = false;
 	bool isOnAir = false;
 	bool isSitting = false;
@@ -66,6 +72,9 @@ public:
 	bool isKicking = false;
 	bool isHoldShell = false;
 	bool isHoldingShell = false;
+	bool isAutoGo = false;
+	bool isOnPipeGoHideMap = false;
+	bool isPressKeyDown = true;
 	byte numFall = 0;
 
 public:
@@ -99,5 +108,7 @@ public:
 	void Kick();
 	void SpeedUp();
 	void HoldShell();
+	void GoHiddenMap();
+	void GoMainMap();
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 };

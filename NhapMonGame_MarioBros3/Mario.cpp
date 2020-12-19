@@ -34,11 +34,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 #pragma region Update Mario
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
-
 	// Simple fall down
-	vy += MARIO_GRAVITY * dt;
-
-
+	if (!isAutoGo)
+		vy += MARIO_GRAVITY * dt;
 
 	// reset untouchable timer if untouchable time has passed
 	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
@@ -46,6 +44,18 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 		untouchable_start = 0;
 		untouchable = 0;
 	}
+
+
+	//Out pipe
+	if (isSlideOutPipe)
+	{
+		if (y + 28 < posY_of_PipeOut)
+		{
+			Idle();
+			isSlideOutPipe = false;
+		}
+	}
+
 	//Update IsFalling
 	if (vy > 0)
 	{
@@ -189,8 +199,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 		//Va cham voi listMapObj thì về trạng thái OnGround
 		if (ny < 0)
 		{
+			//Dang Go HideMap vy #=0
+			if (isAutoGo)
+				y += dy;
+			else
+				vy = 0;
 			backup_vy = vy;
-			vy = 0;
 			isOnAir = false;
 			isBlockFall = false;
 			isKeepJump_SlowFalling = false;
@@ -202,6 +216,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 			createdScore = false;
 			score = 100;
 		}
+		else
+			if (ny > 0)
+			{
+				if (isAutoGo)
+					y += dy;
+			}
+		
 		// Collision logic with listMapObj
 		for (UINT i = 0; i < coObjEventsResult.size(); i++)
 		{
@@ -288,6 +309,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 			//Ground
 			else if (dynamic_cast<CGround*>(e->obj))
 			{
+				if (e->ny > 0)
+				{
+					vy = 0;
+				}
 				if (e->nx != 0)
 				{
 					vx = 0;
@@ -309,10 +334,26 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 			//Pipe
 			else if (dynamic_cast<CPipe*>(e->obj))
 			{
+			CPipe* pipe = dynamic_cast<CPipe*>(e->obj);
 				if (e->nx != 0)
 				{
 					vx = 0;
 				}
+				else
+					if (e->ny < 0 && isSitting)
+					{
+						if (pipe->isSpecial && pipe->isPullMario && pipe->isInMainMap)
+							GoHiddenMap();
+						posY_of_PipeIn = pipe->y;
+					}
+					else
+						if (e->ny > 0)
+						{
+							
+							if (pipe->isSpecial && pipe->isPullMario && !pipe->isInMainMap)
+								GoMainMap();
+							posY_of_PipeIn = pipe->y;
+						}
 			}
 				else if (dynamic_cast<CPortal*>(e->obj))
 				{
@@ -595,7 +636,7 @@ void CMario::Render()
 	int alpha = 255;
 	if (untouchable) alpha = 128;
 	animation_set->at(ani)->Render(x,y,alpha);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 
@@ -782,6 +823,8 @@ int CMario::RenderFromAniGroup()
 			aniIndex = MARIO_ANI_WALKING_LEFT;
 
 	}
+	
+	
 
 	//============================================================END GENERAL=================================
 	ani = mario_general->GetAni_Mario(level,aniIndex);
@@ -916,6 +959,11 @@ int CMario::RenderFromAniGroup()
 	{
 		animation_set->at(ani)->SetHightSpeed(MARIO_RATIO_WHEN_KEEP_JUMPPING);
 	}
+	if (isAutoGo)
+	{
+		aniIndex = MARIO_ANI_GO_HIDDEN_MAP;
+		ani = mario_general->GetAni_Mario(level, aniIndex);
+	}
 	return ani;
 }
 
@@ -966,6 +1014,7 @@ void CMario::SetState(int state)
 			}
 			break;
 		}
+		
 		else if (nx == -1)
 		{
 			// Neu toc do cao hon di bo -> giam toc do 
@@ -1044,6 +1093,12 @@ void CMario::SetState(int state)
 			vy += MARIO_GRAVITY * dt;
 		break;
 	}
+	case MARIO_STATE_GO_HIDDEN_MAP:
+		vy = 0.02f;
+		break;
+	case MARIO_STATE_GO_MAIN_MAP:
+		vy = -0.02f;
+		break;
 	//=============================SPECIAL STATE MARIO_TAIL=============================
 	case MARIO_STATE_BIG_TAIL_KEEP_JUMP_FALL_SLOW: // Roi cham 
 	{
@@ -1075,7 +1130,6 @@ void CMario::SetState(int state)
 		if (timeStartAttack == TIME_DEFAULT) timeStartAttack = GetTickCount();
 		break;
 	}
-
 
 	case MARIO_STATE_KICK:
 	{
@@ -1164,7 +1218,8 @@ void CMario::Jump()
 }
 void CMario::Fall()
 {
-	
+	isOnAir = true;
+	isAutoGo = false;
 	SetState(MARIO_STATE_FALLING);
 	isBlockFall = false;
 	////Kiem tra KeepJump
@@ -1225,6 +1280,18 @@ void CMario::HoldShell()
 	isHoldShell = true;
 }
 
+void CMario::GoHiddenMap()
+{
+	isAutoGo = true;
+	SetState(MARIO_STATE_GO_HIDDEN_MAP);
+}
+
+void CMario::GoMainMap()
+{
+	isAutoGo = true;
+	SetState(MARIO_STATE_GO_MAIN_MAP);
+}
+
 void CMario::Sit()
 {
 	isSitting = true;
@@ -1233,6 +1300,7 @@ void CMario::Sit()
 
 void CMario::Idle()
 {
+	isAutoGo = false;
 	if (vx == 0)
 		isWalking = false;
 	isSitting = false;

@@ -7,7 +7,12 @@
 class CPipe : public CGameObject
 {
 public:
-	CPipe();
-	virtual void Render();
-	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);
+	bool isSpecial = false;
+	bool isPullMario;
+	bool isInMainMap;
+
+public:
+	CPipe(bool special, bool where, bool uses);
+	void Render();
+	void GetBoundingBox(float& l, float& t, float& r, float& b);
 };

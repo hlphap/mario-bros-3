@@ -5,7 +5,7 @@
 
 class CScene
 {
-protected:
+public:
 	CKeyEventHandler* key_handler;
 	int id;
 	LPCWSTR sceneFilePath;

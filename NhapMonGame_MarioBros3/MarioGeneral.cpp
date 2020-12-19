@@ -58,7 +58,7 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_HOLD_FLYING_RIGHT);	//22
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_HOLD_FLYING_LEFT);	//23
 
-
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_GO_HIDDEN_MAP);	//24
 
 
 
@@ -114,6 +114,8 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_big.push_back(MARIO_ANI_BIG_HOLD_FLYING_RIGHT);	//22
 		listAni_mario_big.push_back(MARIO_ANI_BIG_HOLD_FLYING_LEFT);	//23
 
+		listAni_mario_big.push_back(MARIO_ANI_BIG_GO_HIDDEN_MAP);	//24
+
 
 	}
 	
@@ -167,6 +169,8 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_HOLD_FLYING_RIGHT);	//22
 		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_HOLD_FLYING_LEFT);	//23
 
+		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_GO_HIDDEN_MAP);	//24
+
 
 
 	
@@ -177,7 +181,7 @@ void CMarioGeneral::LoadListAni()
 	if (listAni_mario_fire.empty())
 	{
 		// Đứng yên
-		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_IDLE_RIGHT);		//0
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_IDLE_RIGHT);	//0
 		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_IDLE_LEFT);		//1
 
 		//Đi
@@ -223,6 +227,8 @@ void CMarioGeneral::LoadListAni()
 		//Giữ rùa Onair
 		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_HOLD_FLYING_RIGHT);	//22
 		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_HOLD_FLYING_LEFT);	//23
+
+		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_GO_HIDDEN_MAP);	//24
 	}
 }
 

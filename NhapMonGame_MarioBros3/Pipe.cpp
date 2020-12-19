@@ -1,12 +1,18 @@
 #include "Pipe.h"
-CPipe::CPipe()
+
+
+CPipe::CPipe(bool special, bool where, bool uses)
 {
+	this->isSpecial = special;
+	this->isInMainMap = where;
+	this->isPullMario = uses;
 	isActive = true;
 }
+
 void CPipe::Render()
 {
 	//animation_set->at(0)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CPipe::GetBoundingBox(float& l, float& t, float& r, float& b)
