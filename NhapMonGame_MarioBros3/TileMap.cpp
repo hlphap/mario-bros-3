@@ -74,9 +74,6 @@ void TileMap::Update()
 		firstrow = (int)CGame::GetInstance()->GetCamPosY() / tile_height - mapResidualY;
 	}
 	lastrow = firstrow + (screenHeight / tile_height) + mapResidualY * 2;
-
-
-
 }
 
 

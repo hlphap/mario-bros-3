@@ -43,6 +43,9 @@
     <Filter Include="GameObject\Effects">
       <UniqueIdentifier>{f46f03d8-2a4c-4794-a96d-804c4c2c1685}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ScoreBoard">
+      <UniqueIdentifier>{32e85c81-d521-4f17-9d68-d6b67493219b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -167,6 +170,24 @@
     </ClCompile>
     <ClCompile Include="Switch_P.cpp">
       <Filter>GameObject\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreBoard.cpp">
+      <Filter>ScoreBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>ScoreBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="Number.cpp">
+      <Filter>ScoreBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="Energy.cpp">
+      <Filter>ScoreBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="P_MaxSpeed.cpp">
+      <Filter>ScoreBoard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -295,6 +316,24 @@
     </ClInclude>
     <ClInclude Include="Switch_P.h">
       <Filter>GameObject\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreBoard.h">
+      <Filter>ScoreBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>ScoreBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="Number.h">
+      <Filter>ScoreBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="Energy.h">
+      <Filter>ScoreBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="P_MaxSpeed.h">
+      <Filter>ScoreBoard</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

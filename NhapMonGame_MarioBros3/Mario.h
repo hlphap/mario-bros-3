@@ -9,8 +9,8 @@
 #define MARIO_WALKING_MAX_SPEED							0.08f
 
 #define MARIO_RUNNING_DECELERATION						0.000325f
-#define MARIO_RUNNING_ACCELERATION						0.00003f
-#define MARIO_RUNNING_MAX_SPEED							0.15f
+#define MARIO_RUNNING_ACCELERATION						0.00005f
+#define MARIO_RUNNING_MAX_SPEED							0.17f
 
 #define MARIO_SPEED_CAN_STOP							0.04
 #define MARIO_BOUNCE									15
@@ -32,8 +32,15 @@ public:
 	CTail* tail;
 	CBullet* bullet;
 	int level;
+	
+	//Score
 	int score = 100;
-	bool createdScore = false;
+	bool changeScore = false;
+	bool doubleScore = false;
+
+	//
+	int numCoin = 0;
+
 
 	int untouchable;
 	float start_x;	
@@ -54,6 +61,7 @@ public:
 
 	
 	//Flag
+	bool isDecreaseSpeed = false;
 	bool isSlideOutPipe = false;
 	bool isInMainMap = true;
 	bool isWalking = false;
@@ -83,6 +91,8 @@ public:
 	void Render();
 	int RenderFromAniGroup();
 
+	
+	void CreateEffectCoin(vector<LPGAMEOBJECT> *listEffect);
 	void DecreaseSpeed(float speedDown);
 	void SetState(int state);
 	void SetLevel(int l) { level = l; }

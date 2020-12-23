@@ -10,9 +10,9 @@ public:
 	bool isSpecial = false;
 	bool isPullMario;
 	bool isInMainMap;
-
+	int height;
 public:
-	CPipe(bool special, bool where, bool uses);
+	CPipe(bool special, bool where, bool uses, int height);
 	void Render();
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 };

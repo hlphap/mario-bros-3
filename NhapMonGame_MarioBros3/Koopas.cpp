@@ -2,11 +2,15 @@
 #include "ColorBox.h"
 #include "Utils.h"
 #include "QuestionBrick.h"
+#include "Goomba.h"
+#include "ScoreEffect.h"
+#include "Flower.h"
 
 CKoopas::CKoopas(CMario* m, int type, int level)
 {
+	this->type = TYPE::KOOPAS;
 	nx = -1;
-	this->type = type;
+	this->typeColor = type;
 	this->level = level;
 	koopasGeneral = CKoopasGeneral::GetInstance();
 	koopasGeneral->LoadListAni();
@@ -162,6 +166,55 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 }
 
+void CKoopas::IsCollisionWithEnemy(vector<LPGAMEOBJECT>* listEnemies, vector<LPGAMEOBJECT> *listEffects)
+{
+	if (isSleeping && isMoving || isHeld)
+	{
+		for (size_t i = 0; i < listEnemies->size(); i++)
+		{
+			if (isCollisionWithObj(listEnemies->at(i)))
+			{
+				if (listEnemies->at(i)->type == TYPE::GOOMBA)
+				{
+					CGoomba* goomba = dynamic_cast<CGoomba*>(listEnemies->at(i));
+					if (goomba->GetState() != GOOMBA_STATE_DIE)
+					{
+						goomba->isKillByWeapon = true;
+						goomba->SetState(GOOMBA_STATE_DIE);
+
+						//Create Effect Coin
+						CScoreEffect* effectScore = new CScoreEffect(goomba->x, goomba->y);
+						CImpactEffect* effectIm = new CImpactEffect(goomba->x, goomba->y);
+						listEffects->push_back(effectScore);
+						listEffects->push_back(effectIm);
+					}
+					player->isHoldingShell = false;
+				}
+				
+			}
+
+			if (isCollisionWithObj(listEnemies->at(i)))
+			{
+				if (listEnemies->at(i)->type == TYPE::FLOWER)
+				{
+					CFlower* flower = dynamic_cast<CFlower*>(listEnemies->at(i));
+					if (flower -> GetState() != FLOWER_STATE_DIE)
+					{
+						flower->SetState(FLOWER_STATE_DIE);
+						CScoreEffect* effectScore = new CScoreEffect(flower->x, flower->y);
+						CExplosiveEffect* effectIm = new CExplosiveEffect(flower->x, flower->y);
+						listEffects->push_back(effectScore);
+						listEffects->push_back(effectIm);
+					}
+					player->isHoldingShell = false;
+				}
+
+			}
+		}
+
+	}
+}
+
 
 
 void CKoopas::Render()
@@ -197,7 +250,7 @@ void CKoopas::Render()
 			aniIndex = KOOPAS_ANI_SHELL_IDLE;
 		else
 			aniIndex = KOOPAS_ANI_SHELL_OVERTURNED_IDLE;
-	ani = koopasGeneral->GetAni_Koopas(type, aniIndex);
+	ani = koopasGeneral->GetAni_Koopas(typeColor, aniIndex);
 //	DebugOut(L"Koopas Ani %d", ani);
 	animation_set->at(ani)->Render(x, y);
 	RenderBoundingBox();

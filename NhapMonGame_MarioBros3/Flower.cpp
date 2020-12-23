@@ -6,8 +6,9 @@
 
 CFlower::CFlower(CMario* m, int type)
 {
+	this->type = TYPE::FLOWER;
 	player = m;
-	this->type = type;
+	this->typeColor = type;
 	this->start_y = 0;
 	ny = 1;
 	SetState(FLOWER_STATE_MOVE_TO_ATTACK);
@@ -17,19 +18,19 @@ void CFlower::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	l = x;
 	t = y;
-	if (type == FLOWER_TYPE_RED)
+	if (typeColor == FLOWER_TYPE_RED)
 	{
 		r = x + FLOWER_RED_BBOX_WIDTH;
 		b = y + FLOWER_RED_BBOX_HEIGHT;
 		height = FLOWER_RED_BBOX_HEIGHT;
 	}
-	else if (type == FLOWER_TYPE_GREEN)
+	else if (typeColor == FLOWER_TYPE_GREEN)
 	{
 		r = x + FLOWER_GREEN_BBOX_WIDTH;
 		b = y + FLOWER_GREEN_BBOX_HEIGHT;
 		height = FLOWER_GREEN_BBOX_HEIGHT;
 	}
-	else if (type == FLOWER_TYPE_GREEN_BITE)
+	else if (typeColor == FLOWER_TYPE_GREEN_BITE)
 	{
 		r = x + FLOWER_GREEN_BITE_BBOX_WIDTH;
 		b = y + FLOWER_GREEN_BITE_BBOX_HEIGHT;
@@ -75,7 +76,7 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else
 			if (isAttack && GetTickCount() - timeStartAttack >= 1000 && timeStartAttack != TIME_DEFAULT)
 			{
-				if (type != FLOWER_TYPE_GREEN_BITE)
+				if (typeColor != FLOWER_TYPE_GREEN_BITE)
 				{
 					CFireBall* fireball = new CFireBall();
 					fireball->SetPosition(x, y);
@@ -181,7 +182,9 @@ void CFlower::SetState(int state)
 	case FLOWER_STATE_ATTACK:
 		vy = 0;
 		break;
-		
+	case FLOWER_STATE_DIE:
+		isActive = false;
+		isMoveAttack = false;
 	}
 }
 
@@ -189,7 +192,7 @@ void CFlower::SetState(int state)
 void CFlower::Render()
 {
 	int ani = -1;
-	if (type == FLOWER_TYPE_RED)
+	if (typeColor == FLOWER_TYPE_RED)
 	{
 		if (nx == 1)
 		{
@@ -228,7 +231,7 @@ void CFlower::Render()
 		}
 	}
 	else
-		if (type == FLOWER_TYPE_GREEN)
+		if (typeColor == FLOWER_TYPE_GREEN)
 		{
 			if (nx == 1)
 			{
@@ -267,7 +270,7 @@ void CFlower::Render()
 			}
 		}
 		else
-			if (type == FLOWER_TYPE_GREEN_BITE)
+			if (typeColor == FLOWER_TYPE_GREEN_BITE)
 			{
 				ani = FLOWER_GREEN_BITE_ANI_MOVE_ATTACK;
 			}

@@ -8,8 +8,8 @@
 
 
 #define DIRECTINPUT_VERSION 0x0800
-#define SCREEN_WIDTH	770
-#define SCREEN_HEIGHT	770
+#define SCREEN_WIDTH	281
+#define SCREEN_HEIGHT	265
 #include <dinput.h>
 #include "Scence.h"
 

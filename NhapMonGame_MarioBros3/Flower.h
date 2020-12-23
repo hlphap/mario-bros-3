@@ -44,11 +44,12 @@
 #define FLOWER_STATE_MOVE_TO_RETIRE				200
 #define FLOWER_STATE_IDLE						300
 #define FLOWER_STATE_ATTACK						400
+#define FLOWER_STATE_DIE						500
 
 class CFlower : public CEnemy
 {
 public:
-	int type;
+	int typeColor;
 	vector<CFireBall*> list_FireBall;
 	float start_y;
 	float height;

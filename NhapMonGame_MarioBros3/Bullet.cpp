@@ -8,6 +8,8 @@
 #include "Koopas.h"
 #include "Utils.h"
 #include "WeakBrick.h"
+#include "Flower.h"
+#include "ScoreEffect.h"
 
 CBullet::CBullet()
 {
@@ -79,6 +81,9 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* listMapObj,vector<LPGAMEOBJ
 		isActive = false;
 	}
 
+
+
+#pragma region ColisionWithMapObj
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -110,8 +115,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* listMapObj,vector<LPGAMEOBJ
 				}
 				x += dx;
 			}
-			else
-			if (dynamic_cast<CGround*>(e->obj))
+			else if(dynamic_cast<CGround*>(e->obj))
 			{
 				if (e->nx != 0)
 				{
@@ -121,9 +125,9 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* listMapObj,vector<LPGAMEOBJ
 				{
 					vy = -vy;
 				}
+				
 			}
-			else
-			if (dynamic_cast<CPipe*>(e->obj))
+			else if (dynamic_cast<CPipe*>(e->obj))
 			{
 				if (e->nx != 0)
 				{
@@ -133,100 +137,116 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* listMapObj,vector<LPGAMEOBJ
 				{
 					vy = -vy;
 				}
-			}
-			else
-			if (dynamic_cast<CBrick*>(e->obj))
-			{
-				if (e->nx != 0)
-				{
-					SetState(BULLET_STATE_EXPLOSIVE);
-				}
-				if (e->ny != 0)
-				{
-					vy = -vy;
-				}
-			}
-			else
-			if (dynamic_cast<CQuestionBrick*>(e->obj))
-			{
-				if (e->nx != 0)
-				{
-					SetState(BULLET_STATE_EXPLOSIVE);
-				}
-				if (e->ny != 0)
-				{
-					vy = -vy;
-				}
-			}
-			else
-			if (dynamic_cast<CCloudBrick*>(e->obj))
-			{
-				if (e->nx != 0)
-				{
-					SetState(BULLET_STATE_EXPLOSIVE);
-				}
-				if (e->ny != 0)
-				{
-					vy = -vy;
-				}
-			}
-			if (dynamic_cast<CWeakBrick*>(e->obj))
-			{
-				if (e->nx != 0)
-				{
-					SetState(BULLET_STATE_EXPLOSIVE);
-				}
-				if (e->ny != 0)
-				{
-					vy = -vy;
-				}
-			}
-			else
-			if (dynamic_cast<CGoomba*>(e->obj))
-			{
-				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-				if ((e->nx != 0)||(e->ny != 0))
-				{
-					if (goomba->GetState() != GOOMBA_STATE_DIE)
+				else
+					if (isCollisionWithObj(e->obj))
 					{
-						goomba->isKillByWeapon = true;
-						goomba->SetState(GOOMBA_STATE_DIE);
 						SetState(BULLET_STATE_EXPLOSIVE);
 					}
+			}
+			else if (dynamic_cast<CBrick*>(e->obj))
+			{
+				if (e->nx != 0)
+				{
+					SetState(BULLET_STATE_EXPLOSIVE);
+				}
+				if (e->ny != 0)
+				{
+					vy = -vy;
 				}
 			}
-			else
-				if (dynamic_cast<CKoopas*>(e->obj))
+			else if (dynamic_cast<CQuestionBrick*>(e->obj))
+			{
+				if (e->nx != 0)
 				{
-					CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
-					if (e->nx != 0)
-					{
-						if (koopas->GetState() != KOOPAS_STATE_DIE)
-						{
-							koopas->isKillByWeapon = true;
-							koopas->SetState(KOOPAS_STATE_SLEEP);
-							koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
-							SetState(BULLET_STATE_EXPLOSIVE);
-						}
-					}
-					if (e->ny != 0)
-					{
-						if (koopas->GetState() != KOOPAS_STATE_DIE)
-						{
-							koopas->isKillByWeapon = true;
-							
-							koopas->SetState(KOOPAS_STATE_SLEEP);
-							koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
-							SetState(BULLET_STATE_EXPLOSIVE);
-						}
-					}
+					SetState(BULLET_STATE_EXPLOSIVE);
 				}
+				if (e->ny != 0)
+				{
+					vy = -vy;
+				}
+			}
+			else if (dynamic_cast<CCloudBrick*>(e->obj))
+			{
+				if (e->nx != 0)
+				{
+					SetState(BULLET_STATE_EXPLOSIVE);
+				}
+				if (e->ny != 0)
+				{
+					vy = -vy;
+				}
+			}
+			else if (dynamic_cast<CWeakBrick*>(e->obj))
+			{
+				if (e->nx != 0)
+				{
+					SetState(BULLET_STATE_EXPLOSIVE);
+				}
+				if (e->ny != 0)
+				{
+					vy = -vy;
+				}
+			}
+		}
+		// clean up collision events
+		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+	}
+	
+#pragma endregion
 
+#pragma region ColisionWithEnemy
+	for (int i = 0; i < listEnemy->size(); i++)
+	{
+		if (listEnemy->at(i)->type == GOOMBA)
+		{
+			CGoomba* goomba = dynamic_cast<CGoomba*>(listEnemy->at(i));
+			if (isCollisionWithObj(goomba))
+			{
+				if (goomba->GetState() != GOOMBA_STATE_DIE)
+				{
+					goomba->isKillByWeapon = true;
+					goomba->SetState(GOOMBA_STATE_DIE);
+					SetState(BULLET_STATE_EXPLOSIVE);
 
-			
-			
+					//Create Effect Coin
+					CScoreEffect* effect = new CScoreEffect(goomba->x, goomba->y);
+					listEffect->push_back(effect);
+				}
+			}
+		}
+		else if (listEnemy->at(i)->type == KOOPAS)
+		{
+			CKoopas* koopas = dynamic_cast<CKoopas*>(listEnemy->at(i));
+			if (isCollisionWithObj(koopas))
+			{
+				if (koopas->GetState() != KOOPAS_STATE_DIE)
+				{
+					koopas->isKillByWeapon = true;
+					koopas->SetState(KOOPAS_STATE_SLEEP);
+					koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
+					SetState(BULLET_STATE_EXPLOSIVE);
+					//Create Effect Coin
+					CScoreEffect* effect = new CScoreEffect(koopas->x, koopas->y);
+					listEffect->push_back(effect);
+				}
+			}
+		}
+		else if (listEnemy->at(i)->type == FLOWER)
+		{
+			CFlower* flower = dynamic_cast<CFlower*>(listEnemy->at(i));
+			if (isCollisionWithObj(flower))
+			{
+				flower->SetState(FLOWER_STATE_DIE);
+				SetState(BULLET_STATE_EXPLOSIVE);
+				//Create Effect Coin
+				CScoreEffect* effect = new CScoreEffect(flower->x, flower->y);
+				listEffect->push_back(effect);
+			}
+
 		}
 	}
-	// clean up collision events
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+#pragma endregion
+
+
+	
 }

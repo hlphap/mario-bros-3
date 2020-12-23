@@ -21,7 +21,7 @@ class CGoomba : public CEnemy
 public:
 	CGoombaGeneral* goombaGeneral;
 	int level;
-	int type;
+	int typeColor;
 	bool isMoving = true;
 	bool isAllowJump = true;
 	int numJump = 0;

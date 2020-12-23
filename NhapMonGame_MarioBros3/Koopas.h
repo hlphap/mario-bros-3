@@ -20,7 +20,7 @@ class CKoopas : public CEnemy
 {
 public:
 	CKoopasGeneral* koopasGeneral;
-	int type;
+	int typeColor;
 	int level;
 	int rangeX;
 	int rangeY;
@@ -32,6 +32,7 @@ public:
 	bool isHeld = false;
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
+	void IsCollisionWithEnemy(vector<LPGAMEOBJECT>* listEnemies, vector<LPGAMEOBJECT>* listEffect);
     void Render();
 	CKoopas(CMario *m, int type, int level);
 	void SetState(int state);

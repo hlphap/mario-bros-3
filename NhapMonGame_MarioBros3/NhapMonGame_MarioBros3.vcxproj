@@ -28,6 +28,7 @@
     <ClCompile Include="ColorBox.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Energy.cpp" />
     <ClCompile Include="ExplosiveEffect.cpp" />
     <ClCompile Include="FireBall.cpp" />
     <ClCompile Include="Flower.cpp" />
@@ -35,7 +36,9 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Goomba.cpp" />
     <ClCompile Include="GoombaGeneral.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Ground.cpp" />
+    <ClCompile Include="HUD.cpp" />
     <ClCompile Include="ImpactEffect.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Koopas.cpp" />
@@ -45,12 +48,15 @@
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="MarioGeneral.cpp" />
     <ClCompile Include="Mushroom.cpp" />
+    <ClCompile Include="Number.cpp" />
     <ClCompile Include="PieceBrickEffect.cpp" />
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="PlayScence.cpp" />
     <ClCompile Include="Portal.cpp" />
+    <ClCompile Include="P_MaxSpeed.cpp" />
     <ClCompile Include="QuestionBrick.cpp" />
     <ClCompile Include="Scence.cpp" />
+    <ClCompile Include="ScoreBoard.cpp" />
     <ClCompile Include="ScoreEffect.cpp" />
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Switch_P.cpp" />
@@ -72,6 +78,7 @@
     <ClInclude Include="define.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Energy.h" />
     <ClInclude Include="ExplosiveEffect.h" />
     <ClInclude Include="FireBall.h" />
     <ClInclude Include="Flower.h" />
@@ -79,7 +86,9 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Goomba.h" />
     <ClInclude Include="GoombaGeneral.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="Ground.h" />
+    <ClInclude Include="HUD.h" />
     <ClInclude Include="ImpactEffect.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="KeyEventHandler.h" />
@@ -89,12 +98,15 @@
     <ClInclude Include="Mario.h" />
     <ClInclude Include="MarioGeneral.h" />
     <ClInclude Include="Mushroom.h" />
+    <ClInclude Include="Number.h" />
     <ClInclude Include="PieceBrickEffect.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="PlayScence.h" />
     <ClInclude Include="Portal.h" />
+    <ClInclude Include="P_MaxSpeed.h" />
     <ClInclude Include="QuestionBrick.h" />
     <ClInclude Include="Scence.h" />
+    <ClInclude Include="ScoreBoard.h" />
     <ClInclude Include="ScoreEffect.h" />
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Switch_P.h" />

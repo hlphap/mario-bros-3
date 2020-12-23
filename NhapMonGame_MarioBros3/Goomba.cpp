@@ -3,9 +3,10 @@
 #include "ColorBox.h"
 CGoomba::CGoomba(CMario* m, int type, int level)
 {
+	this->type = TYPE::GOOMBA;
 	player = m;
 	this->level = level;
-	this->type = type;
+	this->typeColor = type;
 	goombaGeneral = new CGoombaGeneral();
 	goombaGeneral->LoadListAni();
 	SetState(GOOMBA_STATE_MOVE);
@@ -17,6 +18,11 @@ void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& botto
 	top = y;
 	right = left + 20;
 	bottom = top + 24;
+	if (state == GOOMBA_STATE_DIE)
+	{
+		top = top + 16;
+	}
+		
 	if (level == GOOMBA_LEVEL_HAVE_WING)
 	{
 		if (!isFlying)
@@ -26,8 +32,6 @@ void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& botto
 	}
 	else
 		top = top + 8;
-	if (state == GOOMBA_STATE_DIE)
-		top = top + 16;
 	left = left + 2;
 }
 
@@ -142,7 +146,7 @@ void CGoomba::Render()
 		else
 			aniIndex = GOOMBA_ANI_DIE;
 	}
-	ani = goombaGeneral->GetAni_Goomba(type, aniIndex);
+	ani = goombaGeneral->GetAni_Goomba(typeColor, aniIndex);
 	//DebugOut(L"Ani Gomba %d \n", ani);
 	animation_set->at(ani)->Render(x, y);
 	RenderBoundingBox();

@@ -5,8 +5,8 @@
 class Camera
 {
 public:
-	float cam_x;
-	float cam_y;
+	float cam_x= 0;
+	float cam_y= 0;
 	bool isInHideMap = false;
 	CMario* player;
 public:

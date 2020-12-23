@@ -37,6 +37,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 	// Simple fall down
 	if (!isAutoGo)
 		vy += MARIO_GRAVITY * dt;
+	else
+	{
+		vx = 0;
+	}
 
 	// reset untouchable timer if untouchable time has passed
 	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
@@ -63,7 +67,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 	}
 
 	//Update isSpeedUping 
-	if (abs(vx) > MARIO_WALKING_MAX_SPEED&& abs(vx) < MARIO_RUNNING_MAX_SPEED) isSpeedUping = true;
+	if (abs(vx) > MARIO_WALKING_MAX_SPEED && abs(vx) < MARIO_RUNNING_MAX_SPEED) isSpeedUping = true;
 	else
 		isSpeedUping = false;
 
@@ -93,6 +97,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 	{
 		isKeepJump_HightFlying = true;
 	}
+
 	//Update IsAttack BigTail
 	if (level == MARIO_LEVEL_BIG_TAIL)
 	{
@@ -125,6 +130,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 				if (GetTickCount() - timeStartFly >= MARIO_TIME_FLYING_MAX)
 				{
 					isKeepJump_HightFlying = false;
+					isDecreaseSpeed = true;
 					timeStartFly = TIME_DEFAULT;
 				}
 		}
@@ -139,12 +145,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 			bullet->timeStartAttack = GetTickCount();
 			if (nx == 1)
 			{
-				bullet->SetPosition(x + MARIO_BIG_BBOX_WIDTH, y + MARIO_D_HEED_TO_HAND_ATTACK);
+				bullet->SetPosition(x + 10, y);
 				bullet->SetState(BULLET_STATE_FLY_RIGHT);
 			}
 			else if (nx == -1)
 			{
-				bullet->SetPosition(x, y + MARIO_D_HEED_TO_HAND_ATTACK);
+				bullet->SetPosition(x, y);
 				bullet->SetState(BULLET_STATE_FLY_LEFT);
 			}
 		}
@@ -213,7 +219,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 			numFall = 0;
 
 			//Va cham voi Ground thi reset Score
-			createdScore = false;
+			doubleScore = false;
 			score = 100;
 		}
 		else
@@ -283,6 +289,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 						if (questionBrick->typeQuestion == QUESTION_TYPE_COIN)
 						{
 							questionBrick->typeItem = ITEM_LEVEL_COIN;
+							numCoin++;
 						}
 						else
 						{
@@ -340,16 +347,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 					vx = 0;
 				}
 				else
-					if (e->ny < 0 && isSitting)
+					if (e->ny < 0 && isSitting && (x - pipe->x)>4 && (pipe->x + pipe->amountX*16) -(x +  MARIO_BIG_BBOX_WIDTH) > 4)
 					{
 						if (pipe->isSpecial && pipe->isPullMario && pipe->isInMainMap)
 							GoHiddenMap();
 						posY_of_PipeIn = pipe->y;
 					}
 					else
-						if (e->ny > 0)
+						if (e->ny > 0 && (x - pipe->x) > 4 && (pipe->x + pipe->amountX * 16) - (x + MARIO_BIG_BBOX_WIDTH) > 4)
 						{
-							
 							if (pipe->isSpecial && pipe->isPullMario && !pipe->isInMainMap)
 								GoMainMap();
 							posY_of_PipeIn = pipe->y;
@@ -395,12 +401,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 			backup_vy = vy;
 			vy = 0;
 			y += min_ty * dy + ny * 0.1f;
-			if (createdScore)
-				score *= 2;
-			createdScore = true;
-			CScoreEffect *scoreEffect = new CScoreEffect(x, y);
-			scoreEffect->SetScore(score);
-			listEffect->push_back(scoreEffect);
+			
 		/*	isOnAir = false;
 			isBlockFall = false;
 			isKeepJump_SlowFalling = false;
@@ -468,6 +469,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 						y += dy;
 						koopas->SetState(KOOPAS_STATE_MOVING);
 					}
+					//Create Effect Coin
+					CreateEffectCoin(listEffect);
 				}
 				else if (e->nx != 0)
 				{
@@ -521,7 +524,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE)
 						{
-							
 							if (goomba->level == GOOMBA_LEVEL_HAVE_WING)
 								goomba->level = GOOMBA_LEVEL_DEFAULT;
 							else
@@ -530,6 +532,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 							goomba->isKillByWeapon = false;
 							Jump();
 							Fall();
+
+							//Create Effect Coin
+							CreateEffectCoin(listEffect);
 						}
 					}
 					else if (e->nx != 0)
@@ -613,18 +618,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 				else
 					if (listItem->at(i)->type == TYPE::COIN_IDLE_STATIC || listItem->at(i)->type == TYPE::COIN_IDLE_SPIN)
 					{
+						numCoin++;
 						listItem->at(i)->isActive = false;
 					}
 			}
 		}
 	}
-
-
-
 #pragma endregion
-
-
-
 }
 
 void CMario::Render()
@@ -967,6 +967,18 @@ int CMario::RenderFromAniGroup()
 	return ani;
 }
 
+void CMario::CreateEffectCoin(vector<LPGAMEOBJECT>* listEffect)
+{
+	//Create Effect Coin
+	if (doubleScore)
+		score *= 2;
+	doubleScore = true;
+	CScoreEffect* scoreEffect = new CScoreEffect(x, y);
+	scoreEffect->SetScore(score);
+	changeScore = true;
+	listEffect->push_back(scoreEffect);
+}
+
 void CMario::DecreaseSpeed(float speedDown)
 {
 	float DECELERATION;
@@ -988,6 +1000,7 @@ void CMario::DecreaseSpeed(float speedDown)
 		if (vx >= speedDown)
 			vx = speedDown;
 	}
+	isDecreaseSpeed = true;
 }
 
 void CMario::SetState(int state)
@@ -1267,17 +1280,20 @@ void CMario::Kick()
 {
 	isKicking = true;
 	SetState(MARIO_STATE_KICK);
+
 }
 
 void CMario::SpeedUp()
 {
 	if (!isOnAir)
 		isSpeedUp = true;
+	//isDecreaseSpeed = false;
 }
 
 void CMario::HoldShell()
 {
 	isHoldShell = true;
+	//isDecreaseSpeed = false;
 }
 
 void CMario::GoHiddenMap()

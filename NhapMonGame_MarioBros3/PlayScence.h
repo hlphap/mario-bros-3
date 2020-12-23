@@ -20,6 +20,7 @@
 #include "Camera.h"
 #include "Effect.h"
 #include "ScoreEffect.h"
+#include "ScoreBoard.h"
 
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_TEXTURES 2
@@ -40,7 +41,7 @@
 #define OBJECT_TYPE_QUESTIONBRICK	8
 #define OBJECT_TYPE_WEAK_BRICK		9
 #define OBJECT_TYPE_CLOUD_BRICK		10
-#define OBJECT_TYPE_ITEM			11
+#define OBJECT_TYPE_COIN_SPIN		11
 #define OBJECT_TYPE_BULLET			12
 #define OBJECT_TYPE_BOUNDARYBRICK	9999
 
@@ -54,6 +55,7 @@ public:
 	CMario* player;					// A play scene has to have player, right? 
 	TileMap *map;
 	Camera* cam;
+	CScoreBoard* board;
 	DWORD timeStartScreenDark = TIME_DEFAULT;
 	DWORD timeStartScreenLight = TIME_DEFAULT;
 	bool isCompleteTransDark = false;

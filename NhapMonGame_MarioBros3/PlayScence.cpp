@@ -32,14 +32,9 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 void CPlayScene::TransformDarkScreen()
 {
 	LPDIRECT3DTEXTURE9 darken = CTextures::GetInstance()->Get(998);
-	RECT rect;
 	float l = CGame::GetInstance()->GetCamPosX();
 	float t = CGame::GetInstance()->GetCamPosY();
 
-	rect.left = 0;
-	rect.top = 0;
-	rect.right = SCREEN_WIDTH;
-	rect.bottom = SCREEN_HEIGHT;
 
 	int alpha = 0;
 	DWORD timer = GetTickCount() - timeStartScreenDark;
@@ -49,20 +44,14 @@ void CPlayScene::TransformDarkScreen()
 	else if (timer > 400) alpha = 150;
 	else if (timer > 350) alpha = 100;
 	else if (timer > 300) alpha = 50;
-	CGame::GetInstance()->Draw(l, t, darken, rect.left, rect.top, rect.right, rect.bottom, alpha);
+	CGame::GetInstance()->Draw(l, t, darken, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, alpha);
 }
 
 void CPlayScene::TransformLightScreen()
 {
 	LPDIRECT3DTEXTURE9 darken = CTextures::GetInstance()->Get(998);
-	RECT rect;
 	float l = CGame::GetInstance()->GetCamPosX();
 	float t = CGame::GetInstance()->GetCamPosY();
-
-	rect.left = 0;
-	rect.top = 0;
-	rect.right = SCREEN_WIDTH;
-	rect.bottom = SCREEN_HEIGHT;
 
 	int alpha = 255;
 	DWORD timer = GetTickCount() - timeStartScreenLight;
@@ -72,7 +61,7 @@ void CPlayScene::TransformLightScreen()
 	else if (timer > 400) alpha = 100;
 	else if (timer > 350) alpha = 150;
 	else if (timer > 300) alpha = 200;
-	CGame::GetInstance()->Draw(l, t, darken, rect.left, rect.top, rect.right, rect.bottom, alpha);
+	CGame::GetInstance()->Draw(l, t, darken, 0, 0 ,SCREEN_WIDTH, SCREEN_HEIGHT, alpha);
 }
 
 void CPlayScene::_ParseSection_TEXTURES(string line)
@@ -280,8 +269,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		bool special = atoi(tokens[6].c_str());
 		bool where = atoi(tokens[7].c_str());
 		bool uses = atoi(tokens[8].c_str());
-		DebugOut(L"special: %d", where);
-		obj = new CPipe(special, where, uses);
+		int height = atoi(tokens[9].c_str());
+		obj = new CPipe(special, where, uses, height);
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
 		obj->SetPosition(x, y);
@@ -309,6 +298,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		listMapObj.push_back(obj);
+		break;
+	}
+	case OBJECT_TYPE_COIN_SPIN:
+	{
+		int type = atoi(tokens[4].c_str());
+		obj = new CCoin(x, y, type);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listItems.push_back(obj);
 		break;
 	}
 	case OBJECT_TYPE_KOOPAS:
@@ -402,6 +399,7 @@ void CPlayScene::Load()
 
 		CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 		cam = new Camera(player);
+		board = new CScoreBoard(player);
 		DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 	}
 }
@@ -460,7 +458,7 @@ void CPlayScene::Update(DWORD dt)
 					{
 						if (GetTickCount() - timeStartScreenDark > 500)
 						{
-							player->SetPosition(pipe->x, pipe->y - 16); // SetPosition To Mario Go HideMap
+							player->SetPosition(pipe->x + 4, pipe->y - 16); // SetPosition To Mario Go HideMap
 							
 							player->isInMainMap = false;
 						
@@ -488,7 +486,7 @@ void CPlayScene::Update(DWORD dt)
 						{
 							player->posY_of_PipeOut = pipe->y;
 							player->isSlideOutPipe = true;
-							player->SetPosition(pipe->x, pipe->y - 17); // SetPosition To Mario Go HideMap
+							player->SetPosition(pipe->x + 4, pipe->y - 17); // SetPosition To Mario Go HideMap
 							player->isInMainMap = true;
 							
 							isScreenDark = false; // Khong tat den nua
@@ -503,7 +501,6 @@ void CPlayScene::Update(DWORD dt)
 				}
 			}
 	}
-
 
 
 
@@ -528,7 +525,14 @@ void CPlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < listEnemies.size(); i++)
 	{
 		if (listEnemies[i]->isActive)
+		{
 			listEnemies[i]->Update(dt, &listMapObj);
+			if (listEnemies[i]->type == TYPE::KOOPAS)
+			{
+				CKoopas *koopas = dynamic_cast<CKoopas*>(listEnemies[i]);
+				koopas->IsCollisionWithEnemy(&listEnemies, &listEffect);
+			}
+		}
 		else
 			listEnemies.erase(listEnemies.begin() + i);
 	}
@@ -551,21 +555,34 @@ void CPlayScene::Update(DWORD dt)
 			CScoreEffect* scoreEffect = new CScoreEffect(listItems[i]->x, listItems[i]->y);
 			if (listItems[i]->type == TYPE::COIN_EFFECT)
 			{
+				player->changeScore = true;
+				player->score = 100;
 				scoreEffect->SetScore(100);
 				listEffect.push_back(scoreEffect);
 			}
 			else 
 			if (listItems[i]->type == TYPE::LEAF_TREE)
 			{
+				player->changeScore = true;
+				player->score = 1000;
 				scoreEffect->SetScore(1000);
 				listEffect.push_back(scoreEffect);
 			}
 			else
 			if (listItems[i]->type == TYPE::MUSHROOM)
 			{
+				player->changeScore = true;
+				player->score = 1000;
 				scoreEffect->SetScore(1000);
 				listEffect.push_back(scoreEffect);
 			}
+			else
+				if (listItems[i]->type == TYPE::COIN_IDLE_STATIC || listItems[i]->type == TYPE::COIN_IDLE_SPIN)
+				{
+					player->changeScore = true;
+					player->score = 50;
+				}
+
 			listItems.erase(listItems.begin() + i);
 		}
 	}
@@ -585,6 +602,7 @@ void CPlayScene::Update(DWORD dt)
 	
 	map->Update();
 	cam->Update();
+	board->Update(dt, cam);
 
 	if (player == NULL) return;
 }
@@ -596,16 +614,17 @@ void CPlayScene::Render()
 	{
 		listItems[i]->Render();
 	}
-	for (size_t i = 0; i < listMapObj.size(); i++)
-	{
-		listMapObj[i]->Render();
-	}
-	
 	for (size_t i = 0; i < listEnemies.size(); i++)
 	{
 		listEnemies[i]->Render();
 	}
 
+	player->Render();
+	for (size_t i = 0; i < listMapObj.size(); i++)
+	{
+		listMapObj[i]->Render();
+	}
+	
 	for (UINT i = 0; i < listBullet.size(); i++) {
 
 		if (listBullet[i] != NULL)
@@ -617,7 +636,7 @@ void CPlayScene::Render()
 		if (listEffect[i] != NULL)
 			listEffect[i]->Render();
 	}
-	player->Render();
+	
 
 
 	if (isScreenDark)
@@ -629,25 +648,7 @@ void CPlayScene::Render()
 		TransformLightScreen();	
 	}
 		
-		
-	/*if (player->isAutoGo && !this->isCompleteTransDark)
-	{
-		if (player->y > player->posY_of_PipeIn && player->isInMainMap)
-		{
-			TransformDarkScreen();
-		}
-		else
-		if (player->y < player->posY_of_PipeIn && !player->isInMainMap)
-		{
-			TransformDarkScreen();
-		}
-	}
-	else
-	if (!this->isCompleteTransLight && this->isCompleteTransDark)
-	{
-		DebugOut(L"Sceen");
-		this->TransformLightScreen();
-	}*/
+	board->Render();
 		
 }
 
@@ -748,11 +749,10 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	if (mario->GetState() == MARIO_STATE_DIE) return;
 	if (mario->isAutoGo) return;
 		
-
-
 	//Control
 	if (game->IsKeyDown(DIK_A))
 	{
+		//Khong giam toc do
 		mario->SpeedUp();
 		mario->HoldShell();
 	}
