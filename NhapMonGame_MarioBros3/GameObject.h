@@ -100,6 +100,7 @@ public:
 		float& rdy);
 
 	bool isCollisionWithObj(LPGAMEOBJECT obj);
+	bool isCheckInCamera();
 	CGameObject();
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) = 0;

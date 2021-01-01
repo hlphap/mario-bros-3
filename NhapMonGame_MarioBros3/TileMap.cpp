@@ -47,23 +47,31 @@ void TileMap::LoadMap()
 		}
 		fs.close();
 }
+
+
+
+
 void TileMap::Update()
 {
-	if (CGame::GetInstance()->GetCamPosX() <= 0)
+	if (CGame::GetInstance()->GetCamPosX() < 0)
 	{
 		firstcol = (int)CGame::GetInstance()->GetCamPosX() / tile_width;
 	}
 	else //Khi camera di chuyen
 	{
-		mapResidualX = (int)CGame::GetInstance()->GetCamPosX() / tile_width;
-		if (mapResidualX > MAP_RESIDUALX) mapResidualX = MAP_RESIDUALX;
-		firstcol = (int)CGame::GetInstance()->GetCamPosX() / tile_width - mapResidualX;
+		mapResidualX = (ceil)(CGame::GetInstance()->GetCamPosX() / tile_width);
+		if (mapResidualX > MAP_RESIDUALX)
+		{
+			mapResidualX = MAP_RESIDUALX;
+			firstcol = (int)CGame::GetInstance()->GetCamPosX() / tile_width - mapResidualX;
+		}
 	}
 	lastcol = firstcol + (screenWidth / tile_width) + mapResidualX * 2;
+	
 
-
+	//DebugOut(L"\nscreen width : %f", screenHeight);
 	//Truc Y
-	if (CGame::GetInstance()->GetCamPosY() <= 0)
+	if (CGame::GetInstance()->GetCamPosY() < 0)
 	{
 		firstrow = (int)CGame::GetInstance()->GetCamPosY() / tile_height;
 	}

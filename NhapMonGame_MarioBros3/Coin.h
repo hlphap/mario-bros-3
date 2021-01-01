@@ -24,6 +24,8 @@
 #define ITEM_ANI_COIN_MOVE_SLOW		1
 #define ITEM_ANI_COIN_MOVE_FAST		2
 
+#define TIME_TRANSFORM_FROM_COIN_TO_WEAKBRICK		4500
+
 #define TIME_DEFAULT	0
 
 class CCoin : public CItem

@@ -97,10 +97,14 @@ void CScoreBoard::Render()
 {
 	DrawBackGround();
 	animation_set->at(0)->Render(x, y);
-	countDown->Render();
-	numberCoin->Render();
-	numbertotalScore->Render();
-	energy->Render();
+	if (countDown != NULL)
+		countDown->Render();
+	if (numberCoin != NULL)
+		numberCoin->Render();
+	if (numbertotalScore!=NULL)
+		numbertotalScore->Render();
+	if (energy !=NULL)
+		energy->Render();
 	if (pMax!=NULL)
 		pMax->Render();
 }
@@ -115,3 +119,4 @@ void CScoreBoard::DrawBackGround()
 void CScoreBoard::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 }
+

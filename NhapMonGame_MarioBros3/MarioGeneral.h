@@ -25,6 +25,9 @@
 #define MARIO_STATE_KICK								1000
 #define MARIO_STATE_GO_HIDDEN_MAP						1100
 #define MARIO_STATE_GO_MAIN_MAP							1200
+#define MARIO_STATE_ELASETIC							1300
+#define MARIO_STATE_GO_ENDSCENCE							1400
+#define MARIO_STATE_SELECT_MAP							9999
 
 //================================MARIO ANI GENERAL ZONE=================================
 #define MARIO_ANI_IDLE_RIGHT							0
@@ -52,6 +55,7 @@
 #define MARIO_ANI_HOLD_FLYING_RIGHT						22
 #define MARIO_ANI_HOLD_FLYING_LEFT						23
 #define MARIO_ANI_GO_HIDDEN_MAP							24
+#define MARIO_ANI_SELECT_MAP							25
 
 ////================================END MARIO ANIMATION GENERAL ZONE=================================
 
@@ -59,6 +63,7 @@
 
 //==========================================MARIO SMALL============
 #define MARIO_ANI_DIE									104
+#define MARIO_ANI_SMALL_SELECT_MAP						109
 #define MARIO_ANI_SMALL_GO_HIDDEN_MAP					105
 #define MARIO_ANI_SMALL_IDLE_RIGHT						0
 #define MARIO_ANI_SMALL_IDLE_LEFT						1
@@ -189,11 +194,28 @@
 #define MARIO_BIG_BBOX_WIDTH							15
 #define MARIO_BIG_BBOX_HEIGHT							26
 #define MARIO_BIG_TAIL_BBOX_WIDTH						15
-#define MARIO_BIG_TAIL_BBOX_HEIGHT						28
+#define MARIO_BIG_TAIL_BBOX_HEIGHT						27
 #define MARIO_BIG_BBOX_SITTING_HEIGHT					14
 #define MARIO_BIG_TAIL_BBOX_SITTING_HEIGHT				20
-#define MARIO_SMALL_BBOX_WIDTH							13
+#define MARIO_SMALL_BBOX_WIDTH							12
 #define MARIO_SMALL_BBOX_HEIGHT							15
+
+
+//BBOX OTHER
+#define MARIO_BIG_BBOX_LEFT	5
+#define MARIO_BIG_BBOX_WIDTH_RIGHT	20
+#define MARIO_SIT_BBOX	8
+#define MARIO_BIG_SIT_BBOX_HEIGHT	18
+#define MARIO_RACCOON_BBOX_HEIGHT	27
+#define MARIO_RACCOON_BBOX_WIDTH	15
+#define MARIO_RACCOON_BBOX_SIT	9
+#define MARIO_RACCOON_SIT_BBOX_HEIGHT	18
+#define MARIO_RACCOON_BBOX_WIDTH_RIGHT	15
+#define MARIO_RACCOON_BBOX_LEFT	7
+#define MARIO_RACCOON_BBOX_WIDTH_RIGHT	15
+#define MARIO_FIRE_BBOX_WIDTH	15
+#define MARIO_FIRE_BBOX_HEIGHT	26
+#define MARIO_FIRE_SIT_BBOX_HEIGHT	18
 
 
 //================================ANOTHER GENERAL ZONE=================================

@@ -6,6 +6,7 @@
 #include "WeakBrick.h"
 #include "QuestionBrick.h"
 #include "Switch_P.h"
+#include "Flower.h"
 
 CTail::CTail()
 {
@@ -60,88 +61,61 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJE
 	//DebugOut(L"\nx: %f", x);
 
 #pragma region Collision with Enemy
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
-
-	coEvents.clear();
-
-	CalcPotentialCollisions(listEnemy, coEvents);
-
-	if (coEvents.size() == 0)
+	for (UINT i = 0; i < listEnemy->size(); i++)
 	{
-
-		x += dx;
-		y += dy;
-	}
-	else
-	{
-		float min_tx, min_ty, nx = 0, ny;
-		float rdx = 0;
-		float rdy = 0;
-
-		// TODO: This is a very ugly designed function!!!!
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-
-
-
-		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		y += min_ty * dy + ny * 0.4f;
-
-		if (nx != 0)
-			x += dx;
-
-		//if (nx != 0) vx = 0;
-
-		for (UINT i = 0; i < coEventsResult.size(); i++)
+		if (isCollisionWithObj(listEnemy->at(i)))
 		{
-			LPCOLLISIONEVENT e = coEventsResult[i];
-
-			if (dynamic_cast<CGoomba*>(e->obj))
+			if (listEnemy->at(i)->type == TYPE::GOOMBA)
 			{
-				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-				if (e->nx != 0)
+				CGoomba* goomba = dynamic_cast<CGoomba*>(listEnemy->at(i));
+				if (goomba->GetState() != GOOMBA_STATE_DIE)
 				{
-					if (goomba->GetState() != GOOMBA_STATE_DIE)
+					if (canKill)
 					{
-						if (canKill)
-						{
-							effect = new CImpactEffect(goomba->x, goomba->y);
-							listEffect->push_back(effect);
-							goomba->isKillByWeapon = true;
-							goomba->SetState(GOOMBA_STATE_DIE);
-						}
-
+						effect = new CImpactEffect(goomba->x, goomba->y);
+						listEffect->push_back(effect);
+						goomba->isKillByWeapon = true;
+						goomba->SetState(GOOMBA_STATE_DIE);
 					}
 				}
 			}
 			else
-				if (dynamic_cast<CKoopas*>(e->obj))
+				if (listEnemy->at(i)->type == TYPE::KOOPAS)
 				{
-					CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
-					if (e->nx != 0 || e->ny != 0)
+					CKoopas* koopas = dynamic_cast<CKoopas*>(listEnemy->at(i));
+					if (canKill)
 					{
-						if (canKill)
+						if (koopas->GetState() != KOOPAS_STATE_DIE)
 						{
-							if (koopas->GetState() != KOOPAS_STATE_DIE)
+							effect = new CImpactEffect(koopas->x, koopas->y);
+							listEffect->push_back(effect);
+							koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
+							koopas->SetState(KOOPAS_STATE_SLEEP);
+							if (koopas->GetState() == KOOPAS_STATE_SLEEP)
 							{
-								effect = new CImpactEffect(koopas->x, koopas->y);
-								listEffect->push_back(effect);
 								koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
-								koopas->SetState(KOOPAS_STATE_SLEEP);
-								if (koopas->GetState() == KOOPAS_STATE_SLEEP)
-								{
-									koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
-								}
-								koopas->isKillByWeapon = true;
 							}
+							koopas->isKillByWeapon = true;
 						}
 					}
 				}
+				else
+					if (listEnemy->at(i)->type == TYPE::FLOWER)
+					{
+						CFlower* flower = dynamic_cast<CFlower*>(listEnemy->at(i));
+						if (flower->GetState() != FLOWER_STATE_DIE)
+						{
+							if (canKill)
+							{
+								effect = new CImpactEffect(flower->x, flower->y);
+								listEffect->push_back(effect);
+								flower->isKillByWeapon = true;
+								flower->SetState(FLOWER_STATE_DIE);
+							}
+						}
+					}
 		}
 	}
-
-	// clean up collision events
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 #pragma endregion
 
 #pragma region Collision with MapObj

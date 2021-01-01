@@ -10,37 +10,51 @@ CFlower::CFlower(CMario* m, int type)
 	player = m;
 	this->typeColor = type;
 	this->start_y = 0;
+	isPause = false;
 	ny = 1;
 	SetState(FLOWER_STATE_MOVE_TO_ATTACK);
+	if (typeColor == FLOWER_TYPE_RED)
+	{
+		height = FLOWER_RED_BBOX_HEIGHT;
+	}
+	else if (typeColor == FLOWER_TYPE_GREEN)
+	{
+		height = FLOWER_GREEN_BBOX_HEIGHT;
+	}
+	else if (typeColor == FLOWER_TYPE_GREEN_BITE)
+	{
+		height = FLOWER_GREEN_BITE_BBOX_HEIGHT;
+	}
 }
 
 void CFlower::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
+	if (isSleep)
+		return;
 	l = x;
 	t = y;
 	if (typeColor == FLOWER_TYPE_RED)
 	{
 		r = x + FLOWER_RED_BBOX_WIDTH;
 		b = y + FLOWER_RED_BBOX_HEIGHT;
-		height = FLOWER_RED_BBOX_HEIGHT;
+	//	height = FLOWER_RED_BBOX_HEIGHT;
 	}
 	else if (typeColor == FLOWER_TYPE_GREEN)
 	{
 		r = x + FLOWER_GREEN_BBOX_WIDTH;
 		b = y + FLOWER_GREEN_BBOX_HEIGHT;
-		height = FLOWER_GREEN_BBOX_HEIGHT;
+		//height = FLOWER_GREEN_BBOX_HEIGHT;
 	}
 	else if (typeColor == FLOWER_TYPE_GREEN_BITE)
 	{
 		r = x + FLOWER_GREEN_BITE_BBOX_WIDTH;
 		b = y + FLOWER_GREEN_BITE_BBOX_HEIGHT;
-		height = FLOWER_GREEN_BITE_BBOX_HEIGHT;
+		//height = FLOWER_GREEN_BITE_BBOX_HEIGHT;
 	}
 }
 
 void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	
 	CGameObject::Update(dt,coObjects);
 	
 	//Cập nhật hướng Hoa
@@ -63,10 +77,11 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	//Chuyen State
 	//DebugOut(L"y: %d\n", GetTickCount() - timeStartAttack);
-	if (!isMoveAttack && GetTickCount() - timeStartAttack >= 7000)
+	if (!isMoveAttack && GetTickCount() - timeStartAttack >= 7000 && timeStartAttack != TIME_DEFAULT)
 	{
 		SetState(FLOWER_STATE_MOVE_TO_ATTACK);
 		timeStartAttack = TIME_DEFAULT;
+		isSleep = false;
 	}
 	else
 	if (!isAttack && GetTickCount() - timeStartAttack >= 3000 && timeStartAttack!= TIME_DEFAULT)
@@ -74,42 +89,24 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		SetState(FLOWER_STATE_MOVE_TO_RETIRE);
 	}
 	else
-			if (isAttack && GetTickCount() - timeStartAttack >= 1000 && timeStartAttack != TIME_DEFAULT)
+		if (isAttack && GetTickCount() - timeStartAttack >= 1000 && timeStartAttack != TIME_DEFAULT)
+		{
+			if (typeColor != FLOWER_TYPE_GREEN_BITE)
 			{
-				if (typeColor != FLOWER_TYPE_GREEN_BITE)
-				{
-					CFireBall* fireball = new CFireBall();
-					fireball->SetPosition(x, y);
-					if (nx == 1)
-					{
-						if (player->y < y)
-							fireball->SetState(FIREBALL_STATE_FLY_UPPER_RIGHT);
-						else
-							fireball->SetState(FIREBALL_STATE_FLY_BOTTOM_RIGHT);
-					}
-					else
-					{
-						if (player->y < y)
-							fireball->SetState(FIREBALL_STATE_FLY_UPPER_LEFT);
-						else
-							fireball->SetState(FIREBALL_STATE_FLY_BOTTOM_LEFT);
-					}
-					list_FireBall.push_back(fireball);
-				}
-				else
-					timeStartAttack += 1000;
-				isAttack = false;
+				isCreateFireBall = true;
 			}
+			else
+				timeStartAttack += 1000;
+			isAttack = false;
+		}
 	
-
-	
-
+	DebugOut(L"\nout : %f", height);
 	//Giới hạn 
 	if (isMoveAttack)
 	{
 		if (y + height < start_y)
 		{
-			//DebugOut(L"IsMoveAttack");
+			DebugOut(L"IsMoveAttack");
 			y = start_y - height;
 			SetState(FLOWER_STATE_IDLE);
 			isAttack = true;
@@ -120,17 +117,10 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (y >= start_y)
 		{
 			y = start_y;
+			isSleep = true;
 			SetState(FLOWER_STATE_IDLE);
 		}
 	}
-
-	//Bắn súng
-	for (UINT i = 0; i < list_FireBall.size(); i++)
-	{
-		list_FireBall[i]->Update(dt,coObjects);
-	}
-
-	
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -171,14 +161,15 @@ void CFlower::SetState(int state)
 		break;
 	case FLOWER_STATE_MOVE_TO_RETIRE:
 		isMoveAttack = false;
-		
-			vy = 0.045;
+		vy = 0.045;
 		break;
 	case FLOWER_STATE_IDLE:
+	{
 		if (isMoveAttack)
 			timeStartAttack = GetTickCount();
 		vy = 0.0f;
 		break;
+	}
 	case FLOWER_STATE_ATTACK:
 		vy = 0;
 		break;
@@ -276,10 +267,30 @@ void CFlower::Render()
 			}
 	//DebugOut(L"ani :\n %d", ani);
 	animation_set->at(ani)->Render(x, y);
-	//Bắn súng
-	for (UINT i = 0; i < list_FireBall.size(); i++)
+	RenderBoundingBox();
+}
+
+void CFlower::CreateFireBall(vector<LPGAMEOBJECT>* listFireBall)
+{
+	if (isCreateFireBall)
 	{
-		list_FireBall[i]->Render();
+		CFireBall* fireball = new CFireBall();
+		fireball->SetPosition(x, y);
+		if (nx == 1)
+		{
+			if (player->y < y)
+				fireball->SetState(FIREBALL_STATE_FLY_UPPER_RIGHT);
+			else
+				fireball->SetState(FIREBALL_STATE_FLY_BOTTOM_RIGHT);
+		}
+		else
+		{
+			if (player->y < y)
+				fireball->SetState(FIREBALL_STATE_FLY_UPPER_LEFT);
+			else
+				fireball->SetState(FIREBALL_STATE_FLY_BOTTOM_LEFT);
+		}
+		listFireBall->push_back(fireball);
+		isCreateFireBall = false;
 	}
-	//	RenderBoundingBox();
 }

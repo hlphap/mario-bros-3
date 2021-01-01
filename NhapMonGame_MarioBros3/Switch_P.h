@@ -7,8 +7,7 @@
 #define SWITCH_P_STATE_NORMAL	100
 #define SWITCH_P_STATE_PRESSED	200
 
-#define SWITHC_P_ANI_NORMAL		7
-#define SWITHC_P_ANI_PRESSED	8
+
 
 class CSwitch_P :public CItem
 {

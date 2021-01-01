@@ -329,22 +329,23 @@ void CGame::_ParseSection_SETTINGS(string line)
 		DebugOut(L"[ERROR] Unknown game setting %s\n", ToWSTR(tokens[0]).c_str());
 }
 
-void CGame::_ParseSection_SCENES(string line)
+void CGame::_ParseSection_SCENES(string line) // Load Scence
 {
 	vector<string> tokens = split(line);
 
 	if (tokens.size() < 2) return;
 	int id = atoi(tokens[0].c_str());
 	LPCWSTR path = ToLPCWSTR(tokens[1]);
+	int typeMap = atoi(tokens[2].c_str());
 
-	LPSCENE scene = new CPlayScene(id, path);
+	LPSCENE scene = new CPlayScene(id, path,typeMap); 
 	scenes[id] = scene;
 }
 
 /*
 	Load game campaign file and load/initiate first scene
 */
-void CGame::Load(LPCWSTR gameFile) // 
+void CGame::Load(LPCWSTR gameFile) // Load File Cau Hinh Game + Game Scence
 {
 	DebugOut(L"[INFO] Start loading game file : %s\n", gameFile);
 	DebugOut(L"ScreenWidht kldjfklajksldfjlkasdjflksajlfjdsa: %d", screen_width);

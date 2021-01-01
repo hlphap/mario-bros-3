@@ -9,9 +9,9 @@ public:
 	CKeyEventHandler* key_handler;
 	int id;
 	LPCWSTR sceneFilePath;
-
+	int typeMap;
 public:
-	CScene(int id, LPCWSTR filePath);
+	CScene(int id, LPCWSTR filePath, int typeMap);
 
 	CKeyEventHandler* GetKeyEventHandler() { return key_handler; }
 	virtual void Load() = 0;
@@ -31,5 +31,5 @@ public:
 	virtual void KeyState(BYTE* states) = 0;
 	virtual void OnKeyDown(int KeyCode) = 0;                 
 	virtual void OnKeyUp(int KeyCode) = 0;
-	CScenceKeyHandler(CScene* s) :CKeyEventHandler() { scence = s; }
+	CScenceKeyHandler(CScene* s) :CKeyEventHandler() { scence = s; } // Dung swithc scence
 };

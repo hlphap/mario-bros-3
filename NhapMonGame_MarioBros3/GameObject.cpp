@@ -31,6 +31,23 @@ bool CGameObject::isCollisionWithObj(LPGAMEOBJECT coObj)
 		return false;
 }
 
+bool CGameObject::isCheckInCamera()
+{
+	float cam_x = CGame::GetInstance()->GetCamPosX();
+	float cam_y = CGame::GetInstance()->GetCamPosY();
+	
+	//DebugOut(L"GetScreenWidth %f", CGame::GetInstance()->GetScreenWidth());
+	if (this->x + 16 < cam_x )
+		return false;
+	if (this->x > cam_x + (float)CGame::GetInstance()->GetScreenWidth())
+		return false;
+	/*if (this->y - 16 < cam_y)
+		return false;
+	if (this->y > cam_y + (float)CGame::GetInstance()->GetScreenHeight())
+		return false;*/
+	return true;
+}
+
 CGameObject::CGameObject()
 {
 	x = y = 0;
@@ -152,10 +169,10 @@ void CGameObject::RenderBoundingBox()
 	rect.bottom = (int)bottom - (int)top;
 
 	//DebugOut(L"Left player bb : %f", left);
-	CGame::GetInstance()->Draw(left, top , bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	CGame::GetInstance()->Draw(left, top , bbox, rect.left, rect.top, rect.right, rect.bottom, 100);
 }
 
 CGameObject::~CGameObject()
 {
-
+	
 }

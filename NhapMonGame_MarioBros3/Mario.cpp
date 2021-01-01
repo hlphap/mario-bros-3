@@ -17,7 +17,7 @@ CMario::CMario(float x, float y) : CGameObject()
 	category = CATEGORY::PLAYER;
 	type = TYPE::MARIO;
 	level = MARIO_LEVEL_BIG;
-	untouchable = 0;
+	isUnTouchable = false;
 	SetState(MARIO_STATE_IDLE);
 	start_x = x;
 	start_y = y;
@@ -29,24 +29,21 @@ CMario::CMario(float x, float y) : CGameObject()
 
 }
 
-void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT>* listItem, vector<LPGAMEOBJECT> *listEffect)
+void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT>* listItem, vector<LPGAMEOBJECT> *listEffect, vector<LPGAMEOBJECT> *listPitStop, vector<LPGAMEOBJECT> * listFireBall)
 {
 #pragma region Update Mario
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
-	// Simple fall down
-	if (!isAutoGo)
+
+	if (!isGoHidenMap && !isSelectMap)
 		vy += MARIO_GRAVITY * dt;
-	else
-	{
-		vx = 0;
-	}
+	
 
 	// reset untouchable timer if untouchable time has passed
 	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
 	{
-		untouchable_start = 0;
-		untouchable = 0;
+		untouchable_start = TIME_DEFAULT;
+		isUnTouchable = false;
 	}
 
 
@@ -105,7 +102,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 		tail->nx = nx;
 		if (isAttacking)
 		{
-			tail->SetState(TAIL_CAN_KILL);
+			if (GetTickCount() - timeStartAttack >= MARIO_TIME_BIG_TAIL_ATTACK / 2)
+			{
+				if (nx == 1)
+					tail->SetPosition(x + 24, y + 16);
+				else
+					tail->SetPosition(x, y + 16);
+				tail->canKill = true;
+			}
 		}
 		else
 		{
@@ -191,7 +195,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 	}
 	else
 	{
-
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
@@ -206,10 +209,17 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 		if (ny < 0)
 		{
 			//Dang Go HideMap vy #=0
-			if (isAutoGo)
+			if (isGoHidenMap)
 				y += dy;
 			else
+			{
 				vy = 0;
+				if (isGoEndScence)
+				{
+					vx = 0.06f;
+				}
+			}
+				
 			backup_vy = vy;
 			isOnAir = false;
 			isBlockFall = false;
@@ -225,7 +235,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 		else
 			if (ny > 0)
 			{
-				if (isAutoGo)
+				if (isGoHidenMap)
 					y += dy;
 			}
 		
@@ -347,26 +357,26 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 					vx = 0;
 				}
 				else
-					if (e->ny < 0 && isSitting && (x - pipe->x)>4 && (pipe->x + pipe->amountX*16) -(x +  MARIO_BIG_BBOX_WIDTH) > 4)
+				{
+					float l, t, r, b;
+					GetBoundingBox(l, t, r, b);
+					if (e->ny < 0 && isSitting && (l - pipe->x)>4 && (pipe->x + pipe->amountX * 16) - (l + MARIO_BIG_BBOX_WIDTH) > 4)
 					{
 						if (pipe->isSpecial && pipe->isPullMario && pipe->isInMainMap)
 							GoHiddenMap();
 						posY_of_PipeIn = pipe->y;
 					}
 					else
-						if (e->ny > 0 && (x - pipe->x) > 4 && (pipe->x + pipe->amountX * 16) - (x + MARIO_BIG_BBOX_WIDTH) > 4)
+						if (e->ny > 0 && (l - pipe->x) > 4 && (pipe->x + pipe->amountX * 16) - (l + MARIO_BIG_BBOX_WIDTH) > 4)
 						{
 							if (pipe->isSpecial && pipe->isPullMario && !pipe->isInMainMap)
 								GoMainMap();
 							posY_of_PipeIn = pipe->y;
 						}
-			}
-				else if (dynamic_cast<CPortal*>(e->obj))
-				{
-					/*if (e->nx != 0) x += vx * dt;*/
-					CPortal* p = dynamic_cast<CPortal*>(e->obj);
-					CGame::GetInstance()->SwitchScene(p->GetSceneId());
 				}
+					
+			}
+				
 		}
 	}
 	// clean up collision events
@@ -379,7 +389,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 
 	coEnemyEvents.clear();
 	// turn off collision when die 
-	if (state != MARIO_STATE_DIE && untouchable==0)
+	if (state != MARIO_STATE_DIE && isUnTouchable==0)
 	{
 		CalcPotentialCollisions(listEnemy, coEnemyEvents);
 	}
@@ -401,101 +411,64 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 			backup_vy = vy;
 			vy = 0;
 			y += min_ty * dy + ny * 0.1f;
-			
-		/*	isOnAir = false;
-			isBlockFall = false;
-			isKeepJump_SlowFalling = false;
-			isKeepJump_HightFlying = false;
-			isKeepJump = false;
-			numFall = 0;*/
 		}
 		else
 			if (ny > 0)
 			{
-				y -= min_ty * dy + ny * 0.1f;
-				if (untouchable == 0)
-				{
-						if (level > MARIO_LEVEL_SMALL)
-						{
-							level--;
-							StartUntouchable();
-						}
-						else
-						{
-							Jump();
-							Fall();
-							SetState(MARIO_STATE_DIE);
-						}
-
-				}
+				if (!isUnTouchable)
+					ChangeTheLevel(DETAILMARIO::CHANGE_DOWN);
 			}
 		for (UINT i = 0; i < coEnemyEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEnemyEventsResult[i];
-			//Va chạm với quái
-			if (dynamic_cast<CKoopas*>(e->obj)) // if e->obj is Goomba 
+			if (e->obj->type == TYPE::KOOPAS) // If obj is Koopas
 			{
-				CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
-
-				// jump on top >> kill Goomba and deflect a bit 
-				if (e->ny < 0)
+				if (isUnTouchable) return;
+				else
 				{
-					if (koopas->GetState() != KOOPAS_STATE_SLEEP)
-					{
-						//DebugOut(L"Sleep");
-						if (koopas->level > 1)
-						{
-							koopas->level--;
-						}
-						else
-							koopas->SetState(KOOPAS_STATE_SLEEP);
-						Jump();
-						Fall();
-					}
-					else
-					{
-						koopas->isKicked = true;
-						if (x < koopas->x)
-						{
-							Right();
-							koopas->nx = 1;
-						}
-						else
-						{
-							Left();
-							koopas->nx = -1;
-						}
-						vy = backup_vy;
-						y += dy;
-						koopas->SetState(KOOPAS_STATE_MOVING);
-					}
-					//Create Effect Coin
-					CreateEffectCoin(listEffect);
-				}
-				else if (e->nx != 0)
-				{
-					if (untouchable == 0)
+					CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+					if (e->ny < 0) // Đạp đầu koopas
 					{
 						if (koopas->GetState() != KOOPAS_STATE_SLEEP)
 						{
-							if (level > MARIO_LEVEL_SMALL)
+							if (koopas->level > 1)
 							{
-								level--;
-								StartUntouchable();
+								koopas->level--;
+							}
+							else
+								koopas->SetState(KOOPAS_STATE_SLEEP);
+							Elasetic();
+						}
+						else //Đạp mai rùa Koopas
+						{
+							koopas->isKicked = true;
+							if (x < koopas->x)
+							{
+								Right();
+								koopas->nx = 1;
 							}
 							else
 							{
-								Jump();
-								Fall();
-								SetState(MARIO_STATE_DIE);
+								Left();
+								koopas->nx = -1;
 							}
+							vy = backup_vy;
+							y += dy;
+							koopas->SetState(KOOPAS_STATE_MOVING);
+						}
+						//Create Effect Coin
+						CreateEffectCoin(listEffect);
+					}
+					else if (e->nx != 0)
+					{
+						if (koopas->GetState() != KOOPAS_STATE_SLEEP) //Koopas not sleep -> Decreee Level
+						{
+							ChangeTheLevel(DETAILMARIO::CHANGE_DOWN);
 						}
 						else
 						{
-							//Khong tang toc (ko giu A) thi da ruaf
-							if (!isHoldShell)
+							if (!isKeepHoldShell) // No Keep A -> Kick Koopas
 							{
-								isHoldingShell = false;
 								koopas->isHeld = false;
 								Kick();
 								if (nx < 0) koopas->nx = 1;
@@ -504,8 +477,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 								koopas->isKicked = true;
 								koopas->SetState(KOOPAS_STATE_MOVING);
 							}
-							//Giu rua
-							else
+							else //Held Koopas
 							{
 								isHoldingShell = true;
 								koopas->isHeld = true;
@@ -515,48 +487,48 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 				}
 			} // if Goomba
 			else
-				if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
+				if (e->obj->type == TYPE::GOOMBA) // if e->obj is Goomba 
 				{
-					CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-
-					// jump on top >> kill Goomba and deflect a bit 
-					if (e->ny < 0)
+					if (isUnTouchable) return;
+					else
 					{
-						if (goomba->GetState() != GOOMBA_STATE_DIE)
-						{
-							if (goomba->level == GOOMBA_LEVEL_HAVE_WING)
-								goomba->level = GOOMBA_LEVEL_DEFAULT;
-							else
-								if (goomba->level == GOOMBA_LEVEL_DEFAULT)
-									goomba->SetState(GOOMBA_STATE_DIE);
-							goomba->isKillByWeapon = false;
-							Jump();
-							Fall();
-
-							//Create Effect Coin
-							CreateEffectCoin(listEffect);
-						}
-					}
-					else if (e->nx != 0)
-					{
-						if (untouchable == 0)
+						CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+						if (e->ny < 0)
 						{
 							if (goomba->GetState() != GOOMBA_STATE_DIE)
 							{
-								if (level > MARIO_LEVEL_SMALL)
-								{
-									level--;
-									StartUntouchable();
-								}
+								if (goomba->level == GOOMBA_LEVEL_HAVE_WING)
+									goomba->level = GOOMBA_LEVEL_DEFAULT;
 								else
-								{
-									Jump();
-									Fall();
-									vx = 0;
-									SetState(MARIO_STATE_DIE);
-								}
-
+									if (goomba->level == GOOMBA_LEVEL_DEFAULT)
+										goomba->SetState(GOOMBA_STATE_DIE);
+								goomba->isKillByWeapon = false;
+								Elasetic();
+								//Create Effect Coin
+								CreateEffectCoin(listEffect);
 							}
+						}
+						else if (e->nx != 0)
+						{
+							if (isUnTouchable == 0)
+							{
+								if (goomba->GetState() != GOOMBA_STATE_DIE)
+								{
+									ChangeTheLevel(DETAILMARIO::CHANGE_DOWN);
+								}
+							}
+						}
+					}
+				}
+				else if (e->obj->type == FLOWER)
+				{
+					if (isUnTouchable) return;
+					else
+					{
+						CFlower* flower = dynamic_cast<CFlower*>(e->obj);
+						if (flower->GetState() != GOOMBA_STATE_DIE)
+						{
+							ChangeTheLevel(DETAILMARIO::CHANGE_DOWN);
 						}
 					}
 				}
@@ -564,6 +536,17 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 	}
 	// clean up collision events
 	for (UINT i = 0; i < coEnemyEvents.size(); i++) delete coEnemyEvents[i];
+#pragma endregion
+
+#pragma region Collision with listFireBall
+	for (int i = 0; i < listFireBall->size(); i++)
+	{
+		if (isCollisionWithObj(listFireBall->at(i)))
+		{
+			if (!isUnTouchable) 
+				ChangeTheLevel(DETAILMARIO::CHANGE_DOWN);
+		}
+	}
 #pragma endregion
 
 #pragma region Colision with listItem
@@ -591,8 +574,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 				{
 					switchP->SetState(SWITCH_P_STATE_PRESSED);
 					switchP->TranFormationBrick(listMapObj, listItem);
-					Jump();
-					Fall();
+					Elasetic();
 				}
 			}
 		}
@@ -606,20 +588,148 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 			{
 				if (listItem->at(i)->type == TYPE::MUSHROOM)
 				{
-					level = MARIO_LEVEL_BIG;
-					listItem->at(i)->isActive = false;
+					CMushroom* mushroom = dynamic_cast<CMushroom*>(listItem->at(i));
+					if (mushroom->isComplete)
+					{
+						level = MARIO_LEVEL_BIG;
+						listItem->at(i)->isActive = false;
+					}
 				}
 				else
 				if (listItem->at(i)->type == TYPE::LEAF_TREE)
 				{
-					level = MARIO_LEVEL_BIG_TAIL;
+					CLeafTree* leaftree = dynamic_cast<CLeafTree*>(listItem->at(i));
+					if (leaftree->isComplete)
+					{
+						level = MARIO_LEVEL_BIG_TAIL;
+						listItem->at(i)->isActive = false;
+					}
+				}
+				else
+				if (listItem->at(i)->type == TYPE::COIN_IDLE_STATIC || listItem->at(i)->type == TYPE::COIN_IDLE_SPIN)
+				{
+					numCoin++;
 					listItem->at(i)->isActive = false;
 				}
 				else
-					if (listItem->at(i)->type == TYPE::COIN_IDLE_STATIC || listItem->at(i)->type == TYPE::COIN_IDLE_SPIN)
+					if (listItem->at(i)->type == TYPE::ITEM_END_GAME)
 					{
-						numCoin++;
-						listItem->at(i)->isActive = false;
+						CItemEndScence* itemEndScence = dynamic_cast<CItemEndScence*>(listItem->at(i));
+						itemEndScence->SetState(ITEM_ENDGAME_STATE_USED);
+						GoEndScence();
+					}
+			}
+		}
+	}
+#pragma endregion
+
+#pragma region Collision with Portal
+	for (int i = 0; i < listPitStop->size(); i++)
+	{
+		if (listPitStop->at(i) != NULL)
+		{
+			if (isCollisionWithObj(listPitStop->at(i)))
+			{
+				if (listPitStop->at(i)->type == TYPEPITSTOP::PITSTOP)
+				{
+					CPitStop* pitStop = dynamic_cast<CPitStop*>(listPitStop->at(i));
+					isAllowLeft = pitStop->isAllowLeft;
+					isAllowRight = pitStop->isAllowRight;
+					isAllowUp = pitStop->isAllowUp;
+					isAllowDown = pitStop->isAllowDown;
+					DebugOut(L"\nLsdfsa: %d", i);
+					if (i != lastIndexStop)
+					{
+						switch (directSelectMap)
+						{
+						case 1:
+							if (x > pitStop->x)
+							{
+								x = pitStop->x;
+								lastIndexStop = i;
+								vx = 0;
+							}
+							break;
+						case 2:
+							if (x < pitStop->x)
+							{
+								x = pitStop->x;
+								lastIndexStop = i;
+								vx = 0;
+							}
+							break;
+						case 3:
+							if (y < pitStop->y)
+							{
+								y = pitStop->y;
+								lastIndexStop = i;
+								vy = 0;
+							}
+							break;
+						case 4:
+							if (y > pitStop->y)
+							{
+								y = pitStop->y;
+								lastIndexStop = i;
+								vy = 0;
+							}
+							break;
+						}
+						
+					}
+				}
+				else
+					if (listPitStop->at(i)->type == TYPEPITSTOP::PORTAL)
+					{
+						CPortal* portal = dynamic_cast<CPortal*>(listPitStop->at(i));
+						isAllowLeft = portal->isAllowLeft;
+						isAllowRight = portal->isAllowRight;
+						isAllowUp = portal->isAllowUp;
+						isAllowDown = portal->isAllowDown;
+						if (i != lastIndexStop)
+						{
+							switch (directSelectMap)
+							{
+							case 1:
+								if (x > portal->x)
+								{
+									x = portal->x;
+									lastIndexStop = i;
+									vx = 0;
+								}
+								break;
+							case 2:
+								if (x < portal->x)
+								{
+									x = portal->x;
+									lastIndexStop = i;
+									vx = 0;
+								}
+								break;
+							case 3:
+								if (y < portal->y)
+								{
+									y = portal->y;
+									lastIndexStop = i;
+									vy = 0;
+								}
+								break;
+							case 4:
+								if (y > portal->y)
+								{
+									y = portal->y;
+									lastIndexStop = i;
+									vy = 0;
+								}
+								break;
+							}
+
+						}
+						if (isPressKeyDown)
+						{
+							CGame::GetInstance()->SwitchScene(portal->GetSceneId());
+							isSelectMap = false;
+						}
 					}
 			}
 		}
@@ -630,11 +740,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 void CMario::Render()
 {
 	if (state == MARIO_STATE_DIE)
+	{
 		ani = MARIO_ANI_DIE;
+	}
 	else
 		ani = RenderFromAniGroup();
 	int alpha = 255;
-	if (untouchable) alpha = 128;
+	if (isUnTouchable) alpha = rand() % (200 - 50 + 1) + 50;
 	animation_set->at(ani)->Render(x,y,alpha);
 	//RenderBoundingBox();
 }
@@ -959,9 +1071,14 @@ int CMario::RenderFromAniGroup()
 	{
 		animation_set->at(ani)->SetHightSpeed(MARIO_RATIO_WHEN_KEEP_JUMPPING);
 	}
-	if (isAutoGo)
+	if (isGoHidenMap)
 	{
 		aniIndex = MARIO_ANI_GO_HIDDEN_MAP;
+		ani = mario_general->GetAni_Mario(level, aniIndex);
+	}
+	if (isSelectMap)
+	{
+		aniIndex = MARIO_ANI_SELECT_MAP;
 		ani = mario_general->GetAni_Mario(level, aniIndex);
 	}
 	return ani;
@@ -1096,6 +1213,12 @@ void CMario::SetState(int state)
 		break;
 	}
 
+	case MARIO_STATE_ELASETIC:
+	{
+		vy = -MARIO_ELASETIC_SPEED_Y;
+		break;
+	}
+
 	case MARIO_STATE_FALLING:	// Roi nhanh
 	{
 		if (!isBlockFall && isOnAir)
@@ -1106,10 +1229,37 @@ void CMario::SetState(int state)
 			vy += MARIO_GRAVITY * dt;
 		break;
 	}
+	case MARIO_STATE_SELECT_MAP:
+		vx = 0;
+		vy = 0;
+		switch (directSelectMap)
+		{
+		case 1:
+			vx = 0.2;
+			break;
+		case 2:
+			vx = -0.2;
+			break;
+		case 3:
+			vy = -0.2;
+			break;
+		case 4:
+			vy = 0.2;
+			break;
+		}
+		break;
+	case MARIO_STATE_GO_ENDSCENCE:
+	{
+		vx = 0;
+		vy = 0;
+		break;
+	}
 	case MARIO_STATE_GO_HIDDEN_MAP:
+		vx = 0;
 		vy = 0.02f;
 		break;
 	case MARIO_STATE_GO_MAIN_MAP:
+		vx = 0;
 		vy = -0.02f;
 		break;
 	//=============================SPECIAL STATE MARIO_TAIL=============================
@@ -1165,13 +1315,36 @@ void CMario::SetState(int state)
 	}
 }
 
+void CMario::ChangeTheLevel(int typeChange)
+{
+	if (typeChange == DETAILMARIO::CHANGE_DOWN)
+	{
+		if (level > MARIO_LEVEL_SMALL)
+		{
+			level--;
+			StartUntouchable();
+		}
+		else
+		{
+			vx = 0;
+			Elasetic();
+			SetState(MARIO_STATE_DIE);
+		}
+
+		
+	}
+	else
+	{
+		if (level < MARIO_LEVEL_BIG_FIRE)
+			level++;
+	}
+}
+
 void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-
 	left = x;
 	top = y;
 	mario_general->GetBoundingBoxFromGroupAni(left, top, right, bottom, level, nx);
-
 }
 
 /*
@@ -1183,6 +1356,26 @@ void CMario::Reset()
 	SetLevel(MARIO_LEVEL_BIG);
 	SetPosition(start_x, start_y);
 	SetSpeed(0, 0);
+}
+
+CMario* CMario::__instance = NULL;
+CMario* CMario::GetInstance()
+{
+	if (__instance == NULL) __instance = new CMario();
+	return __instance;
+}
+
+void CMario::Elasetic()
+{
+	isOnAir = true;
+	isFalling = false;
+	SetState(MARIO_STATE_ELASETIC);
+}
+
+void CMario::SelectMap()
+{
+	isSelectMap = true;
+	SetState(MARIO_STATE_SELECT_MAP);
 }
 
 void CMario::Go()
@@ -1222,17 +1415,14 @@ void CMario::Right()
 
 void CMario::Jump()
 {
-	
 	isOnAir = true;
 	isFalling = false;
 	SetState(MARIO_STATE_JUMPING);
-	
-
 }
 void CMario::Fall()
 {
 	isOnAir = true;
-	isAutoGo = false;
+	isGoHidenMap = false;
 	SetState(MARIO_STATE_FALLING);
 	isBlockFall = false;
 	////Kiem tra KeepJump
@@ -1292,20 +1482,33 @@ void CMario::SpeedUp()
 
 void CMario::HoldShell()
 {
-	isHoldShell = true;
+	isKeepHoldShell = true;
+	//isHoldShell = true;
 	//isDecreaseSpeed = false;
 }
 
 void CMario::GoHiddenMap()
 {
-	isAutoGo = true;
+	isGoHidenMap = true;
 	SetState(MARIO_STATE_GO_HIDDEN_MAP);
 }
 
 void CMario::GoMainMap()
 {
-	isAutoGo = true;
+	isGoHidenMap = true;
 	SetState(MARIO_STATE_GO_MAIN_MAP);
+}
+
+void CMario::GoSelectMap()
+{
+	isSelectMap = true;
+	SetState(MARIO_STATE_SELECT_MAP);
+}
+
+void CMario::GoEndScence()
+{
+	isGoEndScence = true;
+	SetState(MARIO_STATE_GO_ENDSCENCE);
 }
 
 void CMario::Sit()
@@ -1316,7 +1519,7 @@ void CMario::Sit()
 
 void CMario::Idle()
 {
-	isAutoGo = false;
+	isGoHidenMap = false;
 	if (vx == 0)
 		isWalking = false;
 	isSitting = false;

@@ -30,9 +30,9 @@ void CSwitch_P::SetState(int state)
 void CSwitch_P::Render()
 {
 	if (state == SWITCH_P_STATE_PRESSED)
-		ani = SWITHC_P_ANI_PRESSED;
+		ani = ITEM_SWITCH_P_ANI_PRESSED;
 	else
-		ani = SWITHC_P_ANI_NORMAL;
+		ani = ITEM_SWITCH_P_ANI_NORMAL;
 	animation_set->at(ani)->Render(x, y);
 }
 

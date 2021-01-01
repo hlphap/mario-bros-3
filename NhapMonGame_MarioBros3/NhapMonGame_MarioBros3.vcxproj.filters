@@ -189,6 +189,15 @@
     <ClCompile Include="P_MaxSpeed.cpp">
       <Filter>ScoreBoard</Filter>
     </ClCompile>
+    <ClCompile Include="Tree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PitStop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemEndGame.cpp">
+      <Filter>GameObject\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -334,6 +343,15 @@
     </ClInclude>
     <ClInclude Include="P_MaxSpeed.h">
       <Filter>ScoreBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PitStop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemEndGame.h">
+      <Filter>GameObject\Items</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

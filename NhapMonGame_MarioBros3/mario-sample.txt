@@ -2,6 +2,6 @@
 start	1
 #scene list
 [SCENES]
-1	scene1.txt
-2	scene2.txt
-3	scene-test.txt
+#scence id, #filepath, #typeScence (World = 0, WorldMap= 1)
+1	scencemap1.txt	1
+2	scene1.txt	0

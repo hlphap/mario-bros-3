@@ -17,6 +17,7 @@
 
 #define FRICTION										0.0016875f
 #define MARIO_JUMP_SPEED_Y								0.255f
+#define MARIO_ELASETIC_SPEED_Y							0.2f
 #define MARIO_JUMP_MAX_SPEED_Y							0.00015f
 #define MARIO_JUMP_DEFLECT_SPEED						0.2f
 #define MARIO_GRAVITY									0.00045f
@@ -27,11 +28,14 @@
 class CMario : public CGameObject
 {
 public:
+	static CMario* __instance;
 	CMarioGeneral* mario_general;
 	CGameObject *bringKoopas = NULL;
 	CTail* tail;
 	CBullet* bullet;
 	int level;
+	int directSelectMap;
+	int lastIndexStop = -1;
 	
 	//Score
 	int score = 100;
@@ -42,7 +46,7 @@ public:
 	int numCoin = 0;
 
 
-	int untouchable;
+	bool isUnTouchable = false;
 	float start_x;	
 	float start_y;
 
@@ -59,8 +63,16 @@ public:
 	
 
 
+	//Flag Go
+	bool OnPitStop = false;
+	bool isAllowLeft = false;
+	bool isAllowRight = true;
+	bool isAllowUp = false;
+	bool isAllowDown = false;
 	
 	//Flag
+	bool isGoEndScence = false;
+	bool isSelectMap = true;
 	bool isDecreaseSpeed = false;
 	bool isSlideOutPipe = false;
 	bool isInMainMap = true;
@@ -78,16 +90,16 @@ public:
 	bool isAttacking = false;
 	bool isKeepJump = false;
 	bool isKicking = false;
-	bool isHoldShell = false;
+	bool isKeepHoldShell = false;
 	bool isHoldingShell = false;
-	bool isAutoGo = false;
+	bool isGoHidenMap = false;
 	bool isOnPipeGoHideMap = false;
-	bool isPressKeyDown = true;
+	bool isPressKeyDown = false;
 	byte numFall = 0;
 
 public:
 	CMario(float x = 0.0f, float y = 0.0f);
-	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT> *coEnemy, vector<LPGAMEOBJECT> *coItem, vector<LPGAMEOBJECT>* listEffect);
+	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT> *coEnemy, vector<LPGAMEOBJECT> *coItem, vector<LPGAMEOBJECT>* listEffect, vector<LPGAMEOBJECT> *listPortal, vector<LPGAMEOBJECT> * listFireBall);
 	void Render();
 	int RenderFromAniGroup();
 
@@ -96,15 +108,18 @@ public:
 	void DecreaseSpeed(float speedDown);
 	void SetState(int state);
 	void SetLevel(int l) { level = l; }
-	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
-
+	void StartUntouchable() { isUnTouchable = true; untouchable_start = GetTickCount(); }
+	void ChangeTheLevel(int typeChange);
 	int GetLevel() { return level; };
 	float Getvx() { return vx; }
 	bool GetSpeeUp() { return isSpeedUp; }
 	bool GetJump() { return isOnAir; }
 	void Reset();
+	static CMario* GetInstance();
 
 	//Control player
+	void Elasetic();
+	void SelectMap();
 	void Go();
 	void Left();
 	void Right();
@@ -120,5 +135,7 @@ public:
 	void HoldShell();
 	void GoHiddenMap();
 	void GoMainMap();
+	void GoSelectMap();
+	void GoEndScence();
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 };

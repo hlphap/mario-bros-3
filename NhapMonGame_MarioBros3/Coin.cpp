@@ -58,7 +58,7 @@ void CCoin::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 	else
 		if (type == TYPE::COIN_IDLE_STATIC)
 		{
-			if (GetTickCount() - timeStartTranForM >= 2000 && timeStartTranForM != TIME_DEFAULT)
+			if (GetTickCount() - timeStartTranForM >= TIME_TRANSFORM_FROM_COIN_TO_WEAKBRICK && timeStartTranForM != TIME_DEFAULT)
 			{
 				isActive = false;
 				//Return WeakBrick

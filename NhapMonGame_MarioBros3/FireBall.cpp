@@ -10,6 +10,7 @@
 
 CFireBall::CFireBall()
 {
+	isActive = true;
 	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
 	animation_set = animation_sets->Get(7);
 }

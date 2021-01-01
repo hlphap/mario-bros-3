@@ -53,13 +53,19 @@ public:
 	vector<CFireBall*> list_FireBall;
 	float start_y;
 	float height;
+
+	bool isSleep = true;
+	bool isPause;
 	bool isMoveAttack = true;
 	bool isAttack = false;
+	bool isCreateFireBall = false;
 	DWORD timeStartAttack = TIME_DEFAULT;
+public:
 	CFlower(CMario* m, int type);
 	void SetState(int state);
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
+	void CreateFireBall(vector<LPGAMEOBJECT> *listFireBall);
 };
 

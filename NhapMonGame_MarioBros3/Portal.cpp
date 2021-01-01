@@ -1,13 +1,16 @@
 #include "Portal.h"
 
 
-CPortal::CPortal(float l, float t, float r, float b, int scene_id)
+CPortal::CPortal(bool isLeft, bool isRight, bool isUp, bool isDown, int scene_id)
 {
+	isActive = true;
+	this->type = TYPEPITSTOP::PORTAL;
 	this->scene_id = scene_id;
-	x = l;
-	y = t;
-	width = r - l + 1;
-	height = b - t + 1;
+	this->isAllowLeft = isLeft;
+	this->isAllowRight = isRight;
+	this->isAllowUp = isUp;
+	this->isAllowDown = isDown;
+
 }
 
 void CPortal::Render()
@@ -19,6 +22,6 @@ void CPortal::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	l = x;
 	t = y;
-	r = x + width;
-	b = y + height;
+	r = x + amountX * 16;
+	b = y + amountY * 16;
 }

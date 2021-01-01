@@ -13,8 +13,8 @@
 
 using namespace std;
 
-CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
-	CScene(id, filePath)
+CPlayScene::CPlayScene(int id, LPCWSTR filePath, int typeMap) :
+	CScene(id, filePath, typeMap)
 {
 	key_handler = new CPlayScenceKeyHandler(this);
 }
@@ -173,6 +173,7 @@ void CPlayScene::_ParseSection_TILEMAP(string line)
 	map->tile_height = tile_height;
 	map->LoadTileMap();
 	map->LoadMap();
+	// So dong tileset, so cot tileset, So dong data, So Cot data
 }
 
 /*
@@ -201,16 +202,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	switch (object_type)
 	{
 	case OBJECT_TYPE_MARIO:
-		if (player != NULL)
-		{
-			DebugOut(L"[ERROR] MARIO object was created before!\n");
-			return;
-		}
-		obj = new CMario(x, y);
-		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		player = (CMario*)obj;
-		DebugOut(L"[INFO] Player object created!\n");
+	{
+		
+		player = CMario::GetInstance();
+		player->SetPosition(x, y);
+		player->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		break;
+	}
 	case OBJECT_TYPE_GOOMBA:
 	{
 		int type = atoi(tokens[4].c_str());
@@ -308,6 +306,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		listItems.push_back(obj);
 		break;
 	}
+	case OBJECT_TYPE_ITEM_ENDSCENCE:
+	{
+		obj = new CItemEndScence(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listItems.push_back(obj);
+		break;
+	}
 	case OBJECT_TYPE_KOOPAS:
 		{
 			int type = atoi(tokens[4].c_str());
@@ -318,14 +323,39 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			listEnemies.push_back(obj);
 		}
 		break;
-	case OBJECT_TYPE_PORTAL:
+	case OBJECT_TYPE_TREE:
 	{
-		float r = atof(tokens[4].c_str());
-		float b = atof(tokens[5].c_str());
-		int scene_id = atoi(tokens[6].c_str());
-		obj = new CPortal(x, y, r, b, scene_id);
+		obj = new CTree();
+		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		listMapObj.push_back(obj);
+	}
+	break;
+	case OBJECT_TYPE_PITSTOP:
+	{
+		int isLeft = atoi(tokens[4].c_str());
+		int isRight = atoi(tokens[5].c_str());
+		int isUp = atoi(tokens[6].c_str());
+		int isDown = atoi(tokens[7].c_str());
+		obj = new CPitStop(isLeft,isRight,isUp,isDown);
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listPortal.push_back(obj);
+	}
+	break;
+	case OBJECT_TYPE_PORTAL:
+	{
+		bool isLeft = atoi(tokens[6].c_str());
+		bool isRight = atoi(tokens[7].c_str());
+		bool isUp = atoi(tokens[8].c_str());
+		bool isDown = atoi(tokens[9].c_str());
+		int scene_id = atoi(tokens[10].c_str());
+		obj = new CPortal(isLeft,isRight,isUp,isDown,scene_id);
+		obj->amountX = atoi(tokens[4].c_str());
+		obj->amountY = atoi(tokens[5].c_str());
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listPortal.push_back(obj);
 	}
 	break;
 	default:
@@ -505,14 +535,17 @@ void CPlayScene::Update(DWORD dt)
 
 
 	//Update player
-	player->Update(dt, &listMapObj, &listEnemies, &listItems,&listEffect);
+	player->Update(dt, &listMapObj, &listEnemies, &listItems,&listEffect, &listPortal, &listFireBall);
 
 	//DebugOut(L"\nsize MapOBJ: %d", listMapObj.size());
 	//Update listMapObj
 	for (size_t i = 0; i < listMapObj.size(); i++)
 	{
 		if (listMapObj[i]->isActive)
-			listMapObj[i]->Update(dt, &listItems);
+		{
+			if (listMapObj[i]->isCheckInCamera())
+				listMapObj[i]->Update(dt, &listItems);
+		}	
 		else
 		{
 			listMapObj.erase(listMapObj.begin() + i);
@@ -526,11 +559,20 @@ void CPlayScene::Update(DWORD dt)
 	{
 		if (listEnemies[i]->isActive)
 		{
-			listEnemies[i]->Update(dt, &listMapObj);
-			if (listEnemies[i]->type == TYPE::KOOPAS)
+			if (listEnemies[i]->isCheckInCamera())
 			{
-				CKoopas *koopas = dynamic_cast<CKoopas*>(listEnemies[i]);
-				koopas->IsCollisionWithEnemy(&listEnemies, &listEffect);
+				listEnemies[i]->Update(dt, &listMapObj);
+				if (listEnemies[i]->type == TYPE::KOOPAS)
+				{
+					CKoopas* koopas = dynamic_cast<CKoopas*>(listEnemies[i]);
+					koopas->IsCollisionWhenShellMove(&listMapObj, &listEnemies, &listEffect);
+
+				}
+				if (listEnemies[i]->type == TYPE::FLOWER)
+				{
+					CFlower* flower = dynamic_cast<CFlower*>(listEnemies[i]);
+					flower->CreateFireBall(&listFireBall);
+				}
 			}
 		}
 		else
@@ -538,17 +580,40 @@ void CPlayScene::Update(DWORD dt)
 	}
 	//Update listBullet
 	for (UINT i = 0; i < listBullet.size(); i++) {
-
-		if (listBullet[i]->isActive)
-			listBullet[i]->Update(dt, &listMapObj, &listEnemies, &listEffect);
-		else
-			listBullet.erase(listBullet.begin() + i);
+		if (listBullet[i] != NULL)
+		{
+			if (listBullet[i]->isActive)
+			{
+				if (listBullet[i]->isCheckInCamera())
+					listBullet[i]->Update(dt, &listMapObj, &listEnemies, &listEffect);
+				else
+					listBullet.erase(listBullet.begin() + i);
+			}
+			else
+				listBullet.erase(listBullet.begin() + i);
+		}
 	}
 
+	//Update listFireBall
+	for (UINT i = 0; i < listFireBall.size(); i++) {
+
+		if (listFireBall[i]->isActive)
+		{
+			if (listFireBall[i]->isCheckInCamera())
+				listFireBall[i]->Update(dt, &listMapObj);
+			else
+				listFireBall.erase(listFireBall.begin() + i);
+		}
+		else
+			listFireBall.erase(listFireBall.begin() + i);
+	}
 	for (size_t i = 0; i < listItems.size(); i++)
 	{
 		if (listItems[i]->isActive)
-			listItems[i]->Update(dt, &listMapObj);
+		{
+			if (listItems[i]->isCheckInCamera())
+				listItems[i]->Update(dt, &listMapObj);
+		}
 		else
 		{
 			//Khi Item đc dùng thì tạo Effect
@@ -595,10 +660,6 @@ void CPlayScene::Update(DWORD dt)
 		else
 			listEffect.erase(listEffect.begin() + i);
 	}
-
-	
-
-
 	
 	map->Update();
 	cam->Update();
@@ -630,6 +691,12 @@ void CPlayScene::Render()
 		if (listBullet[i] != NULL)
 		listBullet[i]->Render();
 	}	
+
+	for (UINT i = 0; i < listFireBall.size(); i++) {
+
+		if (listFireBall[i] != NULL)
+			listFireBall[i]->Render();
+	}
 	
 	for (UINT i = 0; i < listEffect.size(); i++) {
 
@@ -637,6 +704,10 @@ void CPlayScene::Render()
 			listEffect[i]->Render();
 	}
 	
+	for (UINT i = 0; i < listPortal.size(); i++)
+	{
+		listPortal[i]->Render();
+	}
 
 
 	if (isScreenDark)
@@ -649,6 +720,7 @@ void CPlayScene::Render()
 	}
 		
 	board->Render();
+	CTail::GetInstance()->Render();
 		
 }
 
@@ -661,8 +733,8 @@ void CPlayScene::Unload()
 		delete listMapObj[i];
 
 	listMapObj.clear();
-	player = NULL;
-	map = NULL;
+	//player = NULL;
+	//map = NULL;
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
@@ -671,73 +743,147 @@ void CPlayScene::Unload()
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
-	if (mario->isAutoGo) return;
-	switch (KeyCode)
+	if (mario->isGoEndScence)
+		return;
+	switch (scence->typeMap)
 	{
-	case DIK_Q:
-		mario->isHoldingShell = true;
-		break;
-	case DIK_S:
-		if (!mario->isOnAir)
+	case TYPEMAP::WORLD:
 		{
-			mario->Jump();
+		if (mario->GetState() == MARIO_STATE_DIE) return;
+			if (mario->isGoHidenMap) return;
+			switch (KeyCode)
+			{
+			case DIK_Q:
+				mario->isHoldingShell = true;
+				break;
+			case DIK_S:
+				if (!mario->isOnAir)
+				{
+					mario->Jump();
+				}
+				break;
+			case DIK_A:
+				if (!mario->isAttacking)
+				{
+					mario->Attack();
+				}
+				break;
+			case DIK_R:
+				mario->Reset();
+				break;
+			case DIK_1:
+				mario->SetLevel(MARIO_LEVEL_SMALL);
+				//mario->SetPosition(mario->x, 0);
+				break;
+			case DIK_2:
+				mario->SetLevel(MARIO_LEVEL_BIG);
+				//mario->SetPosition(mario->x, 0);
+				break;
+			case DIK_3:
+				mario->SetLevel(MARIO_LEVEL_BIG_TAIL);
+				//mario->SetPosition(mario->x, 0);
+				break;
+			case DIK_4:
+				mario->SetLevel(MARIO_LEVEL_BIG_FIRE);
+				//mario->SetPosition(mario->x, 0);
+				break;
+			}
+			break;
 		}
-		break;
-	case DIK_A:
-		if (!mario->isAttacking)
+	case TYPEMAP::WORLDMAP:
 		{
-			mario->Attack();
+			switch (KeyCode)
+			{
+			case DIK_RIGHT:
+			{
+				if (mario->isAllowRight)
+				{
+					mario->directSelectMap = 1;
+					mario->GoSelectMap();
+				}
+				break;
+			}
+			case DIK_LEFT:
+			{
+				if (mario->isAllowLeft)
+				{
+					mario->directSelectMap = 2;
+					mario->GoSelectMap();
+				}
+				break;
+			}
+			case DIK_UP:
+				if (mario->isAllowUp)
+				{
+					mario->directSelectMap = 3;
+					mario->GoSelectMap();
+				}
+				break;
+			case DIK_DOWN:
+				if (mario->isAllowDown)
+				{
+					mario->directSelectMap = 4;
+					mario->GoSelectMap();
+				}
+				break;
+			case DIK_S:
+				mario->isPressKeyDown = true;
+			}
+			break;
 		}
-		break;
-	case DIK_R:
-		mario->Reset();
-		break;
-	case DIK_1:
-		mario->SetLevel(MARIO_LEVEL_SMALL);
-		mario->SetPosition(mario->x, 0);
-		break;
-	case DIK_2:
-		mario->SetLevel(MARIO_LEVEL_BIG);
-		mario->SetPosition(mario->x, 0);
-		break;
-	case DIK_3:
-		mario->SetLevel(MARIO_LEVEL_BIG_TAIL);
-		mario->SetPosition(mario->x, 0);
-		break;
-	case DIK_4:
-		mario->SetLevel(MARIO_LEVEL_BIG_FIRE);
-		mario->SetPosition(mario->x, 0);
-		break;
+			
 	}
+	
 }
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 {
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
-	if (mario->isAutoGo) return;
-	switch (KeyCode)
+	if (mario->isGoEndScence)
+		return;
+	switch (scence->typeMap)
 	{
-	case DIK_Q:
-		mario->isHoldingShell = false;
-		break;
-	case DIK_A:
-		//Cập nhật nhả cờ
-		mario->isSpeedUp = false;
-		mario->isHoldShell = false;
-		mario->isHoldingShell = false;
-		break;
-	case DIK_S:
-		//DebugOut(L"\nKeepJump: %d", player->isKeepJump);
-		if (mario->isFalling && mario->isKeepJump)
+	case TYPEMAP::WORLD:
+	{
+		if (mario->GetState() == MARIO_STATE_DIE) return;
+		if (mario->isGoHidenMap) return;
+		switch (KeyCode)
 		{
-			if (mario->level == MARIO_LEVEL_BIG_TAIL && mario->isOnAir)
+		case DIK_Q:
+			mario->isHoldingShell = false;
+			break;
+		case DIK_A:
+			//Cập nhật nhả cờ
+			mario->isSpeedUp = false;
+			mario->isKeepHoldShell = false;
+			mario->isHoldingShell = false;
+			break;
+		case DIK_S:
+			//DebugOut(L"\nKeepJump: %d", player->isKeepJump);
+			if (mario->isFalling && mario->isKeepJump)
 			{
-				mario->KeepJump();
-				break;
-			} 
+				if (mario->level == MARIO_LEVEL_BIG_TAIL && mario->isOnAir)
+				{
+					mario->KeepJump();
+					break;
+				}
+			}
+			mario->Fall();
+			break;
 		}
-		mario->Fall();
 		break;
 	}
+	case TYPEMAP::WORLDMAP:
+		{
+			switch (KeyCode)
+			{
+			case DIK_S:
+				mario->isPressKeyDown = false;
+				break;
+			}
+			break;
+		}
+	}
+	
 }
 
 void CPlayScenceKeyHandler::KeyState(BYTE* states)
@@ -745,46 +891,59 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	CGame* game = CGame::GetInstance();
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
 
-	//Mario Die
-	if (mario->GetState() == MARIO_STATE_DIE) return;
-	if (mario->isAutoGo) return;
-		
-	//Control
-	if (game->IsKeyDown(DIK_A))
+	if (mario->isGoEndScence)
+		return;
+	switch (scence->typeMap)
 	{
-		//Khong giam toc do
-		mario->SpeedUp();
-		mario->HoldShell();
-	}
-	
-	//Mario Go Right
-	if (game->IsKeyDown(DIK_RIGHT))
+	case TYPEMAP::WORLD:
 	{
-		//(L"\nvx: %f", player->vx);
-		if ((mario->nx * mario->vx < 0)&&(!mario->GetJump())&&(mario->Getvx()<-MARIO_SPEED_CAN_STOP))
+		//Mario Die
+		if (mario->GetState() == MARIO_STATE_DIE) return;
+		if (mario->isGoHidenMap) return;
+
+		//Control
+		if (game->IsKeyDown(DIK_A))
 		{
-			mario->Stop();	
+			//Khong giam toc do
+			mario->SpeedUp();
+			mario->HoldShell();
 		}
+
+		//Mario Go Right
+		if (game->IsKeyDown(DIK_RIGHT))
+		{
+			//(L"\nvx: %f", player->vx);
+			if ((mario->nx * mario->vx < 0) && (!mario->GetJump()) && (mario->Getvx() < -MARIO_SPEED_CAN_STOP))
+			{
+				mario->Stop();
+			}
 			mario->Right();
 			mario->Go();
-	}
-	//Mario Go Left
-	else if (game->IsKeyDown(DIK_LEFT))
-	{
-		if ((mario->nx * mario->vx < 0)&&(!mario->GetJump()) && (mario->Getvx() > MARIO_SPEED_CAN_STOP))
-		{
-			mario->Stop();
 		}
+		//Mario Go Left
+		else if (game->IsKeyDown(DIK_LEFT))
+		{
+			if ((mario->nx * mario->vx < 0) && (!mario->GetJump()) && (mario->Getvx() > MARIO_SPEED_CAN_STOP))
+			{
+				mario->Stop();
+			}
 			mario->Left();
-			mario->Go();	
+			mario->Go();
+		}
+		else if (game->IsKeyDown(DIK_DOWN))
+		{
+			if (!mario->isOnAir)
+				mario->Sit();
+		}
+		// Mario Idle
+		else
+			mario->Idle();
 	}
-	else if (game->IsKeyDown(DIK_DOWN))
+	case TYPEMAP::WORLDMAP:
 	{
-		if (!mario->isOnAir)
-			mario->Sit();
+		break;
 	}
-	// Mario Idle
-	else
-		mario->Idle();
+
+	}
 
 }

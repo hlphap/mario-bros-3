@@ -21,6 +21,9 @@
 #include "Effect.h"
 #include "ScoreEffect.h"
 #include "ScoreBoard.h"
+#include "Tree.h"
+#include "PitStop.h"
+#include "ItemEndGame.h"
 
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_TEXTURES 2
@@ -43,8 +46,11 @@
 #define OBJECT_TYPE_CLOUD_BRICK		10
 #define OBJECT_TYPE_COIN_SPIN		11
 #define OBJECT_TYPE_BULLET			12
+#define OBJECT_TYPE_TREE			13
+#define	OBJECT_TYPE_ITEM_ENDSCENCE	14
 #define OBJECT_TYPE_BOUNDARYBRICK	9999
 
+#define OBJECT_TYPE_PITSTOP	49
 #define OBJECT_TYPE_PORTAL	50
 
 #define MAX_SCENE_LINE 1024
@@ -70,6 +76,8 @@ public:
 	vector<CGameObject *> listEffect;
 	vector<LPGAMEOBJECT> listPipe;
 	vector<CBullet*> listBullet;
+	vector<LPGAMEOBJECT> listFireBall;
+	vector<LPGAMEOBJECT> listPortal;
 
 	void TransformDarkScreen();
 	void TransformLightScreen();
@@ -84,7 +92,7 @@ public:
 
 
 public:
-	CPlayScene(int id, LPCWSTR filePath);
+	CPlayScene(int id, LPCWSTR filePath, int typeMap);
 
 	virtual void Load();
 	virtual void Update(DWORD dt);

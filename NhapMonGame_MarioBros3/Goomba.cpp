@@ -9,6 +9,7 @@ CGoomba::CGoomba(CMario* m, int type, int level)
 	this->typeColor = type;
 	goombaGeneral = new CGoombaGeneral();
 	goombaGeneral->LoadListAni();
+	nx = -1;
 	SetState(GOOMBA_STATE_MOVE);
 }
 
@@ -43,16 +44,20 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		isActive = false;
 		timeStartDie = 0;
-	}
+	} 
 
 
 	//Follow Mario
-	if (x + GOOMBA_BBOX_WIDTH <= player->x)
+	if (!isAllowJump && level == GOOMBA_LEVEL_HAVE_WING)
 	{
-		nx = 1;
+		if (x - player->x > 0)
+		{
+			nx = -1;
+		}
+		else
+			nx = 1;
 	}
-	else
-		nx = -1;
+	
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -87,7 +92,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy = 0;
 			if (isAllowJump)
 				numJump++;
-			if (numJump == 4)
+			if (numJump > 3)
 			{
 				isFlying = false;
 				timeStartMove = GetTickCount();
@@ -96,10 +101,16 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 		}
 		else
+			if (ny > 0)
+			{
+				vy = 0;
+				isAllowJump = false;
+			}
 			if (nx != 0)
 			{
 				backup_vx = vx;
 				vx = -vx;
+				isAllowJump = false;
 			}
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -113,7 +124,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 			}
 		}
-		if (isMoving)
+		if (isMoving && isAllowJump)
 		{
 			SetState(GOOMBA_STATE_MOVE);
 		}
@@ -149,7 +160,7 @@ void CGoomba::Render()
 	ani = goombaGeneral->GetAni_Goomba(typeColor, aniIndex);
 	//DebugOut(L"Ani Gomba %d \n", ani);
 	animation_set->at(ani)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)
@@ -159,7 +170,6 @@ void CGoomba::SetState(int state)
 	{
 	case GOOMBA_STATE_MOVE:
 		isMoving = true;
-	
 		if (level == GOOMBA_LEVEL_HAVE_WING)
 		{
 			if (isAllowJump)
@@ -171,33 +181,18 @@ void CGoomba::SetState(int state)
 				}
 				else
 				{
-					vy = -0.15;
+					vy = -0.2;
 					isFlying = true;
 				}
 			}
 			else
 				vy = 0;
-				
-			if (nx == 1)
-			{
-				vx = GOOMBA_SPEED_MOVE;
-			}
-			else
-			{
-				vx = -GOOMBA_SPEED_MOVE;
-			}
+			vx = nx * GOOMBA_SPEED_MOVE;
 		}
 		else
 			if (level == GOOMBA_LEVEL_DEFAULT)
 			{
-				if (nx == 1)
-				{
-					vx = GOOMBA_SPEED_MOVE;
-				}
-				else
-				{
-					vx = -GOOMBA_SPEED_MOVE;
-				}
+				vx = nx * GOOMBA_SPEED_MOVE;
 			}
 		break;
 	case GOOMBA_STATE_DIE:

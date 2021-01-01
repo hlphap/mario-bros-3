@@ -222,7 +222,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* listMapObj,vector<LPGAMEOBJ
 				if (koopas->GetState() != KOOPAS_STATE_DIE)
 				{
 					koopas->isKillByWeapon = true;
-					koopas->SetState(KOOPAS_STATE_SLEEP);
+					koopas->SetState(KOOPAS_STATE_DIE);
 					koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
 					SetState(BULLET_STATE_EXPLOSIVE);
 					//Create Effect Coin

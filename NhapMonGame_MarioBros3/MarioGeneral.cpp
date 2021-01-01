@@ -58,7 +58,11 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_HOLD_FLYING_RIGHT);	//22
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_HOLD_FLYING_LEFT);	//23
 
+		//Di chuyen den HideMap
 		listAni_mario_small.push_back(MARIO_ANI_SMALL_GO_HIDDEN_MAP);	//24
+
+		//Select Map
+		listAni_mario_small.push_back(MARIO_ANI_SMALL_SELECT_MAP); // 25
 
 
 
@@ -116,7 +120,8 @@ void CMarioGeneral::LoadListAni()
 
 		listAni_mario_big.push_back(MARIO_ANI_BIG_GO_HIDDEN_MAP);	//24
 
-
+		//Select Map
+		listAni_mario_big.push_back(MARIO_ANI_SMALL_SELECT_MAP); // 25
 	}
 	
 	if (listAni_mario_tail.empty())
@@ -171,7 +176,8 @@ void CMarioGeneral::LoadListAni()
 
 		listAni_mario_tail.push_back(MARIO_ANI_BIG_TAIL_GO_HIDDEN_MAP);	//24
 
-
+		//Select Map
+		listAni_mario_tail.push_back(MARIO_ANI_SMALL_SELECT_MAP); // 25
 
 	
 
@@ -229,6 +235,9 @@ void CMarioGeneral::LoadListAni()
 		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_HOLD_FLYING_LEFT);	//23
 
 		listAni_mario_fire.push_back(MARIO_ANI_BIG_FIRE_GO_HIDDEN_MAP);	//24
+	
+		listAni_mario_fire.push_back(MARIO_ANI_SMALL_SELECT_MAP); // 25
+
 	}
 }
 
@@ -255,33 +264,71 @@ int CMarioGeneral::GetAni_Mario(int level,int index)
 
 void CMarioGeneral::GetBoundingBoxFromGroupAni(float& left, float& top, float& right, float& bottom,int level, int nx)
 {
+	if (IndexBBox == MARIO_ANI_SELECT_MAP)
+	{
+		right = left + 14;
+		bottom = top + 14;
+		return;
+	}
 	switch (level)
 	{
 	case MARIO_LEVEL_SMALL:
-		//left top khong doi
+		left = left + 11;
+		top = top + 14;
 		right = left + MARIO_SMALL_BBOX_WIDTH;
 		bottom = top + MARIO_SMALL_BBOX_HEIGHT;
 		break;
 	case MARIO_LEVEL_BIG:
-		if (nx > 0) 
-			left = left + 3;
-		right = left + MARIO_BIG_BBOX_WIDTH;
-		bottom = top + MARIO_BIG_BBOX_HEIGHT;
+		top = top + 3;
+		right = left + MARIO_FIRE_BBOX_WIDTH;
+		bottom = top + MARIO_FIRE_BBOX_HEIGHT;
+		if (nx > 0)
+		{
+			left = left + 10;
+			right = left + MARIO_BIG_BBOX_WIDTH;
+		}
+		else
+		{
+			left = left + 10;
+			right = left + MARIO_BIG_BBOX_WIDTH;
+		}
 		break;
 	case MARIO_LEVEL_BIG_TAIL:
-		left += 8;
-		right = left + MARIO_BIG_TAIL_BBOX_WIDTH;
+		top = top + 2;
 		bottom = top + MARIO_BIG_TAIL_BBOX_HEIGHT;
+		right = left + MARIO_BIG_TAIL_BBOX_WIDTH;
+		if (nx > 0)
+		{
+			left = left + 11;
+			right = left + MARIO_BIG_TAIL_BBOX_WIDTH;
+		}
+		else
+		{
+			left = left + 8;
+			right = left + MARIO_BIG_TAIL_BBOX_WIDTH;
+		}
 		break;
 	case MARIO_LEVEL_BIG_FIRE:
+		top = top + 3;
+		right = left + MARIO_FIRE_BBOX_WIDTH;
+		bottom = top + MARIO_FIRE_BBOX_HEIGHT;
 		if (nx > 0)
-			left = left + 3;
-		right = left + MARIO_BIG_BBOX_WIDTH;
-		bottom = top + MARIO_BIG_BBOX_HEIGHT;
-		break;
+		{
+			left = left + 10;
+			right = left + MARIO_BIG_BBOX_WIDTH;
+		}
+		else
+		{
+			left = left + 10;
+			right = left + MARIO_BIG_BBOX_WIDTH;
+		}
 	}
+
 	if ((IndexBBox == MARIO_ANI_SITTING_LEFT) || (IndexBBox == MARIO_ANI_SITTING_RIGHT))
-		top = top + 8;
+	{
+		top = top + 11;
+	}
+
 }
 
 

@@ -41,6 +41,7 @@
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="ImpactEffect.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemEndGame.cpp" />
     <ClCompile Include="Koopas.cpp" />
     <ClCompile Include="KoopasGeneral.cpp" />
     <ClCompile Include="LeafTree.cpp" />
@@ -51,6 +52,7 @@
     <ClCompile Include="Number.cpp" />
     <ClCompile Include="PieceBrickEffect.cpp" />
     <ClCompile Include="Pipe.cpp" />
+    <ClCompile Include="PitStop.cpp" />
     <ClCompile Include="PlayScence.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="P_MaxSpeed.cpp" />
@@ -63,6 +65,7 @@
     <ClCompile Include="Tail.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="Tree.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="WeakBrick.cpp" />
     <ClCompile Include="Weapon.cpp" />
@@ -91,6 +94,7 @@
     <ClInclude Include="HUD.h" />
     <ClInclude Include="ImpactEffect.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemEndGame.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Koopas.h" />
     <ClInclude Include="KoopasGeneral.h" />
@@ -101,6 +105,7 @@
     <ClInclude Include="Number.h" />
     <ClInclude Include="PieceBrickEffect.h" />
     <ClInclude Include="Pipe.h" />
+    <ClInclude Include="PitStop.h" />
     <ClInclude Include="PlayScence.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="P_MaxSpeed.h" />
@@ -113,6 +118,7 @@
     <ClInclude Include="Tail.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="TileMap.h" />
+    <ClInclude Include="Tree.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="WeakBrick.h" />
     <ClInclude Include="Weapon.h" />

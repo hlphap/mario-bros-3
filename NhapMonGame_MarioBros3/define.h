@@ -11,6 +11,7 @@ enum TYPE
 	LEAF_TREE = 13,
 	MUSHROOM = 14,
 	SWITCH_P = 15,
+	ITEM_END_GAME = 16,
 
 	//EFFECT
 	SCORE_EFFECT = 20,
@@ -45,4 +46,22 @@ enum TYPEPIPE
 	PIPE_LONG = 2,
 	PIPE_HIDENMAP = 3,
 	PIPE_BRICK = 4,
+};
+
+enum TYPEMAP
+{
+	WORLDMAP = 1,
+	WORLD	 = 0,
+};
+
+enum TYPEPITSTOP
+{
+	PORTAL = 1,
+	PITSTOP = 0,
+};
+
+enum DETAILMARIO
+{
+	CHANGE_UP = 0,
+	CHANGE_DOWN = 1
 };
