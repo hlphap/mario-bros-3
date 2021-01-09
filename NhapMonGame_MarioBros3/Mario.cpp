@@ -181,14 +181,24 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 	// Colision with listMapObj (Map Game)
 	vector<LPCOLLISIONEVENT> coObjEvents;
 	vector<LPCOLLISIONEVENT> coObjEventsResult;
+	vector<LPCOLLISIONEVENT> coEnemyEvents;
+	vector<LPCOLLISIONEVENT> coEnemyEventsResult;
+	vector<LPCOLLISIONEVENT> coItemEvents;
+	vector<LPCOLLISIONEVENT> coItemEventsResult;
+
+
+	coItemEvents.clear();
+	coEnemyEvents.clear();
 	coObjEvents.clear();
-	// turn off collision when die 
+
 	if (state != MARIO_STATE_DIE)
 	{
 		CalcPotentialCollisions(listMapObj, coObjEvents);
+		CalcPotentialCollisions(listEnemy, coEnemyEvents);
+		CalcPotentialCollisions(listItem, coItemEvents);
 	}
 	// No collision occured, proceed normally
-	if (coObjEvents.size() == 0)
+	if (coObjEvents.size() == 0 && coEnemyEvents.size() == 0 && coItemEvents.size() == 0)
 	{
 		x += dx;
 		y += dy;
@@ -384,16 +394,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 #pragma endregion
 
 #pragma region Colision with listEnemy
-	vector<LPCOLLISIONEVENT> coEnemyEvents;
-	vector<LPCOLLISIONEVENT> coEnemyEventsResult;
-
-	coEnemyEvents.clear();
-	// turn off collision when die 
-	if (state != MARIO_STATE_DIE && isUnTouchable==0)
-	{
-		CalcPotentialCollisions(listEnemy, coEnemyEvents);
-	}
-
+	
 	if (coEnemyEvents.size() != 0)
 	{
 		float min_tx, min_ty, nx = 0, ny;
@@ -551,11 +552,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 
 #pragma region Colision with listItem
 //P_Switch
-	vector<LPCOLLISIONEVENT> coItemEvents;
-	vector<LPCOLLISIONEVENT> coItemEventsResult;
-	coItemEvents.clear();
-	// turn off collision when die 
-	CalcPotentialCollisions(listItem, coItemEvents);
 	if (coItemEvents.size() != 0)
 	{
 		float min_tx, min_ty, nx = 0, ny;
@@ -642,7 +638,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 					{
 						switch (directSelectMap)
 						{
-						case 1:
+						case DIRECT_RIGHT:
 							if (x > pitStop->x)
 							{
 								x = pitStop->x;
@@ -650,7 +646,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 								vx = 0;
 							}
 							break;
-						case 2:
+						case DIRECT_LEFT:
 							if (x < pitStop->x)
 							{
 								x = pitStop->x;
@@ -658,7 +654,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 								vx = 0;
 							}
 							break;
-						case 3:
+						case DIRECT_UP:
 							if (y < pitStop->y)
 							{
 								y = pitStop->y;
@@ -666,7 +662,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 								vy = 0;
 							}
 							break;
-						case 4:
+						case DIRECT_DOWN:
 							if (y > pitStop->y)
 							{
 								y = pitStop->y;
@@ -690,7 +686,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 						{
 							switch (directSelectMap)
 							{
-							case 1:
+							case DIRECT_RIGHT:
 								if (x > portal->x)
 								{
 									x = portal->x;
@@ -698,7 +694,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 									vx = 0;
 								}
 								break;
-							case 2:
+							case DIRECT_LEFT:
 								if (x < portal->x)
 								{
 									x = portal->x;
@@ -706,7 +702,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 									vx = 0;
 								}
 								break;
-							case 3:
+							case DIRECT_UP:
 								if (y < portal->y)
 								{
 									y = portal->y;
@@ -714,7 +710,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 									vy = 0;
 								}
 								break;
-							case 4:
+							case DIRECT_DOWN:
 								if (y > portal->y)
 								{
 									y = portal->y;
@@ -1235,16 +1231,16 @@ void CMario::SetState(int state)
 		switch (directSelectMap)
 		{
 		case 1:
-			vx = 0.2;
+			vx = MARIO_SPEED_SELECT_MAP;
 			break;
 		case 2:
-			vx = -0.2;
+			vx = -MARIO_SPEED_SELECT_MAP;
 			break;
 		case 3:
-			vy = -0.2;
+			vy = -MARIO_SPEED_SELECT_MAP;
 			break;
 		case 4:
-			vy = 0.2;
+			vy = MARIO_SPEED_SELECT_MAP;
 			break;
 		}
 		break;
@@ -1508,6 +1504,7 @@ void CMario::GoSelectMap()
 void CMario::GoEndScence()
 {
 	isGoEndScence = true;
+	Right();
 	SetState(MARIO_STATE_GO_ENDSCENCE);
 }
 

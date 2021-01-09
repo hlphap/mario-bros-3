@@ -16,7 +16,7 @@ CTail::CTail()
 void CTail::Render()
 {
 	//DebugOut(L"Imhera");
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CTail::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -85,7 +85,7 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJE
 					CKoopas* koopas = dynamic_cast<CKoopas*>(listEnemy->at(i));
 					if (canKill)
 					{
-						if (koopas->GetState() != KOOPAS_STATE_DIE)
+						if (koopas->GetState() != KOOPAS_STATE_DIE && koopas->vy > 0)
 						{
 							effect = new CImpactEffect(koopas->x, koopas->y);
 							listEffect->push_back(effect);
@@ -96,6 +96,10 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJE
 								koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
 							}
 							koopas->isKillByWeapon = true;
+							koopas->timeStartSleep = GetTickCount();
+							koopas->isHeal = false;
+							koopas->isPreHeal = false;
+						
 						}
 					}
 				}

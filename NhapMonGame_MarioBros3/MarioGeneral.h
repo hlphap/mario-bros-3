@@ -232,6 +232,11 @@
 #define MARIO_TIME_BIG_FIRE_ATTACK_ON_GROUND			75
 #define MARIO_TIME_BIG_FIRE_ATTACK_ON_AIR				200
 
+#define DIRECT_RIGHT									1
+#define DIRECT_LEFT									2
+#define DIRECT_UP									3
+#define DIRECT_DOWN									4
+#define MARIO_SPEED_SELECT_MAP						0.1f
 
 
 //D

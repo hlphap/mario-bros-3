@@ -19,7 +19,7 @@ void CQuestionBrick::Render()
 	else
 		ani = QUESTION_BRICK_ANI_UNITEM;
 	animation_set->at(ani)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CQuestionBrick::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -72,7 +72,7 @@ void CQuestionBrick::SetState(int state)
 		}
 		case QUESTION_STATE_MOVE_UP:
 		{
-			vy = -0.05;
+			vy = -0.08;
 			isItem = false;
 			break;
 		}

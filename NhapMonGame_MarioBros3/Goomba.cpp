@@ -21,7 +21,7 @@ void CGoomba::GetBoundingBox(float& left, float& top, float& right, float& botto
 	bottom = top + 24;
 	if (state == GOOMBA_STATE_DIE)
 	{
-		top = top + 16;
+		top = top - top;
 	}
 		
 	if (level == GOOMBA_LEVEL_HAVE_WING)
@@ -66,7 +66,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		CalcPotentialCollisions(coObjects, coEvents);
 	}
-	if (GetTickCount() - timeStartMove >= 2000)
+	if (GetTickCount() - timeStartMove >= 2000 && level == GOOMBA_LEVEL_HAVE_WING)
 	{
 		isAllowJump = true;
 	}
@@ -110,6 +110,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				backup_vx = vx;
 				vx = -vx;
+				
 				isAllowJump = false;
 			}
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -126,6 +127,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		if (isMoving && isAllowJump)
 		{
+			DebugOut(L"imhere");
 			SetState(GOOMBA_STATE_MOVE);
 		}
 		for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];

@@ -10,6 +10,7 @@
 40	textures\special.png	255	255	255
 42	textures\fireball_right.png	0	255	255
 43	textures\fireball_left.png	0	255	255
+44	textures\enemies-5.png	0	255	255
 60	textures\enemiesvip.png	255	255	255
 70	textures\effects.png	176	224	248
 80	textures\special3.png	255	255	255
@@ -85,10 +86,10 @@
 # MARIO DIE
 999999	375	209	391	224	0
 #mario small down up pipe
-999998	15	129	31	145	0
-999997	15	283	31	310	0
-999996	35	483	51	511	0
-999995	15	723	31	750	0
+999998	5	129	31	145	0
+999997	5	283	31	310	0
+999996	25	483	51	511	0
+999995	5	723	31	750	0
 #MARIOSMALL
 999994	16	9	30	25	0
 999993	16	49	30	65	0
@@ -468,6 +469,22 @@
 400089	84	192	102	120	60
 #shell health (overturned) (top -11)
 400099	294	192	312	120	60
+
+# KOOPAS lac mai co cai chan
+400109	48	194	66	220	60
+400119	84	194	106	220	60
+# KOOPAS lac cai mai
+400129	48	194	66	220	60
+400139	50	194	68	220	60
+
+# KOOPAS overturned lac mai co cai chan
+400149	296	193	312	220	60
+400159	327	193	346	220	60
+# KOOPAS overturned lac mai
+400169	327	193	346	220	60
+400179	330	193	346	220	60
+
+
 #-----------------------------------------------------------------------------------KOOPAS GREEN
 #----------------------------------------------------Koopas GREEN HAVE WING (level 2)
 #flying left
@@ -505,6 +522,22 @@
 410089	84	92	102	120	60
 #shell health (overturned) (top -11)
 410099	294	92	312	120	60
+
+# KOOPAS lac cai mai
+410109	48	94	66	131	60
+410119	50	94	68	131	60
+# KOOPAS lac mai co cai chan
+410129	82	93	102	119	60
+410139	50	94	68	131	60
+
+# KOOPAS overturned lac mai co cai chan
+410149	296	93	312	131	60
+410159	328	94	346	130	60
+# KOOPAS overturned lac mai
+410159	328	94	346	130	60
+410169	330	94	346	130	60
+
+
 
 #=======================================================================================Pipe flower sprite
 #======================================================================Flower red
@@ -923,6 +956,16 @@
 #health overturned
 40005	400099	100
 
+# KOOPAS PRE REIVE 1
+40006	400109	50	400119	50
+# KOOPAS PRE REVIE 2
+40007	400129	50	400139	50
+
+# KOOPAS OVERTURNED PRE REIVE 1 lac mai
+40008	400159	50	400179	50
+# KOOPAS overturned SHELL HEALTH lac mai co cai chan
+40009	400149	100	400159	100
+
 #ani_set	type 	level	stt(1x)	nx 
 #-----------------------------------------------------------------------------------KOOPAS GREEN
 #----------------------------------------------------Koopas GREEN HAVE WING (level 2)
@@ -949,6 +992,17 @@
 41004	410089	100
 #health overturned
 41005	410099	100
+
+# KOOPAS PRE REIVE 1 lac mai
+41006	410109	50	410119	50
+# KOOPAS PRE REVIE 2 lac mai khong co cai chan
+41007	410129	50	410139	50
+
+# KOOPAS OVERTURNED PRE REIVE 1 lac mai
+41008	410159	50	410169	50
+# KOOPAS overturned SHELL HEALTH lac mai co cai chan
+41009	410159	100	410149	100
+
 
 #=======================================================================================Flower ani
 #======================================================================Flower red
@@ -1082,8 +1136,8 @@
 #	0(fly)	1(move)	2(die)	3(diew)	4(red)	5		6		7		8		9
 3	30109	30009	30019	30029	31109	31009	31019	31029	30119	31119
 #KOOPAS
-#	0(FLY)	1		2(WALK)	3		4(SHELL)5		6		7		8		9		10(FLY)	11		12(WALK)13		14(SHELL)15		16		17		18		19
-4	40200	40201	40100	40101	40000	40001	40002	40003	40004	40005	41200	41201	41100	41101	41000	41001	41002	41003	41004	41005
+#	0(FLY)	1		2(WALK)	3		4(SHELL)5		6		7		8		9		10(FLY)	11		12(WALK)13		14(SHELL)15		16		17		18		19		//Lacmai20		21		22		23	24	25		26		27
+4	40200	40201	40100	40101	40000	40001	40002	40003	40004	40005	41200	41201	41100	41101	41000	41001	41002	41003	41004	41005	41006	41007	41008	41009	40006	40007	40008	40009	
 #ITEM
 5	50	51	52	53	54	55	56	57	58	59
 # FLOWER
@@ -1109,8 +1163,8 @@
 # type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas,4 = Flower, 5 = Ground, 6 = ColorBox, 7 = Pipe, 8 = QuestionBrick, 9 = WeakBreak, 10 = CloundBrick, 11 = Coin, 12 = Bullet
 
 # MARIO
-#0	2500	1	1
-0	0	1	1
+0	2250	1	1
+#0	0	1	1
 # KOOPAS
 #type x y	id	type_detail	level
 #3	175	340	4	1	1

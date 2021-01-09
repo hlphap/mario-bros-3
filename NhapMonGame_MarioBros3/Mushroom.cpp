@@ -77,7 +77,7 @@ void CMushroom::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 void CMushroom::Render()
 {
 	animation_set->at(ITEM_ANI_MUSHROOM)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CMushroom::SetState(int state)

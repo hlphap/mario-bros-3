@@ -8,7 +8,7 @@ CCoin::CCoin(float x, float y, int type)
 	this->type = type;
 	if (this->type == TYPE::COIN_EFFECT)
 	{
-		vy = -0.2f;
+		vy = -0.6f;
 	}
 
 }

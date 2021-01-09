@@ -5,7 +5,7 @@ CLeafTree::CLeafTree(float x, float y)
 	type = TYPE::LEAF_TREE;
 	isActive = true;
 	SetPosition(x, y);
-	minPosY = y - QUESTION_BRICK_BBOX_HEIGHT; // Vi tri cao nhat co the
+	minPosY = y - QUESTION_BRICK_BBOX_HEIGHT - 16; // Vi tri cao nhat co the
 	minPosX = x;
 	maxPosX = x + DISTANCE_FROM_QUESTIONBRICK_TO_MAXPOSX; //min,maxPos bien do dao dong theo phuong X
 	nx = 1;
@@ -43,7 +43,7 @@ void CLeafTree::Render()
 	else
 		ani = ITEM_ANI_TREE_LEAF_LEFT;
 	animation_set->at(ani)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CLeafTree::SetState(int state)

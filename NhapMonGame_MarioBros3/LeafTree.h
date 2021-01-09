@@ -5,7 +5,7 @@
 #include "Utils.h"
 
 //Speed
-#define LEAF_TREE_GROW_UP	 0.05
+#define LEAF_TREE_GROW_UP	 0.2
 #define LEAF_TREE_SPEED_FALL	 0.02
 
 //BBox

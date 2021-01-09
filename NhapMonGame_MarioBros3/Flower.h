@@ -54,7 +54,7 @@ public:
 	float start_y;
 	float height;
 
-	bool isSleep = true;
+	bool isSleep = false;
 	bool isPause;
 	bool isMoveAttack = true;
 	bool isAttack = false;

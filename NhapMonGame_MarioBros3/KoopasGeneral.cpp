@@ -17,8 +17,12 @@ void CKoopasGeneral::LoadListAni()
 		listAni_koopas_red.push_back(KOOPAS_ANI_RED_SHELL_IDLE_OVERTURNED);		//Shell idle overturned
 		listAni_koopas_red.push_back(KOOPAS_ANI_RED_SHELL_MOVE);				//Shell move
 		listAni_koopas_red.push_back(KOOPAS_ANI_RED_SHELL_MOVE_OVERTURNED);		//Shell move overturned
-		listAni_koopas_red.push_back(KOOPAS_ANI_RED_SHELL_HEALTH);				//Shell health
-		listAni_koopas_red.push_back(KOOPAS_ANI_RED_SHELL_HEALTH_OVERTURNED);	//Shell health overturned
+		listAni_koopas_red.push_back(KOOPAS_ANI_RED_SHELL_HEALTH);				//Shell health //KHONG DUNG
+		listAni_koopas_red.push_back(KOOPAS_ANI_RED_SHELL_HEALTH_OVERTURNED);	//Shell health overturned // KHONG DUNG
+		listAni_koopas_red.push_back(KOOPAS_RED_ANI_SHELL_REVIAL_KHONGCHAN);	//revial khong chan
+		listAni_koopas_red.push_back(KOOPAS_RED_ANI_SHELL_REVIAL_COCHAN);	//revial co chan
+		listAni_koopas_red.push_back(KOOPAS_RED_ANI_SHELL_OVERTURNED_REVIAL_KHONGCHAN); //overturned khong chan
+		listAni_koopas_red.push_back(KOOPAS_RED_ANI_SHELL_OVERTURNED_REVIAL_COCHAN);	//overturned co chan
 	}
 	
 	
@@ -34,7 +38,10 @@ void CKoopasGeneral::LoadListAni()
 		listAni_koopas_green.push_back(KOOPAS_ANI_GREEN_SHELL_MOVE_OVERTURNED);		//Shell move overturned
 		listAni_koopas_green.push_back(KOOPAS_ANI_GREEN_SHELL_HEALTH);				//Shell health
 		listAni_koopas_green.push_back(KOOPAS_ANI_GREEN_SHELL_HEALTH_OVERTURNED);		//Shell health overturned
-
+		listAni_koopas_green.push_back(KOOPAS_GREEN_ANI_SHELL_REVIAL_KHONGCHAN);	//revial khong chan
+		listAni_koopas_green.push_back(KOOPAS_GREEN_ANI_SHELL_REVIAL_COCHAN);	//revial co chan
+		listAni_koopas_green.push_back(KOOPAS_GREEN_ANI_SHELL_OVERTURNED_REVIAL_KHONGCHAN); //overturned khong chan
+		listAni_koopas_green.push_back(KOOPAS_GREEN_ANI_SHELL_OVERTURNED_REVIAL_COCHAN);	//overturned co chan
 	}
 }
 

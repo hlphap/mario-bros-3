@@ -267,7 +267,7 @@ void CFlower::Render()
 			}
 	//DebugOut(L"ani :\n %d", ani);
 	animation_set->at(ani)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CFlower::CreateFireBall(vector<LPGAMEOBJECT>* listFireBall)

@@ -2,6 +2,7 @@
 #include "Enemy.h"
 #include "KoopasGeneral.h"
 #include "WeakBrick.h"
+#include "QuestionBrick.h"
 #define KOOPAS_WALKING_SPEED 0.03f
 #define KOOPAS_RUNNING_WHEN_KICKED 0.15f
 #define KOOPAS_JUMP_DEFLECT_SPEED	0.2f
@@ -22,6 +23,7 @@ class CKoopas : public CEnemy
 public:
 	CKoopasGeneral* koopasGeneral;
 	CWeakBrick* weakBrickDeployed = NULL;
+	CQuestionBrick* questionBrick = NULL;
 	int typeColor;
 	int level;
 	int rangeX;
@@ -33,6 +35,8 @@ public:
 	bool isKicked = false;
 	bool isSleeping = false;
 	bool isHeld = false;
+	bool isPreHeal = false;
+	bool isHeal = false;
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	void IsCollisionWhenShellMove(vector<LPGAMEOBJECT>* listMapObj, vector<LPGAMEOBJECT>* listEnemies, vector<LPGAMEOBJECT>* listEffect);

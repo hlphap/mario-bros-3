@@ -37,6 +37,8 @@ void CKoopas::GetBoundingBox(float& left, float& top, float& right, float& botto
 
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+
+	
 	//Hoi sinh
 	if (state == KOOPAS_STATE_SLEEP && timeStartSleep != 0 && GetTickCount() - timeStartSleep >= 5000)
 	{
@@ -51,7 +53,21 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		nx = -player->nx;
 		SetState(KOOPAS_STATE_MOVING);
+		isHeal = false;
+		isPreHeal = false;
 	}
+	else
+		if (state == KOOPAS_STATE_SLEEP && timeStartSleep != 0 && GetTickCount() - timeStartSleep >= 4000)	//Co chan
+		{
+			isHeal = true;
+			isPreHeal = false;
+		}
+		else
+		if (state == KOOPAS_STATE_SLEEP && timeStartSleep != 0 && GetTickCount() - timeStartSleep >= 3000) // Khong chan
+		{
+			isHeal = false;
+			isPreHeal = true;
+		}
 	//Bi cam thi khong co gia toc trong truong
 	//Bị cầm  ->> Koopas follow Mario
 	if (isHeld)
@@ -209,12 +225,16 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			else if (dynamic_cast<CQuestionBrick*>(e->obj))
 			{
 				CQuestionBrick* questionBrick = dynamic_cast<CQuestionBrick*>(e->obj);
-				if (e->nx > 0)
+				if (e->nx != 0)
 				{
-					this->nx = 1;
+					this->questionBrick = questionBrick;
+					if (e->nx > 0)
+					{
+						this->nx = 1;
+					}
+					else if (e->nx < 0)
+						this->nx = -1;
 				}
-				else if (e->nx < 0)
-					this->nx = -1;
 				else
 				if (e->ny < 0)
 				{
@@ -335,6 +355,31 @@ void CKoopas::IsCollisionWhenShellMove(vector<LPGAMEOBJECT>* listMapObj, vector<
 			weakBrickDeployed->Deployed_WeakBrick(listEffects);
 			weakBrickDeployed = NULL;
 		}
+		if (questionBrick != NULL)
+		{
+			if (questionBrick->isItem)
+			{
+				//Update typeQuestion
+				if (questionBrick->typeQuestion == QUESTION_TYPE_COIN)
+				{
+					questionBrick->typeItem = ITEM_LEVEL_COIN;
+					player->numCoin++;
+				}
+				else
+				{
+					if (player->level == MARIO_LEVEL_SMALL)
+						questionBrick->typeItem = ITEM_LEVEL_MUSHROOM;
+					else
+						if (player->level == MARIO_LEVEL_BIG)
+						{
+							questionBrick->typeItem = ITEM_LEVEL_TREE_LEAF;
+						}
+						else
+							questionBrick->typeItem = ITEM_LEVEL_TREE_LEAF;
+				}
+				questionBrick->SetState(QUESTION_STATE_MOVE_UP);
+			}
+		}
 	}
 
 }
@@ -370,14 +415,41 @@ void CKoopas::Render()
 			}
 	}
 	else
-		if (!isKillByWeapon)
-			aniIndex = KOOPAS_ANI_SHELL_IDLE;
+		if (!isKillByWeapon) // overturned
+		{
+			if (isPreHeal)
+			{
+				aniIndex = KOOPAS_ANI_SHELL_REVIAL_KHONGCHAN;
+			}
+			else
+				if (isHeal)
+				{
+					aniIndex = KOOPAS_ANI_SHELL_REVIAL_COCHAN;
+				}
+				else
+					aniIndex = KOOPAS_ANI_SHELL_IDLE;
+		}
 		else
-			aniIndex = KOOPAS_ANI_SHELL_OVERTURNED_IDLE;
+			if (isPreHeal)
+			{
+				aniIndex = KOOPAS_ANI_SHELL_OVERTURNED_REVIAL_KHONGCHAN;
+			}
+			else
+				if (isHeal)
+				{
+					aniIndex = KOOPAS_ANI_SHELL_OVERTURNED_REVIAL_COCHAN;
+				}
+				else
+					aniIndex = KOOPAS_ANI_SHELL_OVERTURNED_IDLE;
+			
 	ani = koopasGeneral->GetAni_Koopas(typeColor, aniIndex);
 //	DebugOut(L"Koopas Ani %d", ani);
 	animation_set->at(ani)->Render(x, y);
 	//RenderBoundingBox();
+
+
+
+	
 }
 
 
