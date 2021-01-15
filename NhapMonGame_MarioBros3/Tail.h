@@ -19,6 +19,7 @@ public:
 	CEffect* effect;
 	DWORD timer = TIME_DEFAULT;
 	bool canKill = false;
+	bool isOneKill = false;
 	static CTail* __instance;
 public:
 	CTail();

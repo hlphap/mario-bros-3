@@ -1,3 +1,4 @@
+#pragma once
 #include "Item.h"
 #include "ExplosiveEffect.h"
 

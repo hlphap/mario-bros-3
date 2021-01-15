@@ -1,7 +1,8 @@
 #include "Mushroom.h"
 
-CMushroom::CMushroom(float x, float y)
+CMushroom::CMushroom(float x, float y, int color)
 {
+	this->color = color;
 	type = TYPE::MUSHROOM;
 	SetPosition(x, y);
 	minPosY = y - QUESTION_BRICK_BBOX_HEIGHT - 1;
@@ -10,27 +11,28 @@ CMushroom::CMushroom(float x, float y)
 
 void CMushroom::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 {
-	
+	CGameObject::Update(dt, listMapObj);
 	vector<LPCOLLISIONEVENT> coObjEvents;
 	vector<LPCOLLISIONEVENT> coObjEventsResult;
 	coObjEvents.clear();
+
 	if (!isComplete)
 	{
-		if (y <= minPosY)
+		if (y < minPosY)
 		{
 			isComplete = true;
 			vy = 0;
-			vx = 0.03;	
+			vx = 0.03f;	
 		}
 	}
-	CGameObject::Update(dt, listMapObj);
+
 
 	if (isComplete)
 	{
 		vy += ITEM_GRAVITY * dt;
 		CalcPotentialCollisions(listMapObj, coObjEvents);
 	}
-
+	
 	if (coObjEvents.size() == 0)
 	{
 		x += dx;
@@ -76,8 +78,12 @@ void CMushroom::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 
 void CMushroom::Render()
 {
-	animation_set->at(ITEM_ANI_MUSHROOM)->Render(x, y);
-	//RenderBoundingBox();
+	if (color == MUSHROOM_RED)
+		ani = ITEM_ANI_MUSHROOM_RED;
+	else
+		if (color == MUSHROOM_GREEN)
+			ani = ITEM_ANI_MUSHROOM_GREEN;
+	animation_set->at(ani)->Render(x, y);
 }
 
 void CMushroom::SetState(int state)

@@ -337,8 +337,9 @@ void CGame::_ParseSection_SCENES(string line) // Load Scence
 	int id = atoi(tokens[0].c_str());
 	LPCWSTR path = ToLPCWSTR(tokens[1]);
 	int typeMap = atoi(tokens[2].c_str());
+	int typeCamera = atoi(tokens[3].c_str());
 
-	LPSCENE scene = new CPlayScene(id, path,typeMap); 
+	LPSCENE scene = new CPlayScene(id, path,typeMap,typeCamera); 
 	scenes[id] = scene;
 }
 

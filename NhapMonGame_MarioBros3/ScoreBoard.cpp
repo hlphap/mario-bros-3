@@ -13,7 +13,7 @@ void CScoreBoard::Update(DWORD dt, Camera* cam)
 {
 	x = cam->GetCamPosX();
 	y = cam->GetCamPosY() + 190.0f;
-
+	//DebugOut(L"\ny; %f, ", y);
 	//DebugOut(L"\ncam->GetCam: %d", cam->GetCamPosX());
 	//DebugOut(L"\nTime: %d",TIME_MAX_LIVE - (GetTickCount() - timeStartPlay)/CLOCKS_PER_SEC);
 	

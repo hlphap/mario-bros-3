@@ -15,7 +15,6 @@ void CSwitch_P::SetState(int state)
 	switch (state)
 	{
 	case SWITCH_P_STATE_NORMAL:
-		effect = new CExplosiveEffect(x+ 2, y-3);
 		break;
 	case SWITCH_P_STATE_PRESSED:
 		break;

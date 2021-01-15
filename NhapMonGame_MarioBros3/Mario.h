@@ -3,6 +3,7 @@
 #include "MarioGeneral.h"
 #include "Bullet.h"
 #include "Tail.h"
+#include "Portal.h"
 
 #define MARIO_WALKING_DECELERATION						0.00015f
 #define MARIO_WALKING_ACCELERATION						0.00015f
@@ -33,20 +34,24 @@ public:
 	CGameObject *bringKoopas = NULL;
 	CTail* tail;
 	CBullet* bullet;
+	CPortal* portalPre = NULL;
+	CPortal* portalReturn = NULL;
 	int level;
+
+	//Direct Map
 	int directSelectMap;
-	int lastIndexStop = -1;
+	int lastIndexStop;
 	
 	//Score
-	int score = 100;
-	bool changeScore = false;
-	bool doubleScore = false;
+	int score;
+	bool changeScore;
+	bool doubleScore;
 
 	//
-	int numCoin = 0;
+	int numCoin;
 
 
-	bool isUnTouchable = false;
+	bool isUnTouchable;
 	float start_x;	
 	float start_y;
 
@@ -61,41 +66,46 @@ public:
 	DWORD timeStartAttack = TIME_DEFAULT;
 	DWORD timeStartKick = TIME_DEFAULT;
 	
-
-
 	//Flag Go
-	bool OnPitStop = false;
-	bool isAllowLeft = false;
-	bool isAllowRight = true;
-	bool isAllowUp = false;
-	bool isAllowDown = false;
+	bool onPitStop;
+	bool isAllowLeft;
+	bool isAllowRight;
+	bool isAllowUp;
+	bool isAllowDown;
 	
-	//Flag
-	bool isGoEndScence = false;
-	bool isSelectMap = true;
-	bool isDecreaseSpeed = false;
-	bool isSlideOutPipe = false;
-	bool isInMainMap = true;
-	bool isWalking = false;
-	bool isOnAir = false;
-	bool isSitting = false;
-	bool isSpeedUping = false;
-	bool isSpeedUp = false;
-	bool isSpeedMax = false;
-	bool isBlockFall = false;
-	bool isStop = false;
-	bool isFalling = false;
-	bool isKeepJump_SlowFalling = false;
-	bool isKeepJump_HightFlying = false;
-	bool isAttacking = false;
-	bool isKeepJump = false;
-	bool isKicking = false;
-	bool isKeepHoldShell = false;
-	bool isHoldingShell = false;
-	bool isGoHidenMap = false;
-	bool isOnPipeGoHideMap = false;
-	bool isPressKeyDown = false;
-	byte numFall = 0;
+	//Flag Scence
+	bool isGoEndScene;
+	bool isSelectMap;
+	bool isGoingSelectMap;
+	bool isCompleteScene;
+
+	//Flag ...
+	bool isDecreaseSpeed;
+	bool isSlideOutPipe;
+	bool isInMainMap;
+	bool isWalking;
+	bool isOnAir;
+	bool isSitting;
+	bool isSpeedUping;
+	bool isSpeedUp;
+	bool isSpeedMax;
+	bool isBlockFall;
+	bool isStop;
+	bool isFalling;
+	bool isKeepJump_SlowFalling;
+	bool isKeepJump_HightFlying;
+	bool isAttacking;
+	bool isKeepJump;
+	bool isKicking;
+	bool isKeepHoldShell;
+	bool isHoldingShell;
+
+	//Flag HideMap
+	bool isGoHidenMap ;
+	bool isOnPipeGoHideMap;
+	bool isPressKeyDown;
+
+	byte numFall;
 
 public:
 	CMario(float x = 0.0f, float y = 0.0f);
@@ -119,7 +129,6 @@ public:
 
 	//Control player
 	void Elasetic();
-	void SelectMap();
 	void Go();
 	void Left();
 	void Right();
@@ -133,9 +142,18 @@ public:
 	void Kick();
 	void SpeedUp();
 	void HoldShell();
+
+	//Go Hiden Map In Scene
 	void GoHiddenMap();
 	void GoMainMap();
+
+	//Di chuyen chon Map// Ngoai Selection Map
 	void GoSelectMap();
+
+	//Auto Go When Collision with Item End Scene
 	void GoEndScence();
+
+	//Set On Map
+	void SetOnMap(bool isSelectMap);
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 };

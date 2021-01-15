@@ -1,13 +1,16 @@
 #include "WeakBrick.h"
 #include "Coin.h"
 
-CWeakBrick::CWeakBrick(int type)
+CWeakBrick::CWeakBrick(float x, float y, int type)
 {
 	this->typeWeakBrick = type;//Brick is three type, 0 non_Item, 1 mushroom, 2 P_Switch
 	this->isActive = true;
 	this->category = CATEGORY::BRICK;
 	this->type = TYPE::WEAK_BRICK;
+	this->start_y = y;
+	this->SetPosition(x, y);
 	animation_set = CAnimationSets::GetInstance()->Get(22);
+	SetState(WEAKBRICK_STATE_IDLE);
 }
 
 void CWeakBrick::Deployed_WeakBrick(vector<LPGAMEOBJECT>* listEffect)
@@ -25,15 +28,22 @@ void CWeakBrick::Deployed_WeakBrick(vector<LPGAMEOBJECT>* listEffect)
 
 void CWeakBrick::TranFormation(vector<LPGAMEOBJECT>* listItem)
 {
-	CCoin* coin = new CCoin(x, y, TYPE::COIN_IDLE_STATIC);
-	coin->timeStartTranForM = GetTickCount();
-	listItem->push_back(coin); // Tranform from WeakBrick to Coin
-	isActive = false;
+	if (typeWeakBrick == WEAKBRICK_TYPE_NON_ITEM)
+	{
+		CCoin* coin = new CCoin(x, y, TYPE::COIN_IDLE_STATIC);
+		coin->timeStartTranForM = GetTickCount();
+		listItem->push_back(coin); // Tranform from WeakBrick to Coin
+		isActive = false;
+	}
 }
 
 void CWeakBrick::Render()
 {
-	animation_set->at(0)->Render(x, y);
+	if (isItem)
+		ani = 0;
+	else
+		ani = 1;
+	animation_set->at(ani)->Render(x, y);
 }
 
 void CWeakBrick::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -46,11 +56,60 @@ void CWeakBrick::GetBoundingBox(float& l, float& t, float& r, float& b)
 
 void CWeakBrick::SetState(int state)
 {
+	CGameObject::SetState(state);
+	switch (state)
+	{
+	case WEAKBRICK_STATE_IDLE:
+		vy = 0;
+		break;
+	case WEAKBRICK_STATE_MOVE_UP:
+	{
+		vy = -0.08f;
+		isItem = false;
+		if (typeWeakBrick == WEAKBRIC_TYPE_ITEM_COIN_EFFECT)
+		{
+			if (numCoinEffect < 4)
+			{
+				isItem = true;
+			}
+		}
+		break;
+	}
+	}
 }
 
 
-void CWeakBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects)
+void CWeakBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* listItems)
 {
+	CGameObject::Update(dt, listItems);
+	y += dy;
+	if (start_y - y > 10) // Nayr
+		vy = fabs(vy);
+	if (y > start_y)
+	{
+		switch(typeWeakBrick)
+		{
+		case WEAKBRICK_TYPE_ITEM_MUSHROOM:
+			item = new CMushroom(x, y, MUSHROOM_GREEN); //1 la green
+			break;
+		case WEAKBRICK_TYPE_ITEM_P_SWITCH:
+			item = new CSwitch_P(x, y - 16);
+			break;
+		case WEAKBRIC_TYPE_ITEM_COIN_EFFECT:
+		{
+			item = new CCoin(x, y, TYPE::COIN_EFFECT);
+			numCoinEffect++;
+			break;
+		}
+		}
+		y = start_y;
+		isComplete = true;
+		if (item!=NULL)
+			listItems->push_back(item);
+		SetState(WEAKBRICK_STATE_IDLE);
+	}
+
+	
 }
 
 

@@ -17,6 +17,7 @@ void CTail::Render()
 {
 	//DebugOut(L"Imhera");
 	//RenderBoundingBox();
+
 }
 
 void CTail::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -56,10 +57,7 @@ void CTail::SetState(int state)
 
 void CTail::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT> *listItem, vector<LPGAMEOBJECT> *listEffect)
 {
-	// Calculate dx, dy 
 	CGameObject::Update(dt);
-	//DebugOut(L"\nx: %f", x);
-
 #pragma region Collision with Enemy
 	for (UINT i = 0; i < listEnemy->size(); i++)
 	{
@@ -98,8 +96,7 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJE
 							koopas->isKillByWeapon = true;
 							koopas->timeStartSleep = GetTickCount();
 							koopas->isHeal = false;
-							koopas->isPreHeal = false;
-						
+							koopas->isPreHeal = false;	
 						}
 					}
 				}
@@ -142,17 +139,21 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJE
 						else
 						if (weakbrick->typeWeakBrick == WEAKBRICK_TYPE_ITEM_P_SWITCH)
 						{
-							//Dame WeakBrick -> Item Switch P
-							CSwitch_P* switchP = new CSwitch_P(weakbrick->x, weakbrick->y - 16);
-							CQuestionBrick* questionBrick = new CQuestionBrick(weakbrick->y, 0);
-							questionBrick->SetPosition(weakbrick->x, weakbrick->y);
-							questionBrick->isItem = false;	//Non Item
-							listMapObj->push_back(questionBrick);
-							listItem->push_back(switchP);	//Add SwitchP to ListItem
-							listEffect->push_back(switchP->effect);	//Add Effect Create SWitchP to ListItem
-							weakbrick->isActive = false;	//WeakBrick non Active ->Changed QuestionBrick ->State Normal
+							if (weakbrick->isItem)
+							{
+								weakbrick->SetState(WEAKBRICK_STATE_MOVE_UP);
+								CExplosiveEffect* effect = new CExplosiveEffect(weakbrick->x + 2, weakbrick->y - 14);
+								listEffect->push_back(effect);
+							}
 						}
-						
+						else
+							if (weakbrick->typeWeakBrick == WEAKBRICK_TYPE_ITEM_MUSHROOM)
+							{
+								if (weakbrick->isItem)
+									weakbrick->SetState(WEAKBRICK_STATE_MOVE_UP);
+							}
+						isOneKill = true;
+						canKill = false;
 					}
 					else
 					if (listMapObj->at(i)->type == TYPE::QUESTION_BRICK)
@@ -172,6 +173,7 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJE
 							}
 							questionBrick->SetState(QUESTION_STATE_MOVE_UP);
 						}
+						isOneKill = true;
 					}
 				}
 				
@@ -188,7 +190,6 @@ CTail* CTail::__instance = NULL;
 CTail* CTail::GetInstance()
 {
 	if (__instance == NULL) {
-		DebugOut(L"Tao duoi moi");
 		__instance = new CTail();
 	}
 	return __instance;

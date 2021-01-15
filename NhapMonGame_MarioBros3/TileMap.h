@@ -13,10 +13,10 @@ class TileMap
 public:
 	float screenWidth;
 	float screenHeight;
-	int firstcol;
-	int lastcol;
-	int firstrow;
-	int lastrow;
+	int firstcol = 0;
+	int lastcol = 0;
+	int firstrow = 0;
+	int lastrow = 0;
 	int ID;
 	int mapResidualX = 0;
 	int mapResidualY = 0;
@@ -25,7 +25,6 @@ public:
 	int col_text, row_text, col_tilemap, row_tilemap;
 	int tile_width, tile_height;
 	int tilemap[300][300];
-	static TileMap* __instance;
 public:
 	TileMap();
 	~TileMap();
@@ -35,6 +34,6 @@ public:
 	void Update();
 	int GetWeightMap();
 	int GetHeightMap();
-	static TileMap* GetInstance();
+
 };
 

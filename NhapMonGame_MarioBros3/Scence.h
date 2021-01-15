@@ -9,9 +9,12 @@ public:
 	CKeyEventHandler* key_handler;
 	int id;
 	LPCWSTR sceneFilePath;
+
+	//Custom
 	int typeMap;
+	int typeCamera;
 public:
-	CScene(int id, LPCWSTR filePath, int typeMap);
+	CScene(int id, LPCWSTR filePath, int typeMap, int typeCamera);
 
 	CKeyEventHandler* GetKeyEventHandler() { return key_handler; }
 	virtual void Load() = 0;

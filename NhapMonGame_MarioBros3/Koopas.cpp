@@ -8,16 +8,25 @@
 #include "WeakBrick.h"
 #include "Brick.h"
 
-CKoopas::CKoopas(CMario* m, int type, int level)
+CKoopas::CKoopas(CMario* m, float x, float y, int type, int level)
 {
 	this->type = TYPE::KOOPAS;
 	nx = -1;
 	this->typeColor = type;
 	this->level = level;
-	koopasGeneral = CKoopasGeneral::GetInstance();
-	koopasGeneral->LoadListAni();
+	minY = y;
+	maxY = y + 40.0f;
 	player = m;
 	SetState(KOOPAS_STATE_MOVING);
+	if (level == KOOPAS_LEVEL_HAVE_WING)
+	{
+		if (typeColor == KOOPAS_TYPE_RED)
+		{
+			vy = KOOPAS_FLYING_SPEED_Y;
+		}
+	}
+	koopasGeneral = CKoopasGeneral::GetInstance();
+	koopasGeneral->LoadListAni();
 }
 
 void CKoopas::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -37,8 +46,6 @@ void CKoopas::GetBoundingBox(float& left, float& top, float& right, float& botto
 
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-
-	
 	//Hoi sinh
 	if (state == KOOPAS_STATE_SLEEP && timeStartSleep != 0 && GetTickCount() - timeStartSleep >= 5000)
 	{
@@ -107,8 +114,24 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		SetPosition(player->x + rangeX, player->y - rangeY);
 		return;
 	}
+
+	if (level == KOOPAS_LEVEL_HAVE_WING)
+	{
+		if (typeColor == KOOPAS_TYPE_RED)
+		{
+			if (y < minY)
+			{
+				vy = KOOPAS_FLYING_SPEED_Y;
+			}
+			if (y > maxY)
+			{
+				vy = -KOOPAS_FLYING_SPEED_Y;
+			}
+		}
+	}
 	CGameObject::Update(dt);
-	vy += ENEMY_GRAVITY * dt;
+	if (typeColor == KOOPAS_TYPE_RED && level != KOOPAS_LEVEL_HAVE_WING)
+		vy += ENEMY_GRAVITY * dt;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -385,10 +408,74 @@ void CKoopas::IsCollisionWhenShellMove(vector<LPGAMEOBJECT>* listMapObj, vector<
 }
 
 
+void CKoopas::SetState(int state)
+{
+	CGameObject::SetState(state);
+	switch (state)
+	{
+	case KOOPAS_STATE_MOVING:
+		isMoving = true;
+		if (level == KOOPAS_LEVEL_HAVE_WING)
+		{
+			if (typeColor == KOOPAS_TYPE_GREEN)
+			{
+				vy = -KOOPAS_SPEED_BOUNCE;
+				if (nx > 0)
+				{
+					vx = KOOPAS_WALKING_SPEED;
+				}
+				else
+					vx = -KOOPAS_WALKING_SPEED;
+			}
+
+
+		}
+		else
+			if (level == KOOPAS_LEVEL_DEFAULT)
+			{
+				if (nx > 0)
+				{
+					vx = KOOPAS_WALKING_SPEED;
+				}
+				else
+					vx = -KOOPAS_WALKING_SPEED;
+			}
+		else
+			if (level == KOOPAS_LEVEL_SHELL)
+			{
+				if (nx > 0)
+				{
+					vx = KOOPAS_RUNNING_WHEN_KICKED;
+				}
+				else
+					vx = -KOOPAS_RUNNING_WHEN_KICKED;
+			}
+		break;
+	case KOOPAS_STATE_SLEEP:
+		timeStartSleep = GetTickCount();
+		isKicked = false;
+		isSleeping = true;
+		isMoving = false;
+		level = KOOPAS_LEVEL_SHELL;
+		vx = 0;
+		vy = 0;
+		break;
+	case KOOPAS_STATE_DIE:
+		isKicked = false;
+		isSleeping = false;
+		isMoving = false;
+		level = KOOPAS_LEVEL_SHELL;
+		vx = 0;
+		vy = 0;
+		break;
+	}
+
+}
+
 
 void CKoopas::Render()
 {
-	int aniIndex = -1;	
+	int aniIndex = -1;
 	if (isMoving)
 	{
 		if (level == KOOPAS_LEVEL_HAVE_WING)
@@ -441,74 +528,13 @@ void CKoopas::Render()
 				}
 				else
 					aniIndex = KOOPAS_ANI_SHELL_OVERTURNED_IDLE;
-			
+
 	ani = koopasGeneral->GetAni_Koopas(typeColor, aniIndex);
-//	DebugOut(L"Koopas Ani %d", ani);
+	//	DebugOut(L"Koopas Ani %d", ani);
 	animation_set->at(ani)->Render(x, y);
 	//RenderBoundingBox();
 
 
 
-	
-}
-
-
-
-void CKoopas::SetState(int state)
-{
-	CGameObject::SetState(state);
-	switch (state)
-	{
-	case KOOPAS_STATE_MOVING:
-		isMoving = true;
-		if (level == KOOPAS_LEVEL_HAVE_WING)
-		{
-			vy = -KOOPAS_SPEED_BOUNCE;
-			if (nx > 0)
-			{
-				vx = KOOPAS_WALKING_SPEED;
-			}
-			else
-				vx = -KOOPAS_WALKING_SPEED;
-		}
-		else
-			if (level == KOOPAS_LEVEL_DEFAULT)
-			{
-				if (nx > 0)
-				{
-					vx = KOOPAS_WALKING_SPEED;
-				}
-				else
-					vx = -KOOPAS_WALKING_SPEED;
-			}
-		else
-			if (level == KOOPAS_LEVEL_SHELL)
-			{
-				if (nx > 0)
-				{
-					vx = KOOPAS_RUNNING_WHEN_KICKED;
-				}
-				else
-					vx = -KOOPAS_RUNNING_WHEN_KICKED;
-			}
-		break;
-	case KOOPAS_STATE_SLEEP:
-		timeStartSleep = GetTickCount();
-		isKicked = false;
-		isSleeping = true;
-		isMoving = false;
-		level = KOOPAS_LEVEL_SHELL;
-		vx = 0;
-		vy = 0;
-		break;
-	case KOOPAS_STATE_DIE:
-		isKicked = false;
-		isSleeping = false;
-		isMoving = false;
-		level = KOOPAS_LEVEL_SHELL;
-		vx = 0;
-		vy = 0;
-		break;
-	}
 
 }

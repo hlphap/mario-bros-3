@@ -44,7 +44,7 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* listItem)
 		switch (typeItem)
 		{
 		case ITEM_LEVEL_MUSHROOM:
-			item = new CMushroom(x, y);
+			item = new CMushroom(x, y, MUSHROOM_RED); //0 la red
 			break;
 		case ITEM_LEVEL_TREE_LEAF:
 			item = new CLeafTree(x, y);
@@ -52,12 +52,11 @@ void CQuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* listItem)
 		case ITEM_LEVEL_COIN:
 			item = new CCoin(x, y, TYPE::COIN_EFFECT);
 			break;
-		}
-		y = start_y;
+		}	
 		listItem->push_back(item);
+		y = start_y;
 		SetState(QUESTION_STATE_IDLE);
 	}
-
 }
 
 void CQuestionBrick::SetState(int state)

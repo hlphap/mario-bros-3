@@ -99,14 +99,11 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				timeStartAttack += 1000;
 			isAttack = false;
 		}
-	
-	DebugOut(L"\nout : %f", height);
 	//Giới hạn 
 	if (isMoveAttack)
 	{
 		if (y + height < start_y)
 		{
-			DebugOut(L"IsMoveAttack");
 			y = start_y - height;
 			SetState(FLOWER_STATE_IDLE);
 			isAttack = true;

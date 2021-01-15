@@ -2,6 +2,8 @@
 start	1
 #scene list
 [SCENES]
-#scence id, #filepath, #typeScence (World = 0, WorldMap= 1)
-1	scencemap1.txt	1
-2	scene1.txt	0
+#scence id, #filepath, #typeScence (World = 0, WorldMap= 1, #typeCamera
+#typeCamera	0 (notCamera)	1 (Camera Follow Mario) 	2(Mario Follow Camera)
+1	scencemap1.txt	1	0
+2	scene1.txt	0	1
+3	scene4.txt	0	2

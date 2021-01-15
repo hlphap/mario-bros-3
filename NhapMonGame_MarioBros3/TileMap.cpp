@@ -65,12 +65,10 @@ void TileMap::Update()
 			mapResidualX = MAP_RESIDUALX;
 			firstcol = (int)CGame::GetInstance()->GetCamPosX() / tile_width - mapResidualX;
 		}
+		
 	}
 	lastcol = firstcol + (screenWidth / tile_width) + mapResidualX * 2;
 	
-
-	//DebugOut(L"\nscreen width : %f", screenHeight);
-	//Truc Y
 	if (CGame::GetInstance()->GetCamPosY() < 0)
 	{
 		firstrow = (int)CGame::GetInstance()->GetCamPosY() / tile_height;
@@ -109,10 +107,10 @@ int TileMap::GetHeightMap()
 	return ((row_tilemap - 5)* tile_height);
 }
 
-TileMap * TileMap::__instance = NULL;
+//TileMap * TileMap::__instance = NULL;
 
-TileMap* TileMap::GetInstance()
-{
-	if (__instance == NULL) __instance = new TileMap();
-	return __instance;
-}
+//TileMap* TileMap::GetInstance()
+//{
+//	if (__instance == NULL) __instance = new TileMap();
+//	return __instance;
+//}

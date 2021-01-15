@@ -44,8 +44,11 @@ void CScoreEffect::Render()
 	case 8000:
 		ani = EFFECT_ANI_POINT_8000;
 		break;
+	default:
+		ani = -1;
 	}
-	animation_set->at(ani)->Render(x, y);
+	if (ani != -1)
+		animation_set->at(ani)->Render(x, y);
 }
 
 void CScoreEffect::SetState(int state)

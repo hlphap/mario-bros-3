@@ -4,6 +4,7 @@
 #include "WeakBrick.h"
 #include "QuestionBrick.h"
 #define KOOPAS_WALKING_SPEED 0.03f
+#define KOOPAS_FLYING_SPEED_Y 0.03f
 #define KOOPAS_RUNNING_WHEN_KICKED 0.15f
 #define KOOPAS_JUMP_DEFLECT_SPEED	0.2f
 #define KOOPAS_SPEED_BOUNCE			0.2f
@@ -28,6 +29,8 @@ public:
 	int level;
 	int rangeX;
 	int rangeY;
+	float minY;
+	float maxY;
 	bool isDeployWeakBrick = false;
 	DWORD timeStartSleep = TIME_DEFAULT;
 public:
@@ -41,6 +44,6 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	void IsCollisionWhenShellMove(vector<LPGAMEOBJECT>* listMapObj, vector<LPGAMEOBJECT>* listEnemies, vector<LPGAMEOBJECT>* listEffect);
     void Render();
-	CKoopas(CMario *m, int type, int level);
+	CKoopas(CMario *m, float x, float y, int type, int level);
 	void SetState(int state);
 };

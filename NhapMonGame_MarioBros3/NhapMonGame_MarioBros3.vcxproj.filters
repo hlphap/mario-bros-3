@@ -43,7 +43,7 @@
     <Filter Include="GameObject\Effects">
       <UniqueIdentifier>{f46f03d8-2a4c-4794-a96d-804c4c2c1685}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ScoreBoard">
+    <Filter Include="GameObject\ScoreBoard">
       <UniqueIdentifier>{32e85c81-d521-4f17-9d68-d6b67493219b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -175,19 +175,19 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScoreBoard.cpp">
-      <Filter>ScoreBoard</Filter>
+      <Filter>GameObject\ScoreBoard</Filter>
     </ClCompile>
     <ClCompile Include="HUD.cpp">
-      <Filter>ScoreBoard</Filter>
+      <Filter>GameObject\ScoreBoard</Filter>
     </ClCompile>
     <ClCompile Include="Number.cpp">
-      <Filter>ScoreBoard</Filter>
+      <Filter>GameObject\ScoreBoard</Filter>
     </ClCompile>
     <ClCompile Include="Energy.cpp">
-      <Filter>ScoreBoard</Filter>
+      <Filter>GameObject\ScoreBoard</Filter>
     </ClCompile>
     <ClCompile Include="P_MaxSpeed.cpp">
-      <Filter>ScoreBoard</Filter>
+      <Filter>GameObject\ScoreBoard</Filter>
     </ClCompile>
     <ClCompile Include="Tree.cpp">
       <Filter>Source Files</Filter>
@@ -198,12 +198,21 @@
     <ClCompile Include="ItemEndGame.cpp">
       <Filter>GameObject\Items</Filter>
     </ClCompile>
+    <ClCompile Include="OneUpEffect.cpp">
+      <Filter>GameObject\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectEndScence.cpp">
+      <Filter>GameObject\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MovingWood.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyEventHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
@@ -330,19 +339,19 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScoreBoard.h">
-      <Filter>ScoreBoard</Filter>
+      <Filter>GameObject\ScoreBoard</Filter>
     </ClInclude>
     <ClInclude Include="HUD.h">
-      <Filter>ScoreBoard</Filter>
+      <Filter>GameObject\ScoreBoard</Filter>
     </ClInclude>
     <ClInclude Include="Number.h">
-      <Filter>ScoreBoard</Filter>
+      <Filter>GameObject\ScoreBoard</Filter>
     </ClInclude>
     <ClInclude Include="Energy.h">
-      <Filter>ScoreBoard</Filter>
+      <Filter>GameObject\ScoreBoard</Filter>
     </ClInclude>
     <ClInclude Include="P_MaxSpeed.h">
-      <Filter>ScoreBoard</Filter>
+      <Filter>GameObject\ScoreBoard</Filter>
     </ClInclude>
     <ClInclude Include="Tree.h">
       <Filter>Header Files</Filter>
@@ -352,6 +361,21 @@
     </ClInclude>
     <ClInclude Include="ItemEndGame.h">
       <Filter>GameObject\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyEventHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OneUpEffect.h">
+      <Filter>GameObject\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectEndScence.h">
+      <Filter>GameObject\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MovingWood.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

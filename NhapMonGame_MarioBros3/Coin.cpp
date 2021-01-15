@@ -61,8 +61,7 @@ void CCoin::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 			if (GetTickCount() - timeStartTranForM >= TIME_TRANSFORM_FROM_COIN_TO_WEAKBRICK && timeStartTranForM != TIME_DEFAULT)
 			{
 				isActive = false;
-				//Return WeakBrick
-				CWeakBrick* weakBrick = new CWeakBrick(0);
+				CWeakBrick* weakBrick = new CWeakBrick(x,y,0);
 				weakBrick->SetPosition(x-4, y);
 				listMapObj->push_back(weakBrick);
 			}

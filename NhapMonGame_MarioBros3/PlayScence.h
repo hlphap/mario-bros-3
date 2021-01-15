@@ -24,6 +24,8 @@
 #include "Tree.h"
 #include "PitStop.h"
 #include "ItemEndGame.h"
+#include "Text.h"
+#include "MovingWood.h"
 
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_TEXTURES 2
@@ -48,6 +50,7 @@
 #define OBJECT_TYPE_BULLET			12
 #define OBJECT_TYPE_TREE			13
 #define	OBJECT_TYPE_ITEM_ENDSCENCE	14
+#define	OBJECT_TYPE_MOVING_WOOD		15
 #define OBJECT_TYPE_BOUNDARYBRICK	9999
 
 #define OBJECT_TYPE_PITSTOP	49
@@ -58,14 +61,16 @@
 class CPlayScene : public CScene
 {
 public:
-	CMario* player;					// A play scene has to have player, right? 
+	CMario* player;					
 	TileMap *map;
 	Camera* cam;
 	CScoreBoard* board;
 	DWORD timeStartScreenDark = TIME_DEFAULT;
 	DWORD timeStartScreenLight = TIME_DEFAULT;
+	DWORD timeStartEndScence = TIME_DEFAULT;
 	bool isCompleteTransDark = false;
 	bool isCompleteTransLight = false;
+	bool isCreatedText = false;
 
 
 	bool isScreenDark = false;
@@ -78,6 +83,7 @@ public:
 	vector<CBullet*> listBullet;
 	vector<LPGAMEOBJECT> listFireBall;
 	vector<LPGAMEOBJECT> listPortal;
+	vector<CText*> listText;
 
 	void TransformDarkScreen();
 	void TransformLightScreen();
@@ -92,7 +98,7 @@ public:
 
 
 public:
-	CPlayScene(int id, LPCWSTR filePath, int typeMap);
+	CPlayScene(int id, LPCWSTR filePath, int typeMap, int typeCamera);
 
 	virtual void Load();
 	virtual void Update(DWORD dt);

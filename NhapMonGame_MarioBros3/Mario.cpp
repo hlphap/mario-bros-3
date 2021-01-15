@@ -18,12 +18,71 @@ CMario::CMario(float x, float y) : CGameObject()
 	type = TYPE::MARIO;
 	level = MARIO_LEVEL_BIG;
 	isUnTouchable = false;
-	SetState(MARIO_STATE_IDLE);
 	start_x = x;
 	start_y = y;
 	this->x = x;
 	this->y = y;
 
+	//Contructor Flag
+	//Flag Scene
+	isSelectMap = true;
+	isGoingSelectMap = false;
+	isCompleteScene = false;
+
+
+	//Flage Go Selection Scene
+	onPitStop = false;
+	isAllowLeft = false;
+	isAllowRight = false;
+	isAllowUp = false;
+	isAllowDown = false;
+	directSelectMap = 1;
+	lastIndexStop = -1;
+
+	//Flag Other
+	isGoEndScene = false;
+	isDecreaseSpeed = false;
+	isWalking = false;
+	isOnAir = false;
+	isSitting = false;
+	isSpeedUping = false;
+	isSpeedUp = false;
+	isSpeedMax = false;
+	isBlockFall = false;
+	isStop = false;
+	isFalling = false;
+	isKeepJump_SlowFalling = false;
+	isKeepJump_HightFlying = false;
+	isAttacking = false;
+	isKeepJump = false;
+	isKicking = false;
+	isKeepHoldShell = false;
+	isHoldingShell = false;
+
+	//Flag Go HideMap
+	isSlideOutPipe = false;
+	isInMainMap = true;
+	isGoHidenMap = false;
+	isOnPipeGoHideMap = false;
+	isPressKeyDown = false;
+
+	//Other
+	numFall = 0;
+
+	//Score
+	numCoin = 0;
+	doubleScore = false;
+	changeScore = false;
+	score = 100;
+
+	//Timer
+	untouchable_start;
+	timeAllowFly;
+	timeStartFly = TIME_DEFAULT;
+	timeStartAttack = TIME_DEFAULT;
+	timeStartKick = TIME_DEFAULT;
+
+	SetState(MARIO_STATE_IDLE);
 	mario_general = CMarioGeneral::GetInstance();
 	mario_general->LoadListAni();
 
@@ -108,7 +167,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 					tail->SetPosition(x + 24, y + 16);
 				else
 					tail->SetPosition(x, y + 16);
-				tail->canKill = true;
+				if (!tail->isOneKill)
+					tail->canKill = true;
 			}
 		}
 		else
@@ -118,6 +178,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 			else
 				tail->SetPosition(x + MARIO_BIG_TAIL_BBOX_WIDTH + 8, y + MARIO_D_HEED_TO_TAIL_ATTACK);
 			tail->SetState(TAIL_CANNOT_KILL);
+			tail->isOneKill = false;
 		}
 		tail->Update(dt, listMapObj, listEnemy,listItem, listEffect); // Duoi thuoc Mario Update Duoi trong Mario
 		if (GetTickCount() - timeStartAttack >= MARIO_TIME_BIG_TAIL_ATTACK)
@@ -224,12 +285,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 			else
 			{
 				vy = 0;
-				if (isGoEndScence)
+				if (isGoEndScene)
 				{
-					vx = 0.06f;
+					Right();
+					Go();
 				}
-			}
-				
+			}	
 			backup_vy = vy;
 			isOnAir = false;
 			isBlockFall = false;
@@ -285,15 +346,47 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 			//Brick Weak
 			else if (dynamic_cast<CWeakBrick*>(e->obj))
 			{
-				if (e->ny > 0)
-				{
-					vy = 0;
-				}
+				CWeakBrick* weakbrick = dynamic_cast<CWeakBrick*>(e->obj);
+				
+					if (e->ny > 0)
+					{
+						vy = 0;
+						if (weakbrick->typeWeakBrick == WEAKBRICK_TYPE_NON_ITEM)
+						{
+							//Dame WeakBrick Non Item
+							weakbrick->Deployed_WeakBrick(listEffect); // WeakBrick destroyed -> Tao Effect
+						}
+						else
+						if (weakbrick->typeWeakBrick == WEAKBRICK_TYPE_ITEM_P_SWITCH)
+						{
+							if (weakbrick->isItem)
+							{
+								weakbrick->SetState(WEAKBRICK_STATE_MOVE_UP);
+								CExplosiveEffect* effect = new CExplosiveEffect(weakbrick->x + 2, weakbrick->y - 14);
+								listEffect->push_back(effect);
+							}
+						}
+						else
+						if (weakbrick->typeWeakBrick == WEAKBRICK_TYPE_ITEM_MUSHROOM)
+						{
+							if (weakbrick->isItem)
+								weakbrick->SetState(WEAKBRICK_STATE_MOVE_UP);
+						}
+						else
+							if (weakbrick->typeWeakBrick == WEAKBRIC_TYPE_ITEM_COIN_EFFECT)
+							{
+								if (weakbrick->isItem)
+								{
+									weakbrick->SetState(WEAKBRICK_STATE_MOVE_UP);
+								}
+							}
+					}
 				else
 					if (e->nx != 0)
 					{
 						vx = 0;
 					}
+						
 			}
 
 			//Question Brick
@@ -384,9 +477,27 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 							posY_of_PipeIn = pipe->y;
 						}
 				}
-					
 			}
-				
+			else if (dynamic_cast<CMovingWood*>(e->obj))
+			{
+			CMovingWood* movingwood = dynamic_cast<CMovingWood*>(e->obj);
+				if (e->nx != 0)
+				{
+
+				}
+				else
+					if (e->ny != 0)
+					{
+						if (e->ny < 0)
+						{
+							movingwood->SetState(MOVING_WOOD_STATE_FALLING);
+						}
+						else if (e->ny > 0)
+						{
+							vy = 0;
+						}
+					}
+			}
 		}
 	}
 	// clean up collision events
@@ -585,9 +696,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 				if (listItem->at(i)->type == TYPE::MUSHROOM)
 				{
 					CMushroom* mushroom = dynamic_cast<CMushroom*>(listItem->at(i));
+				
 					if (mushroom->isComplete)
 					{
-						level = MARIO_LEVEL_BIG;
+						if (mushroom->color == MUSHROOM_RED)
+						{
+							level = MARIO_LEVEL_BIG;
+						}
 						listItem->at(i)->isActive = false;
 					}
 				}
@@ -618,7 +733,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 		}
 	}
 #pragma endregion
-
+	  
 #pragma region Collision with Portal
 	for (int i = 0; i < listPitStop->size(); i++)
 	{
@@ -633,7 +748,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 					isAllowRight = pitStop->isAllowRight;
 					isAllowUp = pitStop->isAllowUp;
 					isAllowDown = pitStop->isAllowDown;
-					DebugOut(L"\nLsdfsa: %d", i);
+
 					if (i != lastIndexStop)
 					{
 						switch (directSelectMap)
@@ -671,8 +786,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 							}
 							break;
 						}
-						
+						if (lastIndexStop == i)
+							isGoingSelectMap = false;
 					}
+					
 				}
 				else
 					if (listPitStop->at(i)->type == TYPEPITSTOP::PORTAL)
@@ -682,6 +799,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 						isAllowRight = portal->isAllowRight;
 						isAllowUp = portal->isAllowUp;
 						isAllowDown = portal->isAllowDown;
+						//Khi va cham vs portal thi di vo chinh giua
 						if (i != lastIndexStop)
 						{
 							switch (directSelectMap)
@@ -692,6 +810,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 									x = portal->x;
 									lastIndexStop = i;
 									vx = 0;
+									vy = 0;
 								}
 								break;
 							case DIRECT_LEFT:
@@ -700,6 +819,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 									x = portal->x;
 									lastIndexStop = i;
 									vx = 0;
+									vy = 0;
 								}
 								break;
 							case DIRECT_UP:
@@ -707,6 +827,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 								{
 									y = portal->y;
 									lastIndexStop = i;
+									vx = 0;
 									vy = 0;
 								}
 								break;
@@ -715,18 +836,37 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 								{
 									y = portal->y;
 									lastIndexStop = i;
+									vx = 0;
 									vy = 0;
 								}
 								break;
 							}
-
+							if (lastIndexStop == i)
+								isGoingSelectMap = false;
+							
 						}
-						if (isPressKeyDown)
+						if (isSelectMap)
 						{
-							CGame::GetInstance()->SwitchScene(portal->GetSceneId());
-							isSelectMap = false;
+							if (isPressKeyDown)
+							{
+								CGame::GetInstance()->SwitchScene(portal->GetSceneId());
+								portalPre = portal;
+								isPressKeyDown = false;
+								isSelectMap = false;
+								lastIndexStop = i;
+							}
 						}
+						else if (!isSelectMap)
+						{
+							isCompleteScene = true;
+							portalReturn = portal;
+							vx = 0;
+							vy = 0;
+						}
+						
 					}
+			
+				
 			}
 		}
 	}
@@ -744,7 +884,7 @@ void CMario::Render()
 	int alpha = 255;
 	if (isUnTouchable) alpha = rand() % (200 - 50 + 1) + 50;
 	animation_set->at(ani)->Render(x,y,alpha);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 
@@ -1202,19 +1342,16 @@ void CMario::SetState(int state)
 		DecreaseSpeed(0);
 		break;
 	}
-
 	case MARIO_STATE_JUMPING:
 	{
 		vy = -MARIO_JUMP_SPEED_Y;
 		break;
 	}
-
 	case MARIO_STATE_ELASETIC:
 	{
 		vy = -MARIO_ELASETIC_SPEED_Y;
 		break;
 	}
-
 	case MARIO_STATE_FALLING:	// Roi nhanh
 	{
 		if (!isBlockFall && isOnAir)
@@ -1225,9 +1362,8 @@ void CMario::SetState(int state)
 			vy += MARIO_GRAVITY * dt;
 		break;
 	}
-	case MARIO_STATE_SELECT_MAP:
-		vx = 0;
-		vy = 0;
+	case MARIO_STATE_GO_SELECT_MAP:
+	{
 		switch (directSelectMap)
 		{
 		case 1:
@@ -1242,8 +1378,12 @@ void CMario::SetState(int state)
 		case 4:
 			vy = MARIO_SPEED_SELECT_MAP;
 			break;
+	/*	default:
+			SetPosition(portalPre->x, portalPre->y);
+			break;*/
 		}
 		break;
+	}
 	case MARIO_STATE_GO_ENDSCENCE:
 	{
 		vx = 0;
@@ -1251,13 +1391,17 @@ void CMario::SetState(int state)
 		break;
 	}
 	case MARIO_STATE_GO_HIDDEN_MAP:
+	{
 		vx = 0;
 		vy = 0.02f;
 		break;
+	}
 	case MARIO_STATE_GO_MAIN_MAP:
+	{
 		vx = 0;
 		vy = -0.02f;
 		break;
+	}	
 	//=============================SPECIAL STATE MARIO_TAIL=============================
 	case MARIO_STATE_BIG_TAIL_KEEP_JUMP_FALL_SLOW: // Roi cham 
 	{
@@ -1274,7 +1418,6 @@ void CMario::SetState(int state)
 		vy = -MARIO_GRAVITY * dt * MARIO_BOUNCE;
 		break;
 	}
-
 	case MARIO_STATE_BIG_TAIL_ATTACK:
 	{
 		if (timeStartAttack == TIME_DEFAULT) timeStartAttack = GetTickCount();
@@ -1336,6 +1479,11 @@ void CMario::ChangeTheLevel(int typeChange)
 	}
 }
 
+void CMario::SetOnMap(bool isSelectMap)
+{
+	this->isSelectMap = isSelectMap;
+}
+
 void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	left = x;
@@ -1366,12 +1514,6 @@ void CMario::Elasetic()
 	isOnAir = true;
 	isFalling = false;
 	SetState(MARIO_STATE_ELASETIC);
-}
-
-void CMario::SelectMap()
-{
-	isSelectMap = true;
-	SetState(MARIO_STATE_SELECT_MAP);
 }
 
 void CMario::Go()
@@ -1473,14 +1615,11 @@ void CMario::SpeedUp()
 {
 	if (!isOnAir)
 		isSpeedUp = true;
-	//isDecreaseSpeed = false;
 }
 
 void CMario::HoldShell()
 {
 	isKeepHoldShell = true;
-	//isHoldShell = true;
-	//isDecreaseSpeed = false;
 }
 
 void CMario::GoHiddenMap()
@@ -1498,12 +1637,13 @@ void CMario::GoMainMap()
 void CMario::GoSelectMap()
 {
 	isSelectMap = true;
-	SetState(MARIO_STATE_SELECT_MAP);
+	isGoingSelectMap = true;
+	SetState(MARIO_STATE_GO_SELECT_MAP);
 }
 
 void CMario::GoEndScence()
 {
-	isGoEndScence = true;
+	isGoEndScene = true;
 	Right();
 	SetState(MARIO_STATE_GO_ENDSCENCE);
 }

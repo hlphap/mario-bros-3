@@ -8,13 +8,16 @@
 #include "Sprites.h"
 #include "Portal.h"
 #include "Tail.h"
+#include "OneUpEffect.h"
+#include "EffectEndScence.h"
+#include "Text.h"
 
 
 
 using namespace std;
 
-CPlayScene::CPlayScene(int id, LPCWSTR filePath, int typeMap) :
-	CScene(id, filePath, typeMap)
+CPlayScene::CPlayScene(int id, LPCWSTR filePath, int typeMap, int typeCamera) :
+	CScene(id, filePath, typeMap, typeCamera)
 {
 	key_handler = new CPlayScenceKeyHandler(this);
 }
@@ -161,7 +164,7 @@ void CPlayScene::_ParseSection_TILEMAP(string line)
 	int numcol_data = atoi(tokens[6].c_str());
 	int tile_width = atoi(tokens[7].c_str());
 	int tile_height = atoi(tokens[8].c_str());
-	map = TileMap::GetInstance();
+	map = new TileMap();
 	map->ID = id;
 	map->file_path_data = file_path_data.c_str();
 	map->file_path_texture = file_path_texture.c_str();
@@ -216,6 +219,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CGoomba(player, type, level);
 		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+
 		listEnemies.push_back(obj);
 		break;
 	}
@@ -230,10 +234,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_WEAK_BRICK:	//Oker
 	{
 		int type = atoi(tokens[6].c_str());
-		obj = new CWeakBrick(type);
+		obj = new CWeakBrick(x,y,type);
 		obj->amountX = atoi(tokens[4].c_str());
 		obj->amountY = atoi(tokens[5].c_str());
-		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		listMapObj.push_back(obj);
 		break;
@@ -317,7 +320,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		{
 			int type = atoi(tokens[4].c_str());
 			int level = atoi(tokens[5].c_str());
-			obj = new CKoopas(player, type, level);
+			obj = new CKoopas(player, x, y, type, level);
 			obj->SetPosition(x, y);
 			obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 			listEnemies.push_back(obj);
@@ -341,6 +344,16 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->SetPosition(x, y);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		listPortal.push_back(obj);
+	}
+	break;
+	case OBJECT_TYPE_MOVING_WOOD:
+	{
+		obj = new CMovingWood();
+		obj->amountX = atoi(tokens[4].c_str());
+		obj->amountY = atoi(tokens[5].c_str());
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listMapObj.push_back(obj);
 	}
 	break;
 	case OBJECT_TYPE_PORTAL:
@@ -428,9 +441,15 @@ void CPlayScene::Load()
 		f.close();
 
 		CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
-		cam = new Camera(player);
-		board = new CScoreBoard(player);
 		DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
+
+		//Load Camera // Load Board Game
+		cam = new Camera(player, map, typeCamera);
+		board = new CScoreBoard(player);
+		if (typeMap == 1)
+			player->SetOnMap(true);
+		else
+			player->SetOnMap(false);
 	}
 }
 
@@ -438,6 +457,7 @@ void CPlayScene::Update(DWORD dt)
 {
 	//Update playscence chay truong nen isAttack chua kip ve false thi ben nay da ban dan r
 	//FireAttack
+#pragma region FireAttack
 	if (player->isAttacking
 		&& player->level == MARIO_LEVEL_BIG_FIRE
 		&& ((!player->isOnAir && GetTickCount() - player->timeStartAttack >= MARIO_TIME_BIG_FIRE_ATTACK_ON_GROUND)
@@ -449,13 +469,13 @@ void CPlayScene::Update(DWORD dt)
 	}
 	if (listBullet.size() == BULLET_AMOUNT)
 		player->isAttacking = false;
+#pragma endregion
 
-
-	//HideMap
+#pragma region TurnOffLight When Go HideMap
 	//1.Off Light
 	if (player->GetState() == MARIO_STATE_GO_HIDDEN_MAP)
 	{
-		if (player->y > player->posY_of_PipeIn && player->isInMainMap)
+		if (player->y > player->posY_of_PipeIn&& player->isInMainMap)
 		{
 			timeStartScreenLight = TIME_DEFAULT;
 			isScreenDark = true;
@@ -463,7 +483,6 @@ void CPlayScene::Update(DWORD dt)
 				timeStartScreenDark = GetTickCount();
 		}
 	}
-	
 	if (player->GetState() == MARIO_STATE_GO_MAIN_MAP)
 	{
 		if (player->y < player->posY_of_PipeIn + 16 && !player->isInMainMap)
@@ -476,68 +495,63 @@ void CPlayScene::Update(DWORD dt)
 	}
 
 	//2.Go HideMap, Find posision go to 
-
 	if (isScreenDark)
 	{
-			if (player->isInMainMap)
+		if (player->isInMainMap)
+		{
+			for (size_t i = 0; i < listPipe.size(); i++)
 			{
-				for (size_t i = 0; i < listPipe.size(); i++)
+				CPipe* pipe = dynamic_cast<CPipe*>(listPipe[i]);
+				if (pipe->isSpecial & !pipe->isPullMario && !pipe->isInMainMap && player->GetState() == MARIO_STATE_GO_HIDDEN_MAP)
 				{
-					CPipe* pipe = dynamic_cast<CPipe*>(listPipe[i]);
-					if (pipe->isSpecial & !pipe->isPullMario && !pipe->isInMainMap && player->GetState() == MARIO_STATE_GO_HIDDEN_MAP)
+					if (GetTickCount() - timeStartScreenDark > 500)
 					{
-						if (GetTickCount() - timeStartScreenDark > 500)
+						player->SetPosition(pipe->x + 4, pipe->y - 16); // SetPosition To Mario Go HideMap
+						player->isInMainMap = false;
+						player->Fall();
+						isScreenDark = false; // Khong tat den nua
+						timeStartScreenDark = TIME_DEFAULT;
+						if (timeStartScreenLight == TIME_DEFAULT)
 						{
-							player->SetPosition(pipe->x + 4, pipe->y - 16); // SetPosition To Mario Go HideMap
-							
-							player->isInMainMap = false;
-						
-							player->Fall();
-							isScreenDark = false; // Khong tat den nua
-							timeStartScreenDark = TIME_DEFAULT;
-
-							if (timeStartScreenLight == TIME_DEFAULT)
-							{
-								timeStartScreenLight = GetTickCount();
-							}
+							timeStartScreenLight = GetTickCount();
 						}
 					}
 				}
 			}
-			
-			if (!player->isInMainMap)
-			{
-				for (size_t i = 0; i < listPipe.size(); i++)
-				{
-					CPipe* pipe = dynamic_cast<CPipe*>(listPipe[i]);
-					if (!pipe->isPullMario && pipe->isSpecial && pipe->isInMainMap && player->GetState() == MARIO_STATE_GO_MAIN_MAP) //Non Pull Mario -> Push Mario
-					{
-						if (GetTickCount() - timeStartScreenDark > 500)
-						{
-							player->posY_of_PipeOut = pipe->y;
-							player->isSlideOutPipe = true;
-							player->SetPosition(pipe->x + 4, pipe->y - 17); // SetPosition To Mario Go HideMap
-							player->isInMainMap = true;
-							
-							isScreenDark = false; // Khong tat den nua
-							timeStartScreenDark = TIME_DEFAULT;
+		}
 
-							if (timeStartScreenLight == TIME_DEFAULT)
-							{
-								timeStartScreenLight = GetTickCount();
-							}
+		if (!player->isInMainMap)
+		{
+			for (size_t i = 0; i < listPipe.size(); i++)
+			{
+				CPipe* pipe = dynamic_cast<CPipe*>(listPipe[i]);
+				if (!pipe->isPullMario && pipe->isSpecial && pipe->isInMainMap && player->GetState() == MARIO_STATE_GO_MAIN_MAP) //Non Pull Mario -> Push Mario
+				{
+					if (GetTickCount() - timeStartScreenDark > 500)
+					{
+						player->posY_of_PipeOut = pipe->y;
+						player->isSlideOutPipe = true;
+						player->SetPosition(pipe->x + 4, pipe->y - 17); // SetPosition To Mario Go HideMap
+						player->isInMainMap = true;
+
+						isScreenDark = false; // Khong tat den nua
+						timeStartScreenDark = TIME_DEFAULT;
+
+						if (timeStartScreenLight == TIME_DEFAULT)
+						{
+							timeStartScreenLight = GetTickCount();
 						}
 					}
 				}
 			}
+		}
 	}
+#pragma endregion
 
-
-
+#pragma region Update Obj
 	//Update player
-	player->Update(dt, &listMapObj, &listEnemies, &listItems,&listEffect, &listPortal, &listFireBall);
+	player->Update(dt, &listMapObj, &listEnemies, &listItems, &listEffect, &listPortal, &listFireBall);
 
-	//DebugOut(L"\nsize MapOBJ: %d", listMapObj.size());
 	//Update listMapObj
 	for (size_t i = 0; i < listMapObj.size(); i++)
 	{
@@ -545,14 +559,12 @@ void CPlayScene::Update(DWORD dt)
 		{
 			if (listMapObj[i]->isCheckInCamera())
 				listMapObj[i]->Update(dt, &listItems);
-		}	
+		}
 		else
 		{
 			listMapObj.erase(listMapObj.begin() + i);
 		}
 	}
-	//Update listItem
-	//DebugOut(L"ListItem size: %d \n", listItems.size());
 
 	//Update listEnemy
 	for (size_t i = 0; i < listEnemies.size(); i++)
@@ -625,29 +637,46 @@ void CPlayScene::Update(DWORD dt)
 				scoreEffect->SetScore(100);
 				listEffect.push_back(scoreEffect);
 			}
-			else 
-			if (listItems[i]->type == TYPE::LEAF_TREE)
-			{
-				player->changeScore = true;
-				player->score = 1000;
-				scoreEffect->SetScore(1000);
-				listEffect.push_back(scoreEffect);
-			}
 			else
-			if (listItems[i]->type == TYPE::MUSHROOM)
-			{
-				player->changeScore = true;
-				player->score = 1000;
-				scoreEffect->SetScore(1000);
-				listEffect.push_back(scoreEffect);
-			}
-			else
-				if (listItems[i]->type == TYPE::COIN_IDLE_STATIC || listItems[i]->type == TYPE::COIN_IDLE_SPIN)
+				if (listItems[i]->type == TYPE::LEAF_TREE)
 				{
 					player->changeScore = true;
-					player->score = 50;
+					player->score = 1000;
+					scoreEffect->SetScore(1000);
+					listEffect.push_back(scoreEffect);
 				}
+				else
+					if (listItems[i]->type == TYPE::MUSHROOM)
+					{
+						CMushroom* mushroom = dynamic_cast<CMushroom*>(listItems[i]);
+						if (mushroom->color == MUSHROOM_RED)
+						{
+							player->changeScore = true;
+							player->score = 1000;
+							scoreEffect->SetScore(1000);
+							listEffect.push_back(scoreEffect);
+						}
+						else if (mushroom->color == MUSHROOM_GREEN)
+						{
+							COneUpEffect* effect = new COneUpEffect(player->x, player->y);
+							listEffect.push_back(effect);
+						}
 
+					}
+					else
+						if (listItems[i]->type == TYPE::COIN_IDLE_STATIC || listItems[i]->type == TYPE::COIN_IDLE_SPIN)
+						{
+							player->changeScore = true;
+							player->score = 50;
+						}
+						else
+							if (listItems[i]->type == TYPE::ITEM_END_GAME)
+							{
+								CEffectEndScence* effect = new CEffectEndScence(listItems[i]->x, listItems[i]->y);
+								srand(time(NULL));
+								effect->typeEffect = 1 + rand() % (3 + 1 - 1);
+								listEffect.push_back(effect);
+							}
 			listItems.erase(listItems.begin() + i);
 		}
 	}
@@ -656,16 +685,56 @@ void CPlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < listEffect.size(); i++)
 	{
 		if (listEffect[i]->isActive)
-			listEffect[i]->Update(dt,&listMapObj);
+			listEffect[i]->Update(dt, &listMapObj);
 		else
 			listEffect.erase(listEffect.begin() + i);
 	}
-	
+
+	//Update list Text
+	for (size_t i = 0; i < listText.size(); i++)
+	{
+		listText[i]->Update(dt);
+	}
+
+	cam->Update(dt);
 	map->Update();
-	cam->Update();
 	board->Update(dt, cam);
 
 	if (player == NULL) return;
+#pragma endregion
+
+#pragma region EndScene
+	if (player->isCompleteScene && !isCreatedText)
+	{
+		if (timeStartEndScence == TIME_DEFAULT)
+		{
+			timeStartEndScence = GetTickCount();
+			CText* text1 = new CText(2650, 260, "COURSE CLEAR");
+			listText.push_back(text1);
+		}
+		if (GetTickCount() - timeStartEndScence > 500 && timeStartEndScence != TIME_DEFAULT)
+		{
+			CText* text2 = new CText(2644, 280, "YOU GOT A CARD");
+			listText.push_back(text2);
+			isCreatedText = true;
+		}
+	}
+	if (GetTickCount() - timeStartEndScence > 2000 && timeStartEndScence != TIME_DEFAULT)
+	{
+		timeStartEndScence = TIME_DEFAULT;
+	}
+	else
+		if (player->isCompleteScene && isCreatedText && timeStartEndScence == TIME_DEFAULT)
+		{
+			//Return Selection Map
+			CGame::GetInstance()->SwitchScene(player->portalReturn->GetSceneId());
+			player->SetPosition(player->portalPre->x, player->portalPre->y);
+			player->isGoEndScene = false;
+			player->isSelectMap = true;
+			isCreatedText = false;
+			player->isCompleteScene = false;
+		}
+#pragma endregion
 }
 
 void CPlayScene::Render()
@@ -719,7 +788,12 @@ void CPlayScene::Render()
 		TransformLightScreen();	
 	}
 		
+	for (size_t i = 0; i < listText.size(); i++)
+	{
+		listText[i]->Render();
+	}
 	board->Render();
+	
 	CTail::GetInstance()->Render();
 		
 }
@@ -733,8 +807,15 @@ void CPlayScene::Unload()
 		delete listMapObj[i];
 
 	listMapObj.clear();
-	//player = NULL;
-	//map = NULL;
+	listText.clear();
+	listBullet.clear();
+	listEffect.clear();
+	listPortal.clear();
+	listPipe.clear();
+	listEnemies.clear();
+	listItems.clear();
+	listFireBall.clear();
+
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
@@ -743,7 +824,7 @@ void CPlayScene::Unload()
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
-	if (mario->isGoEndScence)
+	if (mario->isGoEndScene || mario->isGoingSelectMap)
 		return;
 	switch (scence->typeMap)
 	{
@@ -798,7 +879,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			{
 				if (mario->isAllowRight)
 				{
-					mario->directSelectMap = 1;
+					mario->directSelectMap = DIRECT_RIGHT;
 					mario->GoSelectMap();
 				}
 				break;
@@ -807,7 +888,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			{
 				if (mario->isAllowLeft)
 				{
-					mario->directSelectMap = 2;
+					mario->directSelectMap = DIRECT_LEFT;
 					mario->GoSelectMap();
 				}
 				break;
@@ -815,14 +896,14 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			case DIK_UP:
 				if (mario->isAllowUp)
 				{
-					mario->directSelectMap = 3;
+					mario->directSelectMap = DIRECT_UP;
 					mario->GoSelectMap();
 				}
 				break;
 			case DIK_DOWN:
 				if (mario->isAllowDown)
 				{
-					mario->directSelectMap = 4;
+					mario->directSelectMap = DIRECT_DOWN;
 					mario->GoSelectMap();
 				}
 				break;
@@ -831,14 +912,12 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			}
 			break;
 		}
-			
 	}
-	
 }
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 {
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
-	if (mario->isGoEndScence)
+	if (mario->isGoEndScene)
 		return;
 	switch (scence->typeMap)
 	{
@@ -891,7 +970,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	CGame* game = CGame::GetInstance();
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
 
-	if (mario->isGoEndScence)
+	if (mario->isGoEndScene)
 		return;
 	switch (scence->typeMap)
 	{

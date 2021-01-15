@@ -37,7 +37,7 @@ public:
 
 	LPKEYEVENTHANDLER keyHandler;
 
-	float cam_x = 0.0f;
+	float cam_x = 1.0f;
 	float cam_y = 0.0f;
 
 	int screen_width;

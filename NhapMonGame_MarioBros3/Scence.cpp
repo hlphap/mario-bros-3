@@ -1,8 +1,9 @@
 #include "Scence.h"
 
-CScene::CScene(int id, LPCWSTR filePath, int typeMap)
+CScene::CScene(int id, LPCWSTR filePath, int typeMap, int typeCamera)
 {
-	this->typeMap = typeMap;
 	this->id = id;
 	this->sceneFilePath = filePath;
+	this->typeMap = typeMap;
+	this->typeCamera = typeCamera;
 }

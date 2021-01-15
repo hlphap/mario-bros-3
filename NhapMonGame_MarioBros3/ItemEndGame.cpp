@@ -19,8 +19,6 @@ void CItemEndScence::Render()
 {
 	if (state == ITEM_ENDSCENCE_STATE_NORMAL)
 		ani = ITEM_ENDSCENCE_ANI;
-	else
-		ani = ITEM_ANI_FIRE_FLOWER;
 	animation_set->at(ani)->Render(x,y);
 }
 
@@ -34,8 +32,7 @@ void CItemEndScence::SetState(int state)
 		vy = 0;
 		break;
 	case ITEM_ENDGAME_STATE_USED:
-		vy = -0.2;
-		vx = 0;
+		isActive = false;
 		break;
 	}
 }

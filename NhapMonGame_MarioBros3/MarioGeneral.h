@@ -26,8 +26,8 @@
 #define MARIO_STATE_GO_HIDDEN_MAP						1100
 #define MARIO_STATE_GO_MAIN_MAP							1200
 #define MARIO_STATE_ELASETIC							1300
-#define MARIO_STATE_GO_ENDSCENCE							1400
-#define MARIO_STATE_SELECT_MAP							9999
+#define MARIO_STATE_GO_ENDSCENCE						1400
+#define MARIO_STATE_GO_SELECT_MAP						9999
 
 //================================MARIO ANI GENERAL ZONE=================================
 #define MARIO_ANI_IDLE_RIGHT							0

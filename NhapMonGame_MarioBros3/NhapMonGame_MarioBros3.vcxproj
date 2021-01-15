@@ -27,6 +27,7 @@
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="ColorBox.cpp" />
     <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="EffectEndScence.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Energy.cpp" />
     <ClCompile Include="ExplosiveEffect.cpp" />
@@ -48,8 +49,10 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="MarioGeneral.cpp" />
+    <ClCompile Include="MovingWood.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="Number.cpp" />
+    <ClCompile Include="OneUpEffect.cpp" />
     <ClCompile Include="PieceBrickEffect.cpp" />
     <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="PitStop.cpp" />
@@ -63,6 +66,7 @@
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Switch_P.cpp" />
     <ClCompile Include="Tail.cpp" />
+    <ClCompile Include="Text.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="Tree.cpp" />
@@ -80,6 +84,7 @@
     <ClInclude Include="ColorBox.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="Effect.h" />
+    <ClInclude Include="EffectEndScence.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Energy.h" />
     <ClInclude Include="ExplosiveEffect.h" />
@@ -101,8 +106,10 @@
     <ClInclude Include="LeafTree.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="MarioGeneral.h" />
+    <ClInclude Include="MovingWood.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="Number.h" />
+    <ClInclude Include="OneUpEffect.h" />
     <ClInclude Include="PieceBrickEffect.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="PitStop.h" />
@@ -116,6 +123,7 @@
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Switch_P.h" />
     <ClInclude Include="Tail.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="Tree.h" />
