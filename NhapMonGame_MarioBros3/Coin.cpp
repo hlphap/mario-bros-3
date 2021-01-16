@@ -8,7 +8,7 @@ CCoin::CCoin(float x, float y, int type)
 	this->type = type;
 	if (this->type == TYPE::COIN_EFFECT)
 	{
-		vy = -0.6f;
+		vy = -0.4f;
 	}
 
 }
@@ -29,7 +29,8 @@ void CCoin::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 		CGameObject::Update(dt,listMapObj);
 		if (isComplete)
 		{
-			vy += ITEM_GRAVITY * dt;
+			//vy += ITEM_GRAVITY * dt;
+			vy = 0.2f;
 			CalcPotentialCollisions(listMapObj, coObjEvents);
 		}
 		if (coObjEvents.size() == 0)
@@ -60,10 +61,7 @@ void CCoin::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 		{
 			if (GetTickCount() - timeStartTranForM >= TIME_TRANSFORM_FROM_COIN_TO_WEAKBRICK && timeStartTranForM != TIME_DEFAULT)
 			{
-				isActive = false;
-				CWeakBrick* weakBrick = new CWeakBrick(x,y,0);
-				weakBrick->SetPosition(x-4, y);
-				listMapObj->push_back(weakBrick);
+				SetState(COIN_IDLE_STATIC_TRANFORM_TO_WEAKBRICK);
 			}
 		}
 }
@@ -71,7 +69,12 @@ void CCoin::Update(DWORD dt, vector<CGameObject*>* listMapObj)
 
 void CCoin::SetState(int state)
 {
-
+	CGameObject::SetState(state);
+	switch (state)
+	{
+	case COIN_IDLE_STATIC_TRANFORM_TO_WEAKBRICK:
+		break;
+	}
 }
 
 

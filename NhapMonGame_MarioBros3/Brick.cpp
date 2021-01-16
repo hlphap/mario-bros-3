@@ -3,6 +3,8 @@
 CBrick::CBrick()
 {
 	isActive = true;
+	category = CATEGORY::GROUND;
+
 }
 
 void CBrick::Render()

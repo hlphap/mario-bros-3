@@ -3,6 +3,8 @@
 CCloudBrick::CCloudBrick()
 {
 	isActive = true;
+	category = CATEGORY::GROUND;
+
 }
 
 void CCloudBrick::Render()

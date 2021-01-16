@@ -3,6 +3,7 @@
 #include "KoopasGeneral.h"
 #include "WeakBrick.h"
 #include "QuestionBrick.h"
+#include "KoopasAI.h"
 #define KOOPAS_WALKING_SPEED 0.03f
 #define KOOPAS_FLYING_SPEED_Y 0.03f
 #define KOOPAS_RUNNING_WHEN_KICKED 0.15f
@@ -25,6 +26,7 @@ public:
 	CKoopasGeneral* koopasGeneral;
 	CWeakBrick* weakBrickDeployed = NULL;
 	CQuestionBrick* questionBrick = NULL;
+	CKoopasAI* koopasAi = new CKoopasAI();
 	int typeColor;
 	int level;
 	int rangeX;

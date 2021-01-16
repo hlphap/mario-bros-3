@@ -3,13 +3,14 @@
 
 CQuestionBrick::CQuestionBrick(float startY, int type)
 {
-	category = CATEGORY::BRICK;
+	category = CATEGORY::GROUND;
 	this->type = TYPE::QUESTION_BRICK;
 	isActive = true;
 	this->typeQuestion = type; // 0 -> coin , 1 special
 	this->start_y = startY;
 	SetState(QUESTION_STATE_IDLE);
 	animation_set = CAnimationSets::GetInstance()->Get(21);
+
 }
 
 void CQuestionBrick::Render()

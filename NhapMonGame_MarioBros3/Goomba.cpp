@@ -4,6 +4,7 @@
 CGoomba::CGoomba(CMario* m, int type, int level)
 {
 	this->type = TYPE::GOOMBA;
+	this->category = CATEGORY::ENEMY;
 	player = m;
 	this->level = level;
 	this->typeColor = type;

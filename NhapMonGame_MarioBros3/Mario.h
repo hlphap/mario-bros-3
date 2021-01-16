@@ -128,7 +128,7 @@ public:
 	static CMario* GetInstance();
 
 	//Control player
-	void Elasetic();
+	void Elastic();
 	void Go();
 	void Left();
 	void Right();

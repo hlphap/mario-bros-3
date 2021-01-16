@@ -3,6 +3,7 @@
 CMovingWood::CMovingWood()
 {
 	this->type = TYPE::MOVINGWOOD;
+	category = CATEGORY::GROUND;
 	isActive = true;
 	animation_set = CAnimationSets::GetInstance()->Get(24);
 	SetState(MOVING_WOOD_STATE_MOVING_HORIZONTAL);

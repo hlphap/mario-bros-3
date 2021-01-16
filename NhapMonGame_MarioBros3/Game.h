@@ -10,6 +10,10 @@
 #define DIRECTINPUT_VERSION 0x0800
 #define SCREEN_WIDTH	287
 #define SCREEN_HEIGHT	278
+
+#define CELLW (SCREEN_WIDTH / 4.0f)
+#define CELLH (SCREEN_HEIGHT / 4.0f)
+
 #include <dinput.h>
 #include "Scence.h"
 

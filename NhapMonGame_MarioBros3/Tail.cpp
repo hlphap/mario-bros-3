@@ -87,16 +87,19 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJE
 						{
 							effect = new CImpactEffect(koopas->x, koopas->y);
 							listEffect->push_back(effect);
-							koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
 							koopas->SetState(KOOPAS_STATE_SLEEP);
-							if (koopas->GetState() == KOOPAS_STATE_SLEEP)
-							{
-								koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
-							}
+							koopas->vy = -KOOPAS_JUMP_DEFLECT_SPEED;
+							/*if (this->nx == 1)
+								koopas->vx = 0.1f;
+							else
+								koopas->vx = -0.1f;*/
 							koopas->isKillByWeapon = true;
 							koopas->timeStartSleep = GetTickCount();
 							koopas->isHeal = false;
 							koopas->isPreHeal = false;	
+							canKill = false;
+							isOneKill = true;
+							DebugOut(L"\nCreateEffect");
 						}
 					}
 				}
@@ -152,6 +155,11 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJE
 								if (weakbrick->isItem)
 									weakbrick->SetState(WEAKBRICK_STATE_MOVE_UP);
 							}
+						else if (weakbrick->typeWeakBrick == WEAKBRICK_TYPE_ITEM_TREE_LEAF)
+						{
+							if (weakbrick->isItem)
+								weakbrick->SetState(WEAKBRICK_STATE_MOVE_UP);
+						}
 						isOneKill = true;
 						canKill = false;
 					}
@@ -176,7 +184,6 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJE
 						isOneKill = true;
 					}
 				}
-				
 			}
 		}
 	}

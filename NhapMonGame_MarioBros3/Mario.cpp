@@ -373,13 +373,18 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 								weakbrick->SetState(WEAKBRICK_STATE_MOVE_UP);
 						}
 						else
-							if (weakbrick->typeWeakBrick == WEAKBRIC_TYPE_ITEM_COIN_EFFECT)
+							if (weakbrick->typeWeakBrick == WEAKBRICK_TYPE_ITEM_COIN_EFFECT)
 							{
 								if (weakbrick->isItem)
 								{
 									weakbrick->SetState(WEAKBRICK_STATE_MOVE_UP);
 								}
 							}
+						else if (weakbrick->typeWeakBrick == WEAKBRICK_TYPE_ITEM_TREE_LEAF)
+						{
+							if (weakbrick->isItem)
+								weakbrick->SetState(WEAKBRICK_STATE_MOVE_UP);
+						}
 					}
 				else
 					if (e->nx != 0)
@@ -549,7 +554,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 							}
 							else
 								koopas->SetState(KOOPAS_STATE_SLEEP);
-							Elasetic();
+							Elastic();
 						}
 						else //Đạp mai rùa Koopas
 						{
@@ -615,7 +620,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 									if (goomba->level == GOOMBA_LEVEL_DEFAULT)
 										goomba->SetState(GOOMBA_STATE_DIE);
 								goomba->isKillByWeapon = false;
-								Elasetic();
+								Elastic();
 								//Create Effect Coin
 								CreateEffectCoin(listEffect);
 							}
@@ -680,8 +685,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 				if (e->ny < 0)
 				{
 					switchP->SetState(SWITCH_P_STATE_PRESSED);
-					switchP->TranFormationBrick(listMapObj, listItem);
-					Elasetic();
+					Elastic();
 				}
 			}
 		}
@@ -1466,7 +1470,7 @@ void CMario::ChangeTheLevel(int typeChange)
 		else
 		{
 			vx = 0;
-			Elasetic();
+			Elastic();
 			SetState(MARIO_STATE_DIE);
 		}
 
@@ -1509,7 +1513,7 @@ CMario* CMario::GetInstance()
 	return __instance;
 }
 
-void CMario::Elasetic()
+void CMario::Elastic()
 {
 	isOnAir = true;
 	isFalling = false;

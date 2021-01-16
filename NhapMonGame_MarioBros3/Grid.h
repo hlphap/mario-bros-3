@@ -1,20 +1,24 @@
 #pragma once
 #include "Mario.h"
 #include "Camera.h"
+
 class Grid
 {
 	CMario* mario;
-	int cellWidth, celHeight;
-	vector<LPGAMEOBJECT> listEnemy_InCam;
-	vector<LPGAMEOBJECT> listEnemy_OutCam;
-	vector<LPGAMEOBJECT> listMapObj;
-	vector<LPGAMEOBJECT> listItem;
+	int cellWidth;
+	int cellHeight;
+
+	int numRow;
+	int numCol;
+
+	TileMap* map;
+	Camera* cam;
+	vector<vector<vector<LPGAMEOBJECT>>> cell;
 public:
-	void PushBackGrid(LPGAMEOBJECT obj, bool Check = false);
-	Grid();
-	~Grid();
-	void Update(DWORD dt, Camera* cam);
-	void Render();
+	void UpdateGrid(vector<LPGAMEOBJECT> listObj, vector<LPGAMEOBJECT>listEnemy);
+	Grid(TileMap *map, Camera *cam);
+	~Grid() {};
+	void GetListObj(vector<LPGAMEOBJECT>& listObj, vector<LPGAMEOBJECT>& listEnemy);
 	void ClearGrid();
 };
 

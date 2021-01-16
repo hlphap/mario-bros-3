@@ -8,6 +8,7 @@ CPipe::CPipe(bool special, bool where, bool uses, int height)
 	this->isInMainMap = where;
 	this->isPullMario = uses;
 	isActive = true;
+	category = CATEGORY::GROUND;
 }
 
 void CPipe::Render()

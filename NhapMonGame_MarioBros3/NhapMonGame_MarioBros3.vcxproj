@@ -44,6 +44,7 @@
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemEndGame.cpp" />
     <ClCompile Include="Koopas.cpp" />
+    <ClCompile Include="KoopasAI.cpp" />
     <ClCompile Include="KoopasGeneral.cpp" />
     <ClCompile Include="LeafTree.cpp" />
     <ClCompile Include="main.cpp" />
@@ -79,6 +80,7 @@
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cell.h" />
     <ClInclude Include="CloudBrick.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="ColorBox.h" />
@@ -102,6 +104,7 @@
     <ClInclude Include="ItemEndGame.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Koopas.h" />
+    <ClInclude Include="KoopasAI.h" />
     <ClInclude Include="KoopasGeneral.h" />
     <ClInclude Include="LeafTree.h" />
     <ClInclude Include="Mario.h" />

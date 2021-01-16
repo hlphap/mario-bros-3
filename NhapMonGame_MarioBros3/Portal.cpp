@@ -10,6 +10,7 @@ CPortal::CPortal(bool isLeft, bool isRight, bool isUp, bool isDown, int scene_id
 	this->isAllowRight = isRight;
 	this->isAllowUp = isUp;
 	this->isAllowDown = isDown;
+
 }
 
 

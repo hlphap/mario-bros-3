@@ -46,6 +46,9 @@
     <Filter Include="GameObject\ScoreBoard">
       <UniqueIdentifier>{32e85c81-d521-4f17-9d68-d6b67493219b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Grid">
+      <UniqueIdentifier>{818116ce-6330-4690-b94c-c670f4454880}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -171,9 +174,6 @@
     <ClCompile Include="Switch_P.cpp">
       <Filter>GameObject\Items</Filter>
     </ClCompile>
-    <ClCompile Include="Grid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ScoreBoard.cpp">
       <Filter>GameObject\ScoreBoard</Filter>
     </ClCompile>
@@ -207,7 +207,13 @@
     <ClCompile Include="Text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>GameObject\Grid</Filter>
+    </ClCompile>
     <ClCompile Include="MovingWood.cpp">
+      <Filter>GameObject\Map Object</Filter>
+    </ClCompile>
+    <ClCompile Include="KoopasAI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -335,9 +341,6 @@
     <ClInclude Include="Switch_P.h">
       <Filter>GameObject\Items</Filter>
     </ClInclude>
-    <ClInclude Include="Grid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ScoreBoard.h">
       <Filter>GameObject\ScoreBoard</Filter>
     </ClInclude>
@@ -375,6 +378,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MovingWood.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>GameObject\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Cell.h">
+      <Filter>GameObject\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="KoopasAI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

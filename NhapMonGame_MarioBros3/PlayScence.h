@@ -26,6 +26,7 @@
 #include "ItemEndGame.h"
 #include "Text.h"
 #include "MovingWood.h"
+#include "Grid.h"
 
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_TEXTURES 2
@@ -61,6 +62,12 @@
 class CPlayScene : public CScene
 {
 public:
+
+	Grid* grid;
+	vector<LPGAMEOBJECT> listEnemy_temp;
+	vector<LPGAMEOBJECT> listMapObj_temp;
+
+
 	CMario* player;					
 	TileMap *map;
 	Camera* cam;
@@ -71,14 +78,15 @@ public:
 	bool isCompleteTransDark = false;
 	bool isCompleteTransLight = false;
 	bool isCreatedText = false;
+	bool isFindPipe = false;
 
 
 	bool isScreenDark = false;
 
-	vector<LPGAMEOBJECT> listMapObj;
-	vector<CGameObject *> listEnemies;
-	vector<CGameObject *> listItems;
-	vector<CGameObject *> listEffect;
+	vector<LPGAMEOBJECT> listMapObj, listMapObj_S;
+	vector<LPGAMEOBJECT> listEnemies, listEnemies_S;
+	vector<LPGAMEOBJECT> listItems;
+	vector<LPGAMEOBJECT> listEffect;
 	vector<LPGAMEOBJECT> listPipe;
 	vector<CBullet*> listBullet;
 	vector<LPGAMEOBJECT> listFireBall;
@@ -104,6 +112,7 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+	void GetObjInGrid();
 	
 	CMario* GetPlayer() { return player; }
 

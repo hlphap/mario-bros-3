@@ -3,6 +3,8 @@
 CColorBox::CColorBox()
 {
 	isActive = true;
+	category = CATEGORY::GROUND;
+
 }
 
 void CColorBox::Render()

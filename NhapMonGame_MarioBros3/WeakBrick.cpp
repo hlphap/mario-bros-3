@@ -5,12 +5,13 @@ CWeakBrick::CWeakBrick(float x, float y, int type)
 {
 	this->typeWeakBrick = type;//Brick is three type, 0 non_Item, 1 mushroom, 2 P_Switch
 	this->isActive = true;
-	this->category = CATEGORY::BRICK;
+	this->category = CATEGORY::GROUND;
 	this->type = TYPE::WEAK_BRICK;
 	this->start_y = y;
 	this->SetPosition(x, y);
 	animation_set = CAnimationSets::GetInstance()->Get(22);
 	SetState(WEAKBRICK_STATE_IDLE);
+
 }
 
 void CWeakBrick::Deployed_WeakBrick(vector<LPGAMEOBJECT>* listEffect)
@@ -66,7 +67,7 @@ void CWeakBrick::SetState(int state)
 	{
 		vy = -0.08f;
 		isItem = false;
-		if (typeWeakBrick == WEAKBRIC_TYPE_ITEM_COIN_EFFECT)
+		if (typeWeakBrick == WEAKBRICK_TYPE_ITEM_COIN_EFFECT)
 		{
 			if (numCoinEffect < 4)
 			{
@@ -95,12 +96,15 @@ void CWeakBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* listItems)
 		case WEAKBRICK_TYPE_ITEM_P_SWITCH:
 			item = new CSwitch_P(x, y - 16);
 			break;
-		case WEAKBRIC_TYPE_ITEM_COIN_EFFECT:
+		case WEAKBRICK_TYPE_ITEM_COIN_EFFECT:
 		{
 			item = new CCoin(x, y, TYPE::COIN_EFFECT);
 			numCoinEffect++;
 			break;
 		}
+		case WEAKBRICK_TYPE_ITEM_TREE_LEAF:
+			item = new CLeafTree(x, y - 16);
+			break;
 		}
 		y = start_y;
 		isComplete = true;

@@ -11,11 +11,12 @@
 CKoopas::CKoopas(CMario* m, float x, float y, int type, int level)
 {
 	this->type = TYPE::KOOPAS;
+	this->category = CATEGORY::ENEMY;
 	nx = -1;
 	this->typeColor = type;
 	this->level = level;
 	minY = y;
-	maxY = y + 40.0f;
+	maxY = y + 40.0f; //Koopas red fly
 	player = m;
 	SetState(KOOPAS_STATE_MOVING);
 	if (level == KOOPAS_LEVEL_HAVE_WING)
@@ -46,6 +47,7 @@ void CKoopas::GetBoundingBox(float& left, float& top, float& right, float& botto
 
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+
 	//Hoi sinh
 	if (state == KOOPAS_STATE_SLEEP && timeStartSleep != 0 && GetTickCount() - timeStartSleep >= 5000)
 	{
@@ -129,15 +131,48 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 		}
 	}
+//	DebugOut(L"\nkooasp->isFaling: %d", koopasAi->isFalling);
+	if (level == KOOPAS_LEVEL_DEFAULT)
+	{
+		if (typeColor == KOOPAS_TYPE_RED)
+		{
+			if (nx == 1)
+			{
+				koopasAi->SetPosition(x + 5, y);
+				if (koopasAi->isFalling)
+				{
+					nx = -1;
+					koopasAi->SetPosition(x - 15, y);
+					SetState(KOOPAS_STATE_MOVING);
+				}
+			}
+			else if (nx == -1)
+				{
+				
+					koopasAi->SetPosition(x - 10, y);
+					if (koopasAi->isFalling)
+					{
+					
+						nx = 1;
+						koopasAi->SetPosition(x +5, y);
+						SetState(KOOPAS_STATE_MOVING);
+
+
+					}
+				}
+			
+		}
+	}
+	if (koopasAi!=NULL)
+		koopasAi->Update(dt, coObjects);
 	CGameObject::Update(dt);
-	if (typeColor == KOOPAS_TYPE_RED && level != KOOPAS_LEVEL_HAVE_WING)
+	if (!(typeColor == KOOPAS_TYPE_RED && level== KOOPAS_LEVEL_HAVE_WING))
 		vy += ENEMY_GRAVITY * dt;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
 	CalcPotentialCollisions(coObjects, coEvents);
-
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -157,6 +192,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (ny != 0)
 		{
 			vy = 0;
+		
 		}
 		// Collision logic with other listMapObj
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -201,22 +237,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else if (e->nx < 0)
 						this->nx = -1;
 				}
-				else if (e->ny < 0)
-				{
-					if (!isSleeping && level != KOOPAS_LEVEL_HAVE_WING && typeColor == KOOPAS_TYPE_RED)
-					{
-						if (x <= weakBrick->x - BRICK_BBOX_WIDTH + 6)
-						{
-							x = weakBrick->x;
-							this->nx = 1;
-						}
-						else if (x + KOOPAS_BBOX_WIDTH >= weakBrick->x + weakBrick->amountX * BRICK_BBOX_WIDTH + BRICK_BBOX_WIDTH - 6)
-						{
-							x = weakBrick->x + weakBrick->amountX * BRICK_BBOX_WIDTH - KOOPAS_BBOX_WIDTH;
-							this->nx = -1;
-						}
-					}
-				}
 			}
 			else if (dynamic_cast<CGround*>(e->obj))
 			{
@@ -258,23 +278,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else if (e->nx < 0)
 						this->nx = -1;
 				}
-				else
-				if (e->ny < 0)
-				{
-					if (!isSleeping && level != KOOPAS_LEVEL_HAVE_WING && typeColor == KOOPAS_TYPE_RED)
-					{
-						if (x <= questionBrick->x - BRICK_BBOX_WIDTH + 6)
-						{
-							x = questionBrick->x;
-							this->nx = 1;
-						}
-						else if (x + KOOPAS_BBOX_WIDTH >= questionBrick->x + questionBrick->amountX * BRICK_BBOX_WIDTH + BRICK_BBOX_WIDTH - 6)
-						{
-							x = questionBrick->x + questionBrick->amountX * BRICK_BBOX_WIDTH - KOOPAS_BBOX_WIDTH;
-							this->nx = -1;
-						}
-					}
-				}
 			}
 			else if (dynamic_cast<CBrick*>(e->obj))
 			{
@@ -285,23 +288,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 				else if (e->nx < 0)
 					this->nx = -1;
-				else
-				if (e->ny < 0)
-				{
-					if (!isSleeping && level != KOOPAS_LEVEL_HAVE_WING && typeColor == KOOPAS_TYPE_RED)
-					{
-						if (x <= brick->x - BRICK_BBOX_WIDTH + 6)
-						{
-							x = brick->x;
-							this->nx = 1;
-						}
-						else if (x + KOOPAS_BBOX_WIDTH >= brick->x + brick->amountX * BRICK_BBOX_WIDTH + BRICK_BBOX_WIDTH - 6)
-						{
-							x = brick->x + brick->amountX * BRICK_BBOX_WIDTH - KOOPAS_BBOX_WIDTH;
-							this->nx = -1;
-						}
-					}
-				}
 			}
 
 			else
@@ -375,7 +361,35 @@ void CKoopas::IsCollisionWhenShellMove(vector<LPGAMEOBJECT>* listMapObj, vector<
 		} //Va cham vs Enemies
 		if (weakBrickDeployed != NULL)
 		{
-			weakBrickDeployed->Deployed_WeakBrick(listEffects);
+			if (weakBrickDeployed->typeWeakBrick == WEAKBRICK_TYPE_NON_ITEM)
+			{
+				//Dame WeakBrick Non Item
+				weakBrickDeployed->Deployed_WeakBrick(listEffects); // WeakBrick destroyed -> Tao Effect
+			}
+			else
+				if (weakBrickDeployed->typeWeakBrick == WEAKBRICK_TYPE_ITEM_P_SWITCH)
+				{
+					if (weakBrickDeployed->isItem)
+					{
+						weakBrickDeployed->SetState(WEAKBRICK_STATE_MOVE_UP);
+						CExplosiveEffect* effect = new CExplosiveEffect(weakBrickDeployed->x + 2, weakBrickDeployed->y - 14);
+						listEffects->push_back(effect);
+					}
+				}
+				else
+					if (weakBrickDeployed->typeWeakBrick == WEAKBRICK_TYPE_ITEM_MUSHROOM)
+					{
+						if (weakBrickDeployed->isItem)
+							weakBrickDeployed->SetState(WEAKBRICK_STATE_MOVE_UP);
+					}
+					else
+						if (weakBrickDeployed->typeWeakBrick == WEAKBRICK_TYPE_ITEM_COIN_EFFECT)
+						{
+							if (weakBrickDeployed->isItem)
+							{
+								weakBrickDeployed->SetState(WEAKBRICK_STATE_MOVE_UP);
+							}
+						}
 			weakBrickDeployed = NULL;
 		}
 		if (questionBrick != NULL)
@@ -427,8 +441,6 @@ void CKoopas::SetState(int state)
 				else
 					vx = -KOOPAS_WALKING_SPEED;
 			}
-
-
 		}
 		else
 			if (level == KOOPAS_LEVEL_DEFAULT)
@@ -475,6 +487,8 @@ void CKoopas::SetState(int state)
 
 void CKoopas::Render()
 {
+	koopasAi->Render();
+	RenderBoundingBox();
 	int aniIndex = -1;
 	if (isMoving)
 	{

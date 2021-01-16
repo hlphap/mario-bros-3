@@ -7,6 +7,7 @@
 #include "define.h"
 #include "Sprites.h"
 #include "Animations.h"
+#include "Game.h"
 
 
 using namespace std;
@@ -71,6 +72,11 @@ public:
 	int state;
 	int ani = -1;
 
+	bool inGrid;
+	//Grid
+	int GridL, GridR, GridT, GridB;
+	int w, h;
+
 	DWORD dt;
 
 	LPANIMATION_SET animation_set;
@@ -99,14 +105,37 @@ public:
 		float& rdx,
 		float& rdy);
 
-	bool isCollisionWithObj(LPGAMEOBJECT obj);
-	bool isCheckInCamera();
+	
 	CGameObject();
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) = 0;
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	virtual void Render() = 0;
 	virtual void SetState(int state) { this->state = state; }
+
+	bool isCollisionWithObj(LPGAMEOBJECT obj);
+	bool isCheckInCamera();
+	void SetGridPos(int GL, int GT, int GR, int GB)
+	{
+		GridL = GL;
+		GridT = GT;
+		GridR = GR;
+		GridB = GB;
+	}
+	void GetGridPos(int& GL, int& GT, int& GR, int& GB)
+	{
+		GL = GridL;
+		GT = GridT;
+		GR = GridR;
+		GB = GridB;
+	}
+	void UpdateGridPos()
+	{
+		GridL = (int)(x / CELLW);
+		GridT = (int)(y/CELLH);
+		GridR = (int)((x + w) / CELLW);
+		GridB = (int)((y + h) / CELLH);
+	}
 	~CGameObject();
 };
 

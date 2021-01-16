@@ -46,14 +46,30 @@ void Camera::Update(DWORD dt)
 	}
 	else if (typeCamera == 2)
 	{
-		//cam_x += vx * dt;
-		if (player->x > (CGame::GetInstance()->screen_width / 2) && player->x < map->GetWeightMap() - (CGame::GetInstance()->screen_width / 2))
+	/*	if (player->x > (CGame::GetInstance()->screen_width / 2) && player->x < map->GetWeightMap() - (CGame::GetInstance()->screen_width / 2))
 		{
 			cam_x = player->x - (CGame::GetInstance()->screen_width / 2);
+		}*/
+		cam_x += vx *dt;
+		DebugOut(L"player->x: %f", player->x);
+		if (cam_x > 1778 && cam_x < 1800)
+		{
+			cam_x = 1778.0f; //Lock Cam On End Pipe
 		}
-
+		else
+		if (cam_x > 1800)
+		{
+			cam_x = player->x - (CGame::GetInstance()->screen_width / 4);
+			if (player->x > (CGame::GetInstance()->screen_width / 4) && player->x + (CGame::GetInstance()->screen_width / 4) < 2528)
+			{
+				cam_x = player->x - (CGame::GetInstance()->screen_width / 4);
+				if (cam_x < 2048) //Look cam First EndScene
+					cam_x = 2048;
+			}
+			if (cam_x > 2290) //Look Cam Last EndScene
+				cam_x = 2290;
+		}
 		cam_y = 240.0f;
 	}
-	
-	CGame::GetInstance()->SetCamPos(cam_x, cam_y);
+	CGame::GetInstance()->SetCamPos((cam_x), (cam_y));
 }

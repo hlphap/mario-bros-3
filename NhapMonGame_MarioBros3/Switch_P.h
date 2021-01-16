@@ -14,6 +14,7 @@ class CSwitch_P :public CItem
 {
 public:
 	CExplosiveEffect* effect;
+	bool isTransformed = false;
 public:
 	CSwitch_P(float x, float y);
 	vector<LPGAMEOBJECT> listCoin;
