@@ -78,6 +78,8 @@ public:
 	bool isSelectMap;
 	bool isGoingSelectMap;
 	bool isCompleteScene;
+	bool isIntroScene = true;
+	bool isLocationSelect = false;
 
 	//Flag ...
 	bool isDecreaseSpeed;

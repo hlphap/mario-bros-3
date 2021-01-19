@@ -649,6 +649,21 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 						}
 					}
 				}
+				else if (e->obj->type == BOOMERANG_BROTHER)
+				{
+					if (isUnTouchable)
+						return;
+					else
+					{
+						CBomerangBrother *brother = dynamic_cast<CBomerangBrother*>(e->obj);
+						if (e->ny < 0)
+						{
+							brother->SetState(BOMERANGBROTHER_STATE_DIE);
+							CreateEffectCoin(listEffect);
+							Elastic();
+						}
+					}
+				}
 		}
 	}
 	// clean up collision events
@@ -731,6 +746,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 					{
 						CItemEndScence* itemEndScence = dynamic_cast<CItemEndScence*>(listItem->at(i));
 						itemEndScence->SetState(ITEM_ENDGAME_STATE_USED);
+						DecreaseSpeed(MARIO_WALKING_ACCELERATION);
 						GoEndScence();
 					}
 			}
@@ -887,9 +903,8 @@ void CMario::Render()
 		ani = RenderFromAniGroup();
 	int alpha = 255;
 	if (isUnTouchable) alpha = rand() % (200 - 50 + 1) + 50;
-	animation_set->at(ani)->Render(x,y,alpha);
-	RenderBoundingBox();
-}
+	animation_set->at(ani)->Render(x, y, alpha);
+}	
 
 
 

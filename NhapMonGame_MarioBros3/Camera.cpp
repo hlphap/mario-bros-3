@@ -11,8 +11,6 @@ Camera::Camera(CMario* m, TileMap *map, int typeCamera)
 
 void Camera::Update(DWORD dt)
 {
-	//DebugOut(L"\ntype Camera: %d", typeCamera);
-	//Camera Default = 0
 	if (typeCamera == 0)
 	{
 		cam_x = 0;
@@ -46,7 +44,7 @@ void Camera::Update(DWORD dt)
 	}
 	else if (typeCamera == 2)
 	{
-	/*	if (player->x > (CGame::GetInstance()->screen_width / 2) && player->x < map->GetWeightMap() - (CGame::GetInstance()->screen_width / 2))
+		/*if (player->x > (CGame::GetInstance()->screen_width / 2) && player->x < map->GetWeightMap() - (CGame::GetInstance()->screen_width / 2))
 		{
 			cam_x = player->x - (CGame::GetInstance()->screen_width / 2);
 		}*/

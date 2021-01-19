@@ -10,6 +10,7 @@
 #include "WeakBrick.h"
 #include "Flower.h"
 #include "ScoreEffect.h"
+#include "BomerangBrother.h"
 
 CBullet::CBullet()
 {
@@ -242,11 +243,18 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* listMapObj,vector<LPGAMEOBJ
 				CScoreEffect* effect = new CScoreEffect(flower->x, flower->y);
 				listEffect->push_back(effect);
 			}
-
+		}
+		else if (listEnemy->at(i)->type == TYPE::BOOMERANG_BROTHER)
+		{
+			CBomerangBrother* brother = dynamic_cast<CBomerangBrother*>(listEnemy->at(i));
+			if (isCollisionWithObj(brother))
+			{
+				brother->SetState(BOMERANGBROTHER_STATE_DIE);
+				SetState(BULLET_STATE_EXPLOSIVE);
+				CScoreEffect* effect = new CScoreEffect(brother->x, brother->y);
+				brother->isActive = false;
+			}
 		}
 	}
 #pragma endregion
-
-
-	
 }

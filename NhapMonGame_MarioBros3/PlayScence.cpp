@@ -289,6 +289,21 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		listEnemies_S.push_back(obj);
 		break;
 	}
+	case OBJECT_TYPE_BOMERANGBROTHER:
+	{
+		obj = new CBomerangBrother(x, y);
+	
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listEnemies_S.push_back(obj);
+		break;
+	}
+	case OBJECT_TYPE_SELECT_EFFECT:
+	{
+		obj = new CSelectionEffect(player,x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listEffect.push_back(obj);
+		break;
+	}
 	case OBJECT_TYPE_QUESTIONBRICK: //);Oke
 	{
 		int type = atoi(tokens[6].c_str());
@@ -312,6 +327,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_ITEM_ENDSCENCE:
 	{
 		obj = new CItemEndScence(x, y);
+		posTextX = x - 38;
+		posTextY = y - 76;
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		listItems.push_back(obj);
 		break;
@@ -592,7 +609,7 @@ void CPlayScene::Update(DWORD dt)
 								timeStartScreenLight = GetTickCount();
 							}
 							isFindPipe = true;
-							cam->SetCamPosX(2198.0f);
+							cam->SetCamPosX(2048.0f);
 						}
 					}
 				}
@@ -655,8 +672,6 @@ void CPlayScene::Update(DWORD dt)
 	{
 		if (listEnemies[i]->isActive)
 		{
-		//	if (listEnemies[i]->isCheckInCamera())
-			//{
 				listEnemies[i]->Update(dt, &listMapObj);
 				if (listEnemies[i]->type == TYPE::KOOPAS)
 				{
@@ -669,7 +684,11 @@ void CPlayScene::Update(DWORD dt)
 					CFlower* flower = dynamic_cast<CFlower*>(listEnemies[i]);
 					flower->CreateFireBall(&listFireBall);
 				}
-		//	}
+				if (listEnemies[i]->type == TYPE::BOOMERANG_BROTHER)
+				{
+					CBomerangBrother* brother = dynamic_cast<CBomerangBrother*>(listEnemies[i]);
+					brother->CreateBoomerang(&listFireBall);
+				}
 		}
 		else
 			listEnemies.erase(listEnemies.begin() + i);
@@ -809,7 +828,8 @@ void CPlayScene::Update(DWORD dt)
 
 	cam->Update(dt);
 	map->Update();
-	board->Update(dt, cam);
+	//if (typeMap == WORLD)
+		board->Update(dt, cam);
 
 	if (player == NULL) return;
 #pragma endregion
@@ -820,12 +840,14 @@ void CPlayScene::Update(DWORD dt)
 		if (timeStartEndScence == TIME_DEFAULT)
 		{
 			timeStartEndScence = GetTickCount();
-			CText* text1 = new CText(2650, 260, "COURSE CLEAR");
+			//CText* text1 = new CText(2650, 260, "COURSE CLEAR");
+			DebugOut(L"posX: %f%f", posTextX, posTextY);
+			CText* text1 = new CText(posTextX, posTextY, "COURSE CLEAR");
 			listText.push_back(text1);
 		}
 		if (GetTickCount() - timeStartEndScence > 500 && timeStartEndScence != TIME_DEFAULT)
 		{
-			CText* text2 = new CText(2644, 280, "YOU GOT A CARD");
+			CText* text2 = new CText(posTextX - 6, posTextY + 20, "YOU GOT A CARD");
 			listText.push_back(text2);
 			isCreatedText = true;
 		}
@@ -907,7 +929,8 @@ void CPlayScene::Render()
 	{
 		listText[i]->Render();
 	}
-	board->Render();
+	if (!player->isIntroScene)
+		board->Render();
 	
 	CTail::GetInstance()->Render();
 		
@@ -994,6 +1017,11 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		{
 			switch (KeyCode)
 			{
+			case DIK_Q:
+			{
+				mario->isLocationSelect = !mario->isLocationSelect;
+				break;
+			}			
 			case DIK_RIGHT:
 			{
 				if (mario->isAllowRight)
@@ -1028,6 +1056,11 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 				break;
 			case DIK_S:
 				mario->isPressKeyDown = true;
+				if (mario->isIntroScene)
+				{
+					CGame::GetInstance()->SwitchScene(1);
+					mario->isIntroScene = false;
+				}
 			}
 			break;
 		}

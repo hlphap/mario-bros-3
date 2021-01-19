@@ -30,6 +30,7 @@ public:
 	CNumber* numberCoin;
 
 	//TimeCountDown
+	int ncountDown;
 	CNumber* countDown;
 
 	int timeMaxLive = TIME_MAX_LIVE;

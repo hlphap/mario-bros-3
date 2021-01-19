@@ -487,8 +487,6 @@ void CKoopas::SetState(int state)
 
 void CKoopas::Render()
 {
-	koopasAi->Render();
-	RenderBoundingBox();
 	int aniIndex = -1;
 	if (isMoving)
 	{

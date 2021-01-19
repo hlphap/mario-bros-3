@@ -216,6 +216,15 @@
     <ClCompile Include="KoopasAI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Bomerang.cpp">
+      <Filter>GameObject\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="BomerangBrother.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectionEffect.cpp">
+      <Filter>GameObject\Effects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -387,6 +396,15 @@
       <Filter>GameObject\Grid</Filter>
     </ClInclude>
     <ClInclude Include="KoopasAI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bomerang.h">
+      <Filter>GameObject\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="BomerangBrother.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectionEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

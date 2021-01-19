@@ -39,4 +39,5 @@ void CEnergy::Render()
 
 void CEnergy::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
+
 }

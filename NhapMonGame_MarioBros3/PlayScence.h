@@ -27,7 +27,8 @@
 #include "Text.h"
 #include "MovingWood.h"
 #include "Grid.h"
-
+#include "SelectionEffect.h"
+#include "BomerangBrother.h"
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_TEXTURES 2
 #define SCENE_SECTION_SPRITES 3
@@ -52,6 +53,8 @@
 #define OBJECT_TYPE_TREE			13
 #define	OBJECT_TYPE_ITEM_ENDSCENCE	14
 #define	OBJECT_TYPE_MOVING_WOOD		15
+#define OBJECT_TYPE_BOMERANGBROTHER	16
+#define OBJECT_TYPE_SELECT_EFFECT	17
 #define OBJECT_TYPE_BOUNDARYBRICK	9999
 
 #define OBJECT_TYPE_PITSTOP	49
@@ -67,6 +70,8 @@ public:
 	vector<LPGAMEOBJECT> listEnemy_temp;
 	vector<LPGAMEOBJECT> listMapObj_temp;
 
+	float posTextX;
+	float posTextY;
 
 	CMario* player;					
 	TileMap *map;

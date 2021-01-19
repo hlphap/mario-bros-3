@@ -73,8 +73,6 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		start_y = y;
 	}
 
-	
-
 	//Chuyen State
 	//DebugOut(L"y: %d\n", GetTickCount() - timeStartAttack);
 	if (!isMoveAttack && GetTickCount() - timeStartAttack >= 7000 && timeStartAttack != TIME_DEFAULT)

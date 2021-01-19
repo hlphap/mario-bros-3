@@ -15,7 +15,7 @@ public:
 class CEnergy : public CGameObject
 {
 public:
-	int numEnergy;
+	unsigned int numEnergy;
 	vector<LPGAMEOBJECT> listEnergy;
 public:
 	CEnergy(int numEnergy);

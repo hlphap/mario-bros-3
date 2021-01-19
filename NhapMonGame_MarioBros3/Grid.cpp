@@ -4,9 +4,7 @@
 
 void Grid::UpdateGrid(vector<LPGAMEOBJECT> listObj, vector<LPGAMEOBJECT> listEnemy)
 {
-	
 	ClearGrid();
-
 	for (int i = 0; i < listEnemy.size(); i++)
 	{
 		float l, t, r, b;
@@ -23,7 +21,7 @@ void Grid::UpdateGrid(vector<LPGAMEOBJECT> listObj, vector<LPGAMEOBJECT> listEne
 					cell[row][col].push_back(listEnemy[i]);
 				}
 		}
-	}	
+	}
 	for (int i = 0; i < listObj.size(); i++)
 	{
 		float l, t, r, b;
@@ -38,7 +36,6 @@ void Grid::UpdateGrid(vector<LPGAMEOBJECT> listObj, vector<LPGAMEOBJECT> listEne
 				for (int col = Left; col < Right; col++)
 				{
 					cell[row][col].push_back(listObj[i]);
-					//DebugOut(L"row, col : %d, %d", row, col);
 				}
 		}
 	}

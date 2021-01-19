@@ -6,6 +6,9 @@ CScoreBoard::CScoreBoard(CMario* mario)
 {
 	this->mario = mario;
 	timeStartPlay = GetTickCount();
+	x = floor(CGame::GetInstance()->GetCamPosX()); // round(cam->GetCamPosX());
+	y = floor(CGame::GetInstance()->GetCamPosY() + 190.0f);// round(cam->GetCamPosY() + 190.0f);
+	//ncountDown = 300;
 }
 
 
@@ -79,7 +82,7 @@ void CScoreBoard::Update(DWORD dt, Camera* cam)
 #pragma endregion
 #pragma region TimeCountDown
 	//TimeCountDown
-	int ncountDown = TIME_MAX_LIVE - (GetTickCount() - timeStartPlay) / CLOCKS_PER_SEC;
+	ncountDown = TIME_MAX_LIVE - (GetTickCount() - timeStartPlay) / CLOCKS_PER_SEC;
 	if (ncountDown < 0)
 	{
 		ncountDown = 0;

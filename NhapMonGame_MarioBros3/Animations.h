@@ -40,14 +40,6 @@ public:
 	{
 		currentFrame = -1;
 	}
-	void StartAni()
-	{
-		timeStartAni = GetTickCount64();
-	}
-	bool IsRenderOver()
-	{
-		return (GetTickCount64() - timeStartAni >= timeAni);
-	}
 };
 
 typedef CAnimation* LPANIMATION;
