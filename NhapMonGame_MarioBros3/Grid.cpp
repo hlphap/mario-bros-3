@@ -123,6 +123,20 @@ CGameObject* Grid::CreateNewObj(string line)
 		obj->SetGridPos(GL, GT, GR, GB);
 		break;
 	}
+	case OBJECT_TYPE_MOVING_WOOD:
+	{
+		obj = new CMovingWood();
+		obj->amountX = atoi(tokens[5].c_str());
+		obj->amountY = atoi(tokens[6].c_str());
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		GL = atoi(tokens[7].c_str());
+		GT = atoi(tokens[8].c_str());
+		GR = atoi(tokens[9].c_str());
+		GB = atoi(tokens[10].c_str());
+		obj->SetGridPos(GL, GT, GR, GB);
+		break;
+	}
 	case OBJECT_TYPE_GOOMBA:
 	{
 		int type = atoi(tokens[7].c_str());
@@ -165,6 +179,21 @@ CGameObject* Grid::CreateNewObj(string line)
 		GT = atoi(tokens[9].c_str());
 		GR = atoi(tokens[10].c_str());
 		GB = atoi(tokens[11].c_str());
+		obj->SetGridPos(GL, GT, GR, GB);
+		listEnemy_S.push_back(obj);
+		break;
+	}
+	case OBJECT_TYPE_BOMERANGBROTHER:
+	{
+		obj = new CBomerangBrother(x,y);
+		obj->amountX = atoi(tokens[5].c_str());
+		obj->amountY = atoi(tokens[6].c_str());
+		//obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		GL = atoi(tokens[7].c_str());
+		GT = atoi(tokens[8].c_str());
+		GR = atoi(tokens[9].c_str());
+		GB = atoi(tokens[10].c_str());
 		obj->SetGridPos(GL, GT, GR, GB);
 		listEnemy_S.push_back(obj);
 		break;
@@ -258,9 +287,10 @@ void Grid::GridResize()
 	for (int i = 0; i < numRow + 1; i++)
 		unMoveObj[i].resize(numCol + 1);
 
-	moveObj.resize(numRow + 1);
-	for (int i = 0; i < numRow + 1; i++)
+	moveObj.resize(numRow + 2);
+	for (int i = 0; i < numRow + 2; i++)
 		moveObj[i].resize(numCol + 1);
+
 }
 
 void Grid::GetListObj(vector<LPGAMEOBJECT>& listMapObj, vector<LPGAMEOBJECT>& listEnemy, vector<LPGAMEOBJECT> &listItem) //Get listMapObj, Get listEnemy on Grid NearCamera

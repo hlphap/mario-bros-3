@@ -277,21 +277,21 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	//	obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 	//	listMapObj_S.push_back(obj);
 	//	break;
-	//case OBJECT_TYPE_PIPE: //Oker
-	//{
-	//	bool special = atoi(tokens[6].c_str());
-	//	bool where = atoi(tokens[7].c_str());
-	//	bool uses = atoi(tokens[8].c_str());
-	//	int height = atoi(tokens[9].c_str());
-	//	obj = new CPipe(special, where, uses, height);
-	//	obj->amountX = atoi(tokens[4].c_str());
-	//	obj->amountY = atoi(tokens[5].c_str());
-	//	obj->SetPosition(x, y);
-	//	obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-	//	listPipe.push_back(obj);
-	//	listMapObj_S.push_back(obj);
-	//	break;
-	//}
+	case OBJECT_TYPE_PIPE: //Oker
+	{
+		bool special = atoi(tokens[6].c_str());
+		bool where = atoi(tokens[7].c_str());
+		bool uses = atoi(tokens[8].c_str());
+		int height = atoi(tokens[9].c_str());
+		obj = new CPipe(special, where, uses, height);
+		obj->amountX = atoi(tokens[4].c_str());
+		obj->amountY = atoi(tokens[5].c_str());
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listPipe.push_back(obj);
+		listMapObj_S.push_back(obj);
+		break;
+	}
 	//case OBJECT_TYPE_FLOWER: //Oker
 	//{
 	//	int type = atoi(tokens[4].c_str());
@@ -301,14 +301,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	//	listEnemies_S.push_back(obj);
 	//	break;
 	//}
-	case OBJECT_TYPE_BOMERANGBROTHER:
+	/*case OBJECT_TYPE_BOMERANGBROTHER:
 	{
 		obj = new CBomerangBrother(x, y);
 	
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		listEnemies_S.push_back(obj);
 		break;
-	}
+	}*/
 	case OBJECT_TYPE_SELECT_EFFECT:
 	{
 		obj = new CSelectionEffect(player,x, y);
@@ -376,7 +376,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		listPortal.push_back(obj);
 	}
 	break;
-	case OBJECT_TYPE_MOVING_WOOD:
+	/*case OBJECT_TYPE_MOVING_WOOD:
 	{
 		obj = new CMovingWood();
 		obj->amountX = atoi(tokens[4].c_str());
@@ -385,7 +385,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		listMapObj_S.push_back(obj);
 	}
-	break;
+	break;*/
 	case OBJECT_TYPE_PORTAL:
 	{
 		bool isLeft = atoi(tokens[6].c_str());
@@ -482,7 +482,11 @@ void CPlayScene::GetObjInGrid()
 	listEnemies.clear();
 	listItems_Idle.clear();
 	grid->GetListObj(listMapObj, listEnemies, listItems_Idle);
-	DebugOut(L"\nlistEnenmy size : %d", listItems_Idle.size());
+	for (size_t i = 0; i < listPipe.size(); i++)
+	{
+		listMapObj.push_back(listPipe[i]);
+	}
+	//DebugOut(L"\nlistEnenmy size : %d", listItems_Idle.size());
 
 
 }
@@ -1034,6 +1038,9 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			case DIK_4:
 				mario->SetLevel(MARIO_LEVEL_BIG_FIRE);
 				//mario->SetPosition(mario->x, 0);
+				break;
+			case DIK_T:
+				mario->SetPosition(mario->x, 0);
 				break;
 			}
 			break;

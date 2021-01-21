@@ -27,7 +27,7 @@ int main()
 	ifstream fs;
 	ofstream ofs;
 	ofs.open("output.txt", ios::out);
-	fs.open("scene1.txt");
+	fs.open("scene4.txt");
 	int id = 0;
 	if (fs.fail())
 	{

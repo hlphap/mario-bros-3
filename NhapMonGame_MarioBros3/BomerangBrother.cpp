@@ -1,8 +1,8 @@
 #include "BomerangBrother.h"
+#include "Utils.h"
 
 CBomerangBrother::CBomerangBrother(float x, float y)
 {
-	this->category = CATEGORY::ENEMY;
 	this->type = TYPE::BOOMERANG_BROTHER;
 	isActive = true;
 	minX = x;
@@ -14,6 +14,7 @@ CBomerangBrother::CBomerangBrother(float x, float y)
 
 void CBomerangBrother::Update(DWORD dt, vector<LPGAMEOBJECT>* listMapObj)
 {
+	DebugOut(L"\nBoomerang update ne");
 	vy += ENEMY_GRAVITY * dt;
 	if (state != BOMERANGBROTHER_STATE_DIE)
 	{
