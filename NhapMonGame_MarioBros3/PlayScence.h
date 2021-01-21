@@ -67,8 +67,7 @@ class CPlayScene : public CScene
 public:
 
 	Grid* grid;
-	vector<LPGAMEOBJECT> listEnemy_temp;
-	vector<LPGAMEOBJECT> listMapObj_temp;
+
 
 	float posTextX;
 	float posTextY;
@@ -90,7 +89,7 @@ public:
 
 	vector<LPGAMEOBJECT> listMapObj, listMapObj_S;
 	vector<LPGAMEOBJECT> listEnemies, listEnemies_S;
-	vector<LPGAMEOBJECT> listItems;
+	vector<LPGAMEOBJECT> listItems, listItems_Idle;
 	vector<LPGAMEOBJECT> listEffect;
 	vector<LPGAMEOBJECT> listPipe;
 	vector<CBullet*> listBullet;

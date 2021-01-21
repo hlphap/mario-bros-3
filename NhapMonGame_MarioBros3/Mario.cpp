@@ -88,7 +88,7 @@ CMario::CMario(float x, float y) : CGameObject()
 
 }
 
-void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT>* listItem, vector<LPGAMEOBJECT> *listEffect, vector<LPGAMEOBJECT> *listPitStop, vector<LPGAMEOBJECT> * listFireBall)
+void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJECT>* listEnemy, vector<LPGAMEOBJECT>* listItem, vector<LPGAMEOBJECT>* listItems_Idle, vector<LPGAMEOBJECT> *listEffect, vector<LPGAMEOBJECT> *listPitStop, vector<LPGAMEOBJECT> * listFireBall)
 {
 #pragma region Update Mario
 	// Calculate dx, dy 
@@ -752,6 +752,29 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 			}
 		}
 	}
+	for (int i = 0; i < listItems_Idle->size(); i++)
+	{
+		if (listItems_Idle->at(i) != NULL)
+		{
+			if (isCollisionWithObj(listItems_Idle->at(i)))
+			{
+						if (listItems_Idle->at(i)->type == TYPE::COIN_IDLE_STATIC || listItems_Idle->at(i)->type == TYPE::COIN_IDLE_SPIN)
+						{
+							numCoin++;
+							listItems_Idle->at(i)->isActive = false;
+						}
+						else
+							if (listItems_Idle->at(i)->type == TYPE::ITEM_END_GAME)
+							{
+								CItemEndScence* itemEndScence = dynamic_cast<CItemEndScence*>(listItems_Idle->at(i));
+								itemEndScence->SetState(ITEM_ENDGAME_STATE_USED);
+								DecreaseSpeed(MARIO_WALKING_ACCELERATION);
+								GoEndScence();
+							}
+			}
+		}
+	}//Coin Idle Spin And Item End Scene
+
 #pragma endregion
 	  
 #pragma region Collision with Portal

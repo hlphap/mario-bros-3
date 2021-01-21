@@ -111,7 +111,7 @@ public:
 
 public:
 	CMario(float x = 0.0f, float y = 0.0f);
-	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT> *coEnemy, vector<LPGAMEOBJECT> *coItem, vector<LPGAMEOBJECT>* listEffect, vector<LPGAMEOBJECT> *listPortal, vector<LPGAMEOBJECT> * listFireBall);
+	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObj, vector<LPGAMEOBJECT> *coEnemy, vector<LPGAMEOBJECT> *coItem, vector<LPGAMEOBJECT> *coItemIdle, vector<LPGAMEOBJECT>* listEffect, vector<LPGAMEOBJECT> *listPortal, vector<LPGAMEOBJECT> * listFireBall);
 	void Render();
 	int RenderFromAniGroup();
 

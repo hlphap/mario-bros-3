@@ -1,10 +1,9 @@
 #include "Camera.h"
 #include "Utils.h"
 
-Camera::Camera(CMario* m, TileMap *map, int typeCamera)
+Camera::Camera(CMario* m, int typeCamera)
 {
 	this->player = m;
-	this->map = map;
 	this->typeCamera = typeCamera;
 	vx = CAMERA_SPEED_X;
 }
@@ -18,7 +17,7 @@ void Camera::Update(DWORD dt)
 	}
 	else if (typeCamera == 1)  //Update camera to follow player
 	{
-		if (player->x > (CGame::GetInstance()->screen_width / 2) && player->x < map->GetWeightMap() - (CGame::GetInstance()->screen_width / 2))
+		if (player->x > (CGame::GetInstance()->screen_width / 2) && player->x < mapW - (CGame::GetInstance()->screen_width / 2))
 		{
 			cam_x = player->x - (CGame::GetInstance()->screen_width / 2);
 		}
@@ -26,7 +25,7 @@ void Camera::Update(DWORD dt)
 		if (player->isInMainMap)
 		{
 			//CAMY TOT NHAT 
-			if (player->y > CGame::GetInstance()->screen_height / 4 && player->y < map->GetHeightMap() - 350)
+			if (player->y > CGame::GetInstance()->screen_height / 4 && player->y < mapH - 350)
 			{
 				cam_y = player->y - CGame::GetInstance()->screen_height / 4;
 			}

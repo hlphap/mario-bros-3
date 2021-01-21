@@ -80,11 +80,12 @@ void CCoin::SetState(int state)
 
 void CCoin::Render()
 {
+	RenderBoundingBox();
 	if (type == TYPE::COIN_EFFECT)
 		ani = ITEM_ANI_COIN_MOVE_FAST;
 	else
 		if (type == TYPE::COIN_IDLE_STATIC)
-			ani = ITEM_ANI_COIN_IDLE;
+			ani = ITEM_ANI_COIN_IDLE;	
 		else
 			if (type == TYPE::COIN_IDLE_SPIN)
 				ani = ITEM_ANI_COIN_MOVE_SLOW;

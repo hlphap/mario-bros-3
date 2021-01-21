@@ -175,8 +175,20 @@ void CPlayScene::_ParseSection_TILEMAP(string line)
 	map->tile_width = tile_width;
 	map->tile_height = tile_height;
 	map->LoadTileMap();
-	map->LoadMap();
-	// So dong tileset, so cot tileset, So dong data, So Cot data
+	//Load Camera // Load Board Game
+	board = new CScoreBoard(player);
+	if (typeMap == 1)
+		player->SetOnMap(true);
+	else
+		player->SetOnMap(false);
+	cam = new Camera(player, typeCamera);
+	cam->mapW = map->GetWeightMap();
+	cam->mapH = map->GetHeightMap();
+	grid = new Grid(cam);
+	grid->mapW = map->GetWeightMap();
+	grid->mapH = map->GetHeightMap();
+	grid->GridResize();
+	map->LoadMap(grid);
 }
 
 /*
@@ -212,7 +224,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		player->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		break;
 	}
-	case OBJECT_TYPE_GOOMBA:
+	/*case OBJECT_TYPE_GOOMBA:
 	{
 		int type = atoi(tokens[4].c_str());
 		int level = atoi(tokens[5].c_str());
@@ -222,73 +234,73 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		listEnemies_S.push_back(obj);
 		break;
-	}
-	case OBJECT_TYPE_BRICK: //Oker
-		obj = new CBrick();
-		obj->amountX = atoi(tokens[4].c_str());
-		obj->amountY = atoi(tokens[5].c_str());
-		obj->SetPosition(x, y);
-		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listMapObj_S.push_back(obj);
-		break;
-	case OBJECT_TYPE_WEAK_BRICK:	//Oker
-	{
-		int type = atoi(tokens[6].c_str());
-		obj = new CWeakBrick(x,y,type);
-		obj->amountX = atoi(tokens[4].c_str());
-		obj->amountY = atoi(tokens[5].c_str());
-		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listMapObj_S.push_back(obj);
-		break;
-	}
-	case OBJECT_TYPE_CLOUD_BRICK:	 //Oker
-		obj = new CCloudBrick();
-		obj->amountX = atoi(tokens[4].c_str());
-		obj->amountY = atoi(tokens[5].c_str());
-		obj->SetPosition(x, y);
-		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listMapObj_S.push_back(obj);
-		break;
-	case OBJECT_TYPE_GROUND: // Oker
-		obj = new CGround();
-		obj->amountX = atoi(tokens[4].c_str());
-		obj->amountY = atoi(tokens[5].c_str());
-		obj->SetPosition(x, y);
-		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listMapObj_S.push_back(obj);
-		break;
-	case OBJECT_TYPE_COLORBOX: // Oker
-		obj = new CColorBox();
-		obj->amountX = atoi(tokens[4].c_str());
-		obj->amountY = atoi(tokens[5].c_str());
-		obj->SetPosition(x, y);
-		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listMapObj_S.push_back(obj);
-		break;
-	case OBJECT_TYPE_PIPE: //Oker
-	{
-		bool special = atoi(tokens[6].c_str());
-		bool where = atoi(tokens[7].c_str());
-		bool uses = atoi(tokens[8].c_str());
-		int height = atoi(tokens[9].c_str());
-		obj = new CPipe(special, where, uses, height);
-		obj->amountX = atoi(tokens[4].c_str());
-		obj->amountY = atoi(tokens[5].c_str());
-		obj->SetPosition(x, y);
-		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listPipe.push_back(obj);
-		listMapObj_S.push_back(obj);
-		break;
-	}
-	case OBJECT_TYPE_FLOWER: //Oker
-	{
-		int type = atoi(tokens[4].c_str());
-		obj = new CFlower(player, type);
-		obj->SetPosition(x, y);
-		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listEnemies_S.push_back(obj);
-		break;
-	}
+	}*/
+	//case OBJECT_TYPE_BRICK: //Oker
+	//	obj = new CBrick();
+	//	obj->amountX = atoi(tokens[4].c_str());
+	//	obj->amountY = atoi(tokens[5].c_str());
+	//	obj->SetPosition(x, y);
+	//	obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+	//	listMapObj_S.push_back(obj);
+	//	break;
+	//case OBJECT_TYPE_WEAK_BRICK:	//Oker
+	//{
+	//	int type = atoi(tokens[6].c_str());
+	//	obj = new CWeakBrick(x,y,type);
+	//	obj->amountX = atoi(tokens[4].c_str());
+	//	obj->amountY = atoi(tokens[5].c_str());
+	//	obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+	//	listMapObj_S.push_back(obj);
+	//	break;
+	//}
+	//case OBJECT_TYPE_CLOUD_BRICK:	 //Oker
+	//	obj = new CCloudBrick();
+	//	obj->amountX = atoi(tokens[4].c_str());
+	//	obj->amountY = atoi(tokens[5].c_str());
+	//	obj->SetPosition(x, y);
+	//	obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+	//	listMapObj_S.push_back(obj);
+	//	break;
+	//case OBJECT_TYPE_GROUND: // Oker
+	//	obj = new CGround();
+	//	obj->amountX = atoi(tokens[4].c_str());
+	//	obj->amountY = atoi(tokens[5].c_str());
+	//	obj->SetPosition(x, y);
+	//	obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+	//	listMapObj_S.push_back(obj);
+	//	break;
+	//case OBJECT_TYPE_COLORBOX: // Oker
+	//	obj = new CColorBox();
+	//	obj->amountX = atoi(tokens[4].c_str());
+	//	obj->amountY = atoi(tokens[5].c_str());
+	//	obj->SetPosition(x, y);
+	//	obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+	//	listMapObj_S.push_back(obj);
+	//	break;
+	//case OBJECT_TYPE_PIPE: //Oker
+	//{
+	//	bool special = atoi(tokens[6].c_str());
+	//	bool where = atoi(tokens[7].c_str());
+	//	bool uses = atoi(tokens[8].c_str());
+	//	int height = atoi(tokens[9].c_str());
+	//	obj = new CPipe(special, where, uses, height);
+	//	obj->amountX = atoi(tokens[4].c_str());
+	//	obj->amountY = atoi(tokens[5].c_str());
+	//	obj->SetPosition(x, y);
+	//	obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+	//	listPipe.push_back(obj);
+	//	listMapObj_S.push_back(obj);
+	//	break;
+	//}
+	//case OBJECT_TYPE_FLOWER: //Oker
+	//{
+	//	int type = atoi(tokens[4].c_str());
+	//	obj = new CFlower(player, type);
+	//	obj->SetPosition(x, y);
+	//	obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+	//	listEnemies_S.push_back(obj);
+	//	break;
+	//}
 	case OBJECT_TYPE_BOMERANGBROTHER:
 	{
 		obj = new CBomerangBrother(x, y);
@@ -304,36 +316,37 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		listEffect.push_back(obj);
 		break;
 	}
-	case OBJECT_TYPE_QUESTIONBRICK: //);Oke
-	{
-		int type = atoi(tokens[6].c_str());
-		obj = new CQuestionBrick(y,type);
-		obj->amountX = atoi(tokens[4].c_str());
-		obj->amountY = atoi(tokens[5].c_str());
-		
-		obj->SetPosition(x, y);
-		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listMapObj_S.push_back(obj);
-		break;
-	}
-	case OBJECT_TYPE_COIN_SPIN:
+	//case OBJECT_TYPE_QUESTIONBRICK: //);Oke
+	//{
+	//	int type = atoi(tokens[6].c_str());
+	//	obj = new CQuestionBrick(y,type);
+	//	obj->amountX = atoi(tokens[4].c_str());
+	//	obj->amountY = atoi(tokens[5].c_str());
+	//	
+	//	obj->SetPosition(x, y);
+	//	obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+	//	listMapObj_S.push_back(obj);
+	//	break;
+	//}
+	/*case OBJECT_TYPE_COIN_SPIN:
 	{
 		int type = atoi(tokens[4].c_str());
 		obj = new CCoin(x, y, type);
 		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 		listItems.push_back(obj);
 		break;
-	}
-	case OBJECT_TYPE_ITEM_ENDSCENCE:
-	{
-		obj = new CItemEndScence(x, y);
-		posTextX = x - 38;
-		posTextY = y - 76;
-		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
-		listItems.push_back(obj);
-		break;
-	}
-	case OBJECT_TYPE_KOOPAS:
+	}*/
+	//case OBJECT_TYPE_ITEM_ENDSCENCE:
+	//{
+	//	obj = new CItemEndScence(x, y);
+	//	posTextX = x - 38;
+	//	posTextY = y - 76;
+	//	obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+	//	listItems_Idle.push_back(obj);
+	//	//grid->PushObjToGrid()
+	//	break;
+	//}
+	/*case OBJECT_TYPE_KOOPAS:
 		{
 			int type = atoi(tokens[4].c_str());
 			int level = atoi(tokens[5].c_str());
@@ -342,7 +355,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
 			listEnemies_S.push_back(obj);
 		}
-		break;
+		break;*/
 	case OBJECT_TYPE_TREE:
 	{
 		obj = new CTree();
@@ -438,7 +451,6 @@ void CPlayScene::Load()
 				section = SCENE_SECTION_TILEMAP;
 				continue;
 			}
-			
 			if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
 			//
@@ -451,23 +463,16 @@ void CPlayScene::Load()
 			case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
 			case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
 			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
-			case SCENE_SECTION_TILEMAP: _ParseSection_TILEMAP(line); break;
+			case SCENE_SECTION_TILEMAP:	_ParseSection_TILEMAP(line); break;
 			}
 		}
 
 		f.close();
-
+		
 		CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 		DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 
-		//Load Camera // Load Board Game
-		cam = new Camera(player, map, typeCamera);
-		board = new CScoreBoard(player);
-		if (typeMap == 1)
-			player->SetOnMap(true);
-		else
-			player->SetOnMap(false);
-		grid = new Grid(map,cam);
+		
 	}
 }
 
@@ -475,26 +480,11 @@ void CPlayScene::GetObjInGrid()
 {
 	listMapObj.clear();
 	listEnemies.clear();
-	listEnemy_temp.clear();
-	listMapObj_temp.clear();
-	
-	grid->GetListObj(listMapObj_temp, listEnemy_temp);
+	listItems_Idle.clear();
+	grid->GetListObj(listMapObj, listEnemies, listItems_Idle);
+	DebugOut(L"\nlistEnenmy size : %d", listItems_Idle.size());
 
-	for (UINT i = 0; i < listMapObj_temp.size(); i++)
-	{
-		listMapObj.push_back(listMapObj_temp[i]);
-	}
-	//Temp test Camera
-	/*for (UINT i = 0; i < listMapObj_S.size(); i++)
-	{
-		listMapObj.push_back(listMapObj_S[i]);
 
-	}*/
-	
-	for (UINT i = 0; i < listEnemy_temp.size(); i++)
-	{
-		listEnemies.push_back(listEnemy_temp[i]);
-	}
 }
 void CPlayScene::Update(DWORD dt)
 {
@@ -509,6 +499,10 @@ void CPlayScene::Update(DWORD dt)
 		for (size_t i = 0; i < listMapObj.size(); i++)
 		{
 			listMapObj[i]->inGrid = false;
+		}
+		for (size_t i = 0; i < listItems_Idle.size(); i++)
+		{
+			listItems_Idle[i]->inGrid = false;
 		}
 		GetObjInGrid();
 	}
@@ -648,18 +642,15 @@ void CPlayScene::Update(DWORD dt)
 	}
 #pragma endregion
 	
-
-
 #pragma region Update Obj
 	//Update player
-	player->Update(dt, &listMapObj, &listEnemies, &listItems, &listEffect, &listPortal, &listFireBall);
+	player->Update(dt, &listMapObj, &listEnemies, &listItems, &listItems_Idle, &listEffect, &listPortal, &listFireBall);
 
 	//Update listMapObj
-	for (size_t i = 0; i < listMapObj.size(); i++)
+	for (size_t i = 0; i < listMapObj.size(); i++) //MapObj tao ra item
 	{
 		if (listMapObj[i]->isActive)
 		{
-		//	if (listMapObj[i]->isCheckInCamera())
 				listMapObj[i]->Update(dt, &listItems);
 		}
 		else
@@ -751,7 +742,11 @@ void CPlayScene::Update(DWORD dt)
 						coin->isActive = false;
 						CWeakBrick * weakBrick = new CWeakBrick(coin->x, coin->y, 0);
 						weakBrick->SetPosition(coin->x - 4, coin->y);
-						listMapObj_S.push_back(weakBrick);
+						weakBrick->inGrid = false;
+						float l, t, r, b;
+						weakBrick->GetBoundingBox(l, t, r, b);
+						weakBrick->CreatePosGrid(l, t, r, b);
+						grid->PushObjToGrid(weakBrick);
 					}
 				}
 			}
@@ -810,7 +805,33 @@ void CPlayScene::Update(DWORD dt)
 			listItems.erase(listItems.begin() + i);
 		}
 	}
-
+	for (size_t i = 0; i < listItems_Idle.size(); i++)
+	{
+		if (listItems_Idle[i]->isActive)
+		{
+			listItems_Idle[i]->Update(dt, &listMapObj);
+		}
+		else
+		{
+				if (listItems_Idle[i]->type == TYPE::COIN_IDLE_STATIC || listItems_Idle[i]->type == TYPE::COIN_IDLE_SPIN)
+				{
+					player->changeScore = true;
+					player->score = 50;
+				}
+				else
+					if (listItems_Idle[i]->type == TYPE::ITEM_END_GAME)
+					{
+						CItemEndScence* item = dynamic_cast<CItemEndScence*>(listItems_Idle[i]);
+						posTextX = item->posTextX;
+						posTextY = item->posTextY;
+						CEffectEndScence* effect = new CEffectEndScence(listItems_Idle[i]->x, listItems_Idle[i]->y);
+						srand(time(NULL));
+						effect->typeEffect = 1 + rand() % (3 + 1 - 1);
+						listEffect.push_back(effect);
+					}
+			listItems_Idle.erase(listItems_Idle.begin() + i);
+		}
+	}
 	//Update list Effect
 	for (size_t i = 0; i < listEffect.size(); i++)
 	{
@@ -868,9 +889,9 @@ void CPlayScene::Update(DWORD dt)
 			player->isCompleteScene = false;
 		}
 #pragma endregion
-	if (typeMap == 0)
+	if (typeMap == WORLD)
 	{
-		grid->UpdateGrid(listMapObj_S, listEnemies_S);
+		grid->UpdateGrid();
 	}
 }	
 
@@ -880,6 +901,10 @@ void CPlayScene::Render()
 	for (size_t i = 0; i < listItems.size(); i++)
 	{
 		listItems[i]->Render();
+	}
+	for (size_t i = 0; i < listItems_Idle.size(); i++)
+	{
+		listItems_Idle[i]->Render();
 	}
 	for (size_t i = 0; i < listEnemies.size(); i++)
 	{

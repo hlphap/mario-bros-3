@@ -6,6 +6,8 @@ CItemEndScence::CItemEndScence(float x, float y)
 	isActive = true;
 	SetPosition(x, y);
 	SetState(ITEM_ENDSCENCE_STATE_NORMAL);
+	this->posTextX = x - 38;
+	this->posTextY = y - 76;
 }
 
 void CItemEndScence::Update(DWORD dt, vector<CGameObject*>* listMapObj)

@@ -9,7 +9,7 @@
 #define COIN_SPEED_FALL			 0.02
 
 //BBox
-#define COIN_BBOX_WIDTH	8
+#define COIN_BBOX_WIDTH	16
 #define COIN_BBOX_HEIGHT	16
 
 //Distance

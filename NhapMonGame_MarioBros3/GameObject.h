@@ -54,8 +54,8 @@ public:
 	float x;
 	float y;
 
-	int amountX;
-	int amountY;
+	float amountX;
+	float amountY;
 
 	float dx;	// dx = vx*dt
 	float dy;	// dy = vy*dt
@@ -129,12 +129,12 @@ public:
 		GR = GridR;
 		GB = GridB;
 	}
-	void UpdateGridPos()
+	void CreatePosGrid(float l, float t, float r, float b)
 	{
-		GridL = (int)(x / CELLW);
-		GridT = (int)(y/CELLH);
-		GridR = (int)((x + w) / CELLW);
-		GridB = (int)((y + h) / CELLH);
+		GridT = int(t / 328);
+		GridL = int(l / 187);
+		GridR = ceil(r / 187);
+		GridB = ceil(b / 328);
 	}
 	~CGameObject();
 };

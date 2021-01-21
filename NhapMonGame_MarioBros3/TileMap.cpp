@@ -3,6 +3,7 @@
 #include "Utils.h"
 
 
+
 TileMap::TileMap()
 {
 	screenWidth = CGame::GetInstance()->screen_width;
@@ -30,7 +31,7 @@ void TileMap::LoadTileMap()
 		}
 }
 
-void TileMap::LoadMap()
+void TileMap::LoadMap(Grid*grid)
 {
 		ifstream fs(file_path_data, ios::in);
 		if (fs.fail())
@@ -44,6 +45,14 @@ void TileMap::LoadMap()
 			{
 				fs >> tilemap[i][j];
 			}
+		}
+		char str[1024];
+		while (fs.getline(str, 1024))
+		{
+			string line(str);
+			if (line == "" || line[0] == '#') continue;
+			else
+				grid->InsertObjToGrid(line);
 		}
 		fs.close();
 }

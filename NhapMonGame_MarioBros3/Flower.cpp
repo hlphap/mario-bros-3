@@ -29,8 +29,6 @@ CFlower::CFlower(CMario* m, int type)
 
 void CFlower::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
-	if (isSleep)
-		return;
 	l = x;
 	t = y;
 	if (typeColor == FLOWER_TYPE_RED)
@@ -147,6 +145,7 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CFlower::SetState(int state)
 {
+	
 	CGameObject::SetState(state);
 	switch (state)
 	{
@@ -177,6 +176,7 @@ void CFlower::SetState(int state)
 
 void CFlower::Render()
 {
+	RenderBoundingBox();
 	int ani = -1;
 	if (typeColor == FLOWER_TYPE_RED)
 	{

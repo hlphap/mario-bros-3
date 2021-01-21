@@ -10,6 +10,9 @@
 class CItemEndScence : public CItem
 {
 public:
+	float posTextX;
+	float posTextY;
+public:
 	CItemEndScence(float x, float y);
 	void Update(DWORD dt, vector<CGameObject*>* listMapObj);
 	void Render();

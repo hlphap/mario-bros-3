@@ -4,7 +4,6 @@ CGround::CGround()
 {
 	isActive = true;
 	category = CATEGORY::GROUND;
-
 }
 
 void CGround::Render()

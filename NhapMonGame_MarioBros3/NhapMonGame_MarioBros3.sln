@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NhapMonGame_MarioBros3", "NhapMonGame_MarioBros3.vcxproj", "{4136C9C3-0A9E-4EE3-9214-C14B4462ACDE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CreateGrid", "..\CreateGrid\CreateGrid.vcxproj", "{BB6408A0-73B7-4BDA-B687-9117336E2657}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{4136C9C3-0A9E-4EE3-9214-C14B4462ACDE}.Release|x64.Build.0 = Release|x64
 		{4136C9C3-0A9E-4EE3-9214-C14B4462ACDE}.Release|x86.ActiveCfg = Release|Win32
 		{4136C9C3-0A9E-4EE3-9214-C14B4462ACDE}.Release|x86.Build.0 = Release|Win32
+		{BB6408A0-73B7-4BDA-B687-9117336E2657}.Debug|x64.ActiveCfg = Debug|x64
+		{BB6408A0-73B7-4BDA-B687-9117336E2657}.Debug|x64.Build.0 = Debug|x64
+		{BB6408A0-73B7-4BDA-B687-9117336E2657}.Debug|x86.ActiveCfg = Debug|Win32
+		{BB6408A0-73B7-4BDA-B687-9117336E2657}.Debug|x86.Build.0 = Debug|Win32
+		{BB6408A0-73B7-4BDA-B687-9117336E2657}.Release|x64.ActiveCfg = Release|x64
+		{BB6408A0-73B7-4BDA-B687-9117336E2657}.Release|x64.Build.0 = Release|x64
+		{BB6408A0-73B7-4BDA-B687-9117336E2657}.Release|x86.ActiveCfg = Release|Win32
+		{BB6408A0-73B7-4BDA-B687-9117336E2657}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include<string>
+#include "Grid.h"
 
 #define MAP_RESIDUALX 5
 #define MAP_RESIDUALY 2
@@ -29,7 +30,7 @@ public:
 	TileMap();
 	~TileMap();
 	void LoadTileMap();
-	void LoadMap();
+	void LoadMap(Grid* grid);
 	void Draw();
 	void Update();
 	int GetWeightMap();
