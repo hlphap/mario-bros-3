@@ -1,7 +1,9 @@
 #include "SelectionEffect.h"
+#include "Utils.h"
 
 CSelectionEffect::CSelectionEffect(CMario *mario, float x, float y)
 {
+	isActive = true;
 	this->mario = mario;
 	SetPosition(x, y);
 }
@@ -9,6 +11,7 @@ CSelectionEffect::CSelectionEffect(CMario *mario, float x, float y)
 void CSelectionEffect::Update(DWORD dt, vector<LPGAMEOBJECT>* listMapObj)
 {
 	location = mario->isLocationSelect;
+	DebugOut(L"Location: %f,", y);
 	if (location)
 	{
 		SetPosition(70, 152);

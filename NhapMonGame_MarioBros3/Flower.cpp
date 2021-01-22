@@ -78,11 +78,13 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		SetState(FLOWER_STATE_MOVE_TO_ATTACK);
 		timeStartAttack = TIME_DEFAULT;
 		isSleep = false;
+		//Bay len ban
 	}
 	else
 	if (!isAttack && GetTickCount() - timeStartAttack >= 3000 && timeStartAttack!= TIME_DEFAULT)
 	{
 		SetState(FLOWER_STATE_MOVE_TO_RETIRE);
+		//Rut Lui
 	}
 	else
 		if (isAttack && GetTickCount() - timeStartAttack >= 1000 && timeStartAttack != TIME_DEFAULT)
@@ -94,6 +96,7 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			else
 				timeStartAttack += 1000;
 			isAttack = false;
+			//Bans
 		}
 	//Giới hạn 
 	if (isMoveAttack)
@@ -119,6 +122,7 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
+
 	CalcPotentialCollisions(coObjects, coEvents);
 
 	// No collision occured, proceed normally
@@ -176,7 +180,7 @@ void CFlower::SetState(int state)
 
 void CFlower::Render()
 {
-	RenderBoundingBox();
+	//RenderBoundingBox();
 	int ani = -1;
 	if (typeColor == FLOWER_TYPE_RED)
 	{

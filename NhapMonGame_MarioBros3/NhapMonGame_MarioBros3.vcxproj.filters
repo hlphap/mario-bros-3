@@ -49,6 +49,9 @@
     <Filter Include="GameObject\Grid">
       <UniqueIdentifier>{818116ce-6330-4690-b94c-c670f4454880}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Intro">
+      <UniqueIdentifier>{6b99e097-f4ba-474d-be69-1c39f4139c52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -224,6 +227,15 @@
     </ClCompile>
     <ClCompile Include="SelectionEffect.cpp">
       <Filter>GameObject\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Number3.cpp">
+      <Filter>GameObject\Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="NewGame.cpp">
+      <Filter>GameObject\Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="BackGroundIntro.cpp">
+      <Filter>GameObject\Intro</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -403,6 +415,15 @@
     </ClInclude>
     <ClInclude Include="SelectionEffect.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Number3.h">
+      <Filter>GameObject\Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="NewGame.h">
+      <Filter>GameObject\Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="BackGroundIntro.h">
+      <Filter>GameObject\Intro</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

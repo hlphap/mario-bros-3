@@ -46,6 +46,9 @@ public:
 	int screen_width;
 	int screen_height;
 
+	int cellW;
+	int cellH;
+
 	unordered_map<int, LPSCENE> scenes;
 	int current_scene;
 

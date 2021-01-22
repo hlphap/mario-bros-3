@@ -242,10 +242,8 @@ void Grid::PushObjToGrid(CGameObject* obj)
 				unMoveObj[row][col].push_back(obj);
 			else
 				moveObj[row][col].push_back(obj);
-			
 		}
 	}
-	
 }
 
 void Grid::UpdateGrid()
@@ -255,6 +253,8 @@ void Grid::UpdateGrid()
 	{
 		float l, t, r, b;
 		listEnemy_S[i]->GetBoundingBox(l, t, r, b);
+		if (b >= mapH || l < 0 || r > mapW || t < 0)
+			listEnemy_S[i]->isActive = false;
 		int Top = int(t / cellHeight);
 		int Left = int(l / cellWidth);
 		int Right = ceil(r / cellWidth);
@@ -274,8 +274,6 @@ void Grid::UpdateGrid()
 Grid::Grid(Camera *cam) // Khoi tao Cell, Row Col
 {
 	this->cam = cam;
-	cellWidth = 187;
-	cellHeight = 328;
 	ClearGrid();
 }
 
@@ -283,13 +281,14 @@ void Grid::GridResize()
 {
 	numRow = (mapH + cellHeight) / cellHeight;
 	numCol = (mapW + cellWidth) / cellWidth;
-	unMoveObj.resize(numRow + 1);
-	for (int i = 0; i < numRow + 1; i++)
-		unMoveObj[i].resize(numCol + 1);
 
-	moveObj.resize(numRow + 2);
-	for (int i = 0; i < numRow + 2; i++)
-		moveObj[i].resize(numCol + 1);
+	unMoveObj.resize(numRow);
+	for (int i = 0; i < numRow; i++)
+		unMoveObj[i].resize(numCol);
+
+	moveObj.resize(numRow);
+	for (int i = 0; i < numRow; i++)
+		moveObj[i].resize(numCol);
 
 }
 

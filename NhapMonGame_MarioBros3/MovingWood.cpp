@@ -12,6 +12,14 @@ CMovingWood::CMovingWood()
 void CMovingWood::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj)
 {
 	CGameObject::Update(dt, listMapObj);
+	if (state == MOVING_WOOD_STATE_MOVING_HORIZONTAL)
+	{
+		if (x - ((CGame::GetInstance()->GetCamPosX() + CGame::GetInstance()->GetScreenWidth())) < 50)
+		{
+			vx = -0.03f;
+		}
+	}
+	
 	if (state == MOVING_WOOD_STATE_FALLING)
 	{
 		vy += MARIO_GRAVITY * dt;
@@ -26,7 +34,6 @@ void CMovingWood::SetState(int state)
 	switch (state)
 	{
 	case MOVING_WOOD_STATE_MOVING_HORIZONTAL:
-		vx = -0.03f;
 		vy = 0;
 		break;
 	case MOVING_WOOD_STATE_FALLING:

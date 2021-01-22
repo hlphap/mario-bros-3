@@ -9,6 +9,9 @@
 #define MAP_RESIDUALX 5
 #define MAP_RESIDUALY 2
 
+#define MAP_INFOR 0
+#define OBJECCTS 1
+
 class TileMap
 {
 public:

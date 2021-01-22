@@ -1232,9 +1232,9 @@
 # type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas,4 = Flower, 5 = Ground, 6 = ColorBox, 7 = Pipe, 8 = QuestionBrick, 9 = WeakBreak, 10 = CloundBrick, 11 = Coin, 12 = Bullet
 
 # MARIO
-0	2020	300	1
+#0	2020	300	1
 #0	2200	200	1
-#0	0	280	1
+0	0	280	1
 # MOVING WOOD
 15	400	320	24	3	1
 

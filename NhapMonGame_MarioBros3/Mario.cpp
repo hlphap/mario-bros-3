@@ -527,7 +527,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 		{
 			backup_vy = vy;
 			vy = 0;
-			y += min_ty * dy + ny * 0.1f;
+	//		y += min_ty * dy + ny * 0.1f;
 		}
 		else
 			if (ny > 0)
@@ -645,7 +645,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *listMapObj, vector<LPGAMEOBJ
 						CFlower* flower = dynamic_cast<CFlower*>(e->obj);
 						if (flower->GetState() != GOOMBA_STATE_DIE)
 						{
-							ChangeTheLevel(DETAILMARIO::CHANGE_DOWN);
+							if (e->nx != 0 || e->ny != 0)
+							{
+								if (!flower->isSleep)
+									ChangeTheLevel(DETAILMARIO::CHANGE_DOWN);
+
+							}
+						
 						}
 					}
 				}

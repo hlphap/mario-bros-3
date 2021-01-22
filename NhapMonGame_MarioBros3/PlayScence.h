@@ -29,6 +29,10 @@
 #include "Grid.h"
 #include "SelectionEffect.h"
 #include "BomerangBrother.h"
+#include "Number3.h"
+#include "NewGame.h"
+#include "BackGroundIntro.h"
+
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_TEXTURES 2
 #define SCENE_SECTION_SPRITES 3
@@ -55,6 +59,9 @@
 #define	OBJECT_TYPE_MOVING_WOOD		15
 #define OBJECT_TYPE_BOMERANGBROTHER	16
 #define OBJECT_TYPE_SELECT_EFFECT	17
+#define OBJECT_TYPE_NUMBER3_EFFECT	18
+#define OBJECT_TYPE_NEW_GAME		19
+#define OBJECT_TYPE_BACKGROUND_INTRO		20
 #define OBJECT_TYPE_BOUNDARYBRICK	9999
 
 #define OBJECT_TYPE_PITSTOP	49
@@ -96,6 +103,9 @@ public:
 	vector<LPGAMEOBJECT> listFireBall;
 	vector<LPGAMEOBJECT> listPortal;
 	vector<CText*> listText;
+	LPGAMEOBJECT newGame;
+	LPGAMEOBJECT BackGroundIntro;
+
 
 	void TransformDarkScreen();
 	void TransformLightScreen();

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp" />
+    <ClCompile Include="BackGroundIntro.cpp" />
     <ClCompile Include="Bomerang.cpp" />
     <ClCompile Include="BomerangBrother.cpp" />
     <ClCompile Include="Brick.cpp" />
@@ -54,7 +55,9 @@
     <ClCompile Include="MarioGeneral.cpp" />
     <ClCompile Include="MovingWood.cpp" />
     <ClCompile Include="Mushroom.cpp" />
+    <ClCompile Include="NewGame.cpp" />
     <ClCompile Include="Number.cpp" />
+    <ClCompile Include="Number3.cpp" />
     <ClCompile Include="OneUpEffect.cpp" />
     <ClCompile Include="PieceBrickEffect.cpp" />
     <ClCompile Include="Pipe.cpp" />
@@ -80,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animations.h" />
+    <ClInclude Include="BackGroundIntro.h" />
     <ClInclude Include="Bomerang.h" />
     <ClInclude Include="BomerangBrother.h" />
     <ClInclude Include="Brick.h" />
@@ -115,7 +119,9 @@
     <ClInclude Include="MarioGeneral.h" />
     <ClInclude Include="MovingWood.h" />
     <ClInclude Include="Mushroom.h" />
+    <ClInclude Include="NewGame.h" />
     <ClInclude Include="Number.h" />
+    <ClInclude Include="Number3.h" />
     <ClInclude Include="OneUpEffect.h" />
     <ClInclude Include="PieceBrickEffect.h" />
     <ClInclude Include="Pipe.h" />
@@ -200,7 +206,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
-      <DisableSpecificWarnings>26495;4018;4244;4102;4101;4305;4715;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>26495;4018;4244;4102;4101;4305;4715;28251;28159;4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

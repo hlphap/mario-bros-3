@@ -131,10 +131,10 @@ public:
 	}
 	void CreatePosGrid(float l, float t, float r, float b)
 	{
-		GridT = int(t / 328);
-		GridL = int(l / 187);
-		GridR = ceil(r / 187);
-		GridB = ceil(b / 328);
+		GridT = int(t / CGame::GetInstance()->cellH);
+		GridL = int(l / CGame::GetInstance()->cellW);
+		GridR = ceil(r / CGame::GetInstance()->cellW);
+		GridB = ceil(b / CGame::GetInstance()->cellH);
 	}
 	~CGameObject();
 };

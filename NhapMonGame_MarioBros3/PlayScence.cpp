@@ -187,7 +187,6 @@ void CPlayScene::_ParseSection_TILEMAP(string line)
 	grid = new Grid(cam);
 	grid->mapW = map->GetWeightMap();
 	grid->mapH = map->GetHeightMap();
-	grid->GridResize();
 	map->LoadMap(grid);
 }
 
@@ -222,6 +221,32 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		player = CMario::GetInstance();
 		player->SetPosition(x, y);
 		player->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		break;
+	}
+	case OBJECT_TYPE_NUMBER3_EFFECT:
+	{
+		obj = new CNumber3();
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		listMapObj_S.push_back(obj);
+		break;
+	}
+	case OBJECT_TYPE_BACKGROUND_INTRO:
+	{
+		obj = new CBackGroundIntro();
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		BackGroundIntro = obj;
+		listMapObj_S.push_back(obj);
+		break;
+	}
+	case OBJECT_TYPE_NEW_GAME:
+	{
+		obj = new CNewGame();
+		obj->SetPosition(x, y);
+		obj->animation_set = CAnimationSets::GetInstance()->Get(ani_set_id);
+		newGame = obj;
+		listMapObj_S.push_back(obj);
 		break;
 	}
 	/*case OBJECT_TYPE_GOOMBA:
@@ -656,6 +681,17 @@ void CPlayScene::Update(DWORD dt)
 		if (listMapObj[i]->isActive)
 		{
 				listMapObj[i]->Update(dt, &listItems);
+				if (listMapObj[i]->type == TYPE::NEWGAME)
+				{
+					if (listMapObj[i]->y + 187 < 0)
+					{
+						BackGroundIntro->isActive = false;
+						newGame->isActive = false;
+						CLeafTree* leaf = new CLeafTree(120,-16);
+						listItems.push_back(leaf);
+						//Create 
+					}
+				}
 		}
 		else
 		{
@@ -902,6 +938,15 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::Render()
 {
 	map->Draw();
+	for (size_t i = 0; i < listEnemies.size(); i++)
+	{
+		listEnemies[i]->Render();
+	}
+	player->Render();
+	for (size_t i = 0; i < listMapObj.size(); i++)
+	{
+		listMapObj[i]->Render();
+	}
 	for (size_t i = 0; i < listItems.size(); i++)
 	{
 		listItems[i]->Render();
@@ -909,16 +954,6 @@ void CPlayScene::Render()
 	for (size_t i = 0; i < listItems_Idle.size(); i++)
 	{
 		listItems_Idle[i]->Render();
-	}
-	for (size_t i = 0; i < listEnemies.size(); i++)
-	{
-		listEnemies[i]->Render();
-	}
-
-	player->Render();
-	for (size_t i = 0; i < listMapObj.size(); i++)
-	{
-		listMapObj[i]->Render();
 	}
 	
 	for (UINT i = 0; i < listBullet.size(); i++) {

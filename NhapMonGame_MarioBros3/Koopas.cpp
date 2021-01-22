@@ -156,8 +156,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						nx = 1;
 						koopasAi->SetPosition(x +5, y);
 						SetState(KOOPAS_STATE_MOVING);
-
-
 					}
 				}
 			

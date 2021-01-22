@@ -46,13 +46,39 @@ void TileMap::LoadMap(Grid*grid)
 				fs >> tilemap[i][j];
 			}
 		}
+		int section;
 		char str[1024];
 		while (fs.getline(str, 1024))
 		{
 			string line(str);
+			if (line == "[MAP_INFOR]")
+			{
+				section = MAP_INFOR;
+				continue;
+			}
+			else
+				if (line == "[OBJECTS]")
+				{
+					section = OBJECCTS;
+					continue;
+				}
 			if (line == "" || line[0] == '#') continue;
 			else
-				grid->InsertObjToGrid(line);
+			{
+				if (section == MAP_INFOR)
+				{
+					vector<string> tokens = split(line);
+					CGame::GetInstance()->cellW = atoi(tokens[0].c_str());
+					CGame::GetInstance()->cellH = atoi(tokens[1].c_str());
+					grid->cellWidth = CGame::GetInstance()->cellW;
+					grid->cellHeight = CGame::GetInstance()->cellH;
+					grid->GridResize();
+				}
+				else
+					if (section == OBJECCTS)
+						grid->InsertObjToGrid(line);
+
+			}
 		}
 		fs.close();
 }
